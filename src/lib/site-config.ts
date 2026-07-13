@@ -2,6 +2,12 @@
  * SITE CONFIG — edite aqui com os dados reais da empresa.
  * Todos os textos, links, números e imagens do site são controlados por este arquivo.
  */
+import baSofaAntes from "@/assets/ba-sofa-antes.jpg";
+import baSofaDepois from "@/assets/ba-sofa-depois.jpg";
+import baColchaoAntes from "@/assets/ba-colchao-antes.jpg";
+import baColchaoDepois from "@/assets/ba-colchao-depois.jpg";
+import baBancoAntes from "@/assets/ba-banco-antes.jpg";
+import baBancoDepois from "@/assets/ba-banco-depois.jpg";
 
 export const siteConfig = {
   // Marca
@@ -196,24 +202,18 @@ export const siteConfig = {
   // Galeria antes/depois
   gallery: [
     {
-      before:
-        "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&q=80",
-      after:
-        "https://images.unsplash.com/photo-1540574163026-643ea20ade25?w=600&q=80",
+      before: baSofaAntes,
+      after: baSofaDepois,
       label: "Sofá 3 lugares",
     },
     {
-      before:
-        "https://images.unsplash.com/photo-1631049035182-249067d7618e?w=600&q=80",
-      after:
-        "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=600&q=80",
+      before: baColchaoAntes,
+      after: baColchaoDepois,
       label: "Colchão queen",
     },
     {
-      before:
-        "https://images.unsplash.com/photo-1552642986-ccb41e7059e7?w=600&q=80",
-      after:
-        "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600&q=80",
+      before: baBancoAntes,
+      after: baBancoDepois,
       label: "Bancos automotivos",
     },
   ],
