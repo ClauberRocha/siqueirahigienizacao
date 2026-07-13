@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect } from "react";
 import heroImage from "@/assets/hero-higienizacao-sofa.jpg";
+import logoAsset from "@/assets/logo-siqueira.png.asset.json";
 import { siteConfig, whatsappLink } from "@/lib/site-config";
 import { track } from "@/lib/analytics";
 import { ContactForm } from "@/components/ContactForm";
@@ -48,7 +49,8 @@ const CSS = `@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400
   .navwrap.s{top:9px}
   .navwrap>div{background:color-mix(in srgb,var(--bg) 62%,transparent);-webkit-backdrop-filter:saturate(1.6) blur(18px);backdrop-filter:saturate(1.6) blur(18px);border:1px solid color-mix(in srgb,var(--ink) 11%,transparent);border-radius:18px;box-shadow:0 10px 30px rgba(11,60,90,.08),inset 0 1px 0 rgba(255,255,255,.55);transition:.3s}
   .navwrap.s>div{background:color-mix(in srgb,var(--bg) 88%,transparent)}
-  .mark{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--cyan),var(--cyan2));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-family:"Space Grotesk",sans-serif}
+  .mark{width:38px;height:38px;display:flex;align-items:center;justify-content:center}
+  .mark img{width:100%;height:100%;object-fit:contain;display:block}
   details.faq{border-bottom:1px solid var(--line)}
   details.faq summary{list-style:none;cursor:pointer;padding:20px 4px;display:flex;justify-content:space-between;gap:16px;align-items:center;font-weight:600;font-size:17px}
   details.faq summary::-webkit-details-marker{display:none}
@@ -121,7 +123,7 @@ function Index() {
         <nav className="navwrap" id="nav">
           <div className="container flex items-center justify-between h-[64px] px-5">
             <a href="#topo" className="flex items-center gap-3">
-              <span className="mark">{siteConfig.logoLetter}</span>
+              <span className="mark"><img src={logoAsset.url} alt={`Logo ${siteConfig.brandName}`} /></span>
               <span className="display text-xl">{siteConfig.brandName}</span>
             </a>
             <div className="hidden md:flex items-center gap-7 text-sm text-[color:var(--muted)]">
@@ -395,7 +397,7 @@ function Index() {
           <div className="container py-16 grid md:grid-cols-4 gap-10">
             <div className="md:col-span-2">
               <div className="flex items-center gap-3">
-                <span className="mark">{siteConfig.logoLetter}</span>
+                <span className="mark"><img src={logoAsset.url} alt={`Logo ${siteConfig.brandName}`} /></span>
                 <span className="display text-xl">{siteConfig.brandName}</span>
               </div>
               <p className="text-[color:var(--muted)] mt-4 max-w-sm leading-relaxed text-sm">
