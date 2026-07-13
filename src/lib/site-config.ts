@@ -23,6 +23,12 @@ export const siteConfig = {
   address: "São Luís/MA — atendimento em domicílio",
   businessHours: "Seg a Sáb, 08h–18h",
 
+  // Analytics — deixe vazio pra desativar
+  // GA4: preencha o Measurement ID (ex.: "G-XXXXXXX")
+  // Plausible: preencha o domínio (ex.: "siqueirahigienizacao.com.br")
+  googleAnalyticsId: "" as string,
+  plausibleDomain: "" as string,
+
   // SEO / Meta
   title: "Siqueira Higienização — Sofás, colchões, tapetes e veículos em São Luís/MA",
   description:

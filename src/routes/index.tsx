@@ -2,6 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect } from "react";
 import heroImage from "@/assets/hero-higienizacao-sofa.jpg";
 import { siteConfig, whatsappLink } from "@/lib/site-config";
+import { track } from "@/lib/analytics";
+import { ContactForm } from "@/components/ContactForm";
 
 const CSS = `@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');
 
@@ -128,8 +130,9 @@ function Index() {
               <a href="#galeria" className="hover:text-[color:var(--ink)] transition">Antes / Depois</a>
               <a href="#avaliacoes" className="hover:text-[color:var(--ink)] transition">Avaliações</a>
               <a href="#faq" className="hover:text-[color:var(--ink)] transition">FAQ</a>
+              <a href="#contato" className="hover:text-[color:var(--ink)] transition">Contato</a>
             </div>
-            <a href={whatsappLink} className="btn btn-wa !py-2.5 !px-5 !text-sm">Orçamento grátis</a>
+            <a href={whatsappLink} onClick={() => track("whatsapp_click", { location: "nav" })} className="btn btn-wa !py-2.5 !px-5 !text-sm">Orçamento grátis</a>
           </div>
         </nav>
 
@@ -146,8 +149,8 @@ function Index() {
               {siteConfig.hero.subtitle}
             </p>
             <div className="reveal flex flex-col sm:flex-row gap-4 mt-10">
-              <a href={whatsappLink} className="btn btn-wa">{siteConfig.hero.ctaPrimary}</a>
-              <a href={waAgendar} className="btn btn-cyan">{siteConfig.hero.ctaSecondary}</a>
+              <a href={whatsappLink} onClick={() => track("whatsapp_click", { location: "hero", cta: "orcamento" })} className="btn btn-wa">{siteConfig.hero.ctaPrimary}</a>
+              <a href={waAgendar} onClick={() => track("whatsapp_click", { location: "hero", cta: "agendar" })} className="btn btn-cyan">{siteConfig.hero.ctaSecondary}</a>
             </div>
             <div className="reveal flex items-center gap-4 mt-10">
               <div className="flex -space-x-3">
@@ -244,6 +247,7 @@ function Index() {
                     href={`https://wa.me/${siteConfig.whatsappNumber}?text=${encodeURIComponent(
                       `Olá! Quero agendar higienização de ${s.title}.`,
                     )}`}
+                    onClick={() => track("whatsapp_click", { location: "service_card", service: s.title })}
                     className="btn btn-cyan mt-6 !py-3 !text-sm w-full"
                   >
                     Agendar →
@@ -343,19 +347,30 @@ function Index() {
           </div>
         </section>
 
-        {/* CTA */}
-        <section className="container py-16">
-          <div className="reveal card p-10 md:p-16 max-w-3xl mx-auto text-center relative overflow-hidden">
-            <div className="kicker mb-6 mx-auto">Condição especial</div>
-            <h2 className="display text-4xl md:text-5xl">
-              Orçamento <span className="grad">grátis</span> e sem compromisso.
-            </h2>
-            <p className="text-[color:var(--muted)] mt-5 max-w-md mx-auto">
-              Mande uma foto da peça no WhatsApp. Já te passamos o valor e agendamos a visita.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center mt-8">
-              <a href={whatsappLink} className="btn btn-wa text-lg">Pedir orçamento →</a>
-              <a href={waAgendar} className="btn btn-cyan text-lg">Agendar visita</a>
+        {/* CONTATO + FORMULÁRIO */}
+        <section id="contato" className="container py-24">
+          <div className="grid lg:grid-cols-[1.1fr_.9fr] gap-10 items-start">
+            <div className="reveal">
+              <div className="kicker mb-6">Fale com a gente</div>
+              <h2 className="display text-5xl md:text-6xl">
+                Orçamento <span className="grad">grátis</span> e sem compromisso.
+              </h2>
+              <p className="text-[color:var(--muted)] mt-5 max-w-lg leading-relaxed text-lg">
+                Preencha o formulário ao lado e nós já abrimos o WhatsApp com seus dados prontos.
+                Se preferir, chame direto:
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3 mt-8">
+                <a href={whatsappLink} onClick={() => track("whatsapp_click", { location: "cta_section", cta: "orcamento" })} className="btn btn-wa">Pedir orçamento →</a>
+                <a href={waAgendar} onClick={() => track("whatsapp_click", { location: "cta_section", cta: "agendar" })} className="btn btn-cyan">Agendar visita</a>
+              </div>
+              <ul className="mt-10 space-y-3 text-sm">
+                <li className="flex gap-3"><span className="cyantext">📱</span> {siteConfig.phoneDisplay}</li>
+                <li className="flex gap-3"><span className="cyantext">✉️</span> {siteConfig.email}</li>
+                <li className="flex gap-3"><span className="cyantext">📍</span> {siteConfig.city}/{siteConfig.state} · {siteConfig.businessHours}</li>
+              </ul>
+            </div>
+            <div className="reveal card p-7 md:p-9">
+              <ContactForm />
             </div>
           </div>
         </section>
@@ -387,7 +402,7 @@ function Index() {
                 Higienização profissional de sofás, colchões, tapetes, cadeiras, poltronas e veículos em {siteConfig.city}/{siteConfig.state}.
               </p>
               <div className="flex gap-3 mt-5">
-                <a href={whatsappLink} className="btn btn-wa !py-2.5 !px-4 !text-sm">WhatsApp</a>
+                <a href={whatsappLink} onClick={() => track("whatsapp_click", { location: "footer" })} className="btn btn-wa !py-2.5 !px-4 !text-sm">WhatsApp</a>
                 <a
                   href={siteConfig.instagramUrl}
                   target="_blank"
@@ -438,7 +453,7 @@ function Index() {
         </footer>
 
         {/* WhatsApp flutuante */}
-        <a href={whatsappLink} className="wa" aria-label="Fale no WhatsApp">
+        <a href={whatsappLink} onClick={() => track("whatsapp_click", { location: "floating" })} className="wa" aria-label="Fale no WhatsApp">
           <span className="ic">💬</span>
           WhatsApp
         </a>
