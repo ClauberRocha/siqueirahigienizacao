@@ -287,6 +287,8 @@ function Index() {
                       `Olá! Quero agendar higienização de ${s.title}.`,
                     )}`}
                     onClick={() => track("whatsapp_click", { location: "service_card", service: s.title })}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="btn btn-cyan mt-6 !py-3 !text-sm w-full"
                   >
                     Agendar →
