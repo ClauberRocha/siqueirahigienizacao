@@ -131,7 +131,7 @@ function Index() {
               <a href="#avaliacoes" className="hover:text-[color:var(--ink)] transition">Avaliações</a>
               <a href="#faq" className="hover:text-[color:var(--ink)] transition">FAQ</a>
             </div>
-            <a href={whatsappLink} className="btn btn-wa !py-2.5 !px-5 !text-sm">Orçamento grátis</a>
+            <a href={whatsappLink} onClick={() => track("whatsapp_click", { location: "nav" })} className="btn btn-wa !py-2.5 !px-5 !text-sm">Orçamento grátis</a>
           </div>
         </nav>
 
@@ -148,8 +148,8 @@ function Index() {
               {siteConfig.hero.subtitle}
             </p>
             <div className="reveal flex flex-col sm:flex-row gap-4 mt-10">
-              <a href={whatsappLink} className="btn btn-wa">{siteConfig.hero.ctaPrimary}</a>
-              <a href={waAgendar} className="btn btn-cyan">{siteConfig.hero.ctaSecondary}</a>
+              <a href={whatsappLink} onClick={() => track("whatsapp_click", { location: "hero", cta: "orcamento" })} className="btn btn-wa">{siteConfig.hero.ctaPrimary}</a>
+              <a href={waAgendar} onClick={() => track("whatsapp_click", { location: "hero", cta: "agendar" })} className="btn btn-cyan">{siteConfig.hero.ctaSecondary}</a>
             </div>
             <div className="reveal flex items-center gap-4 mt-10">
               <div className="flex -space-x-3">
@@ -356,8 +356,8 @@ function Index() {
               Mande uma foto da peça no WhatsApp. Já te passamos o valor e agendamos a visita.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center mt-8">
-              <a href={whatsappLink} className="btn btn-wa text-lg">Pedir orçamento →</a>
-              <a href={waAgendar} className="btn btn-cyan text-lg">Agendar visita</a>
+              <a href={whatsappLink} onClick={() => track("whatsapp_click", { location: "cta_section", cta: "orcamento" })} className="btn btn-wa text-lg">Pedir orçamento →</a>
+              <a href={waAgendar} onClick={() => track("whatsapp_click", { location: "cta_section", cta: "agendar" })} className="btn btn-cyan text-lg">Agendar visita</a>
             </div>
           </div>
         </section>
@@ -389,7 +389,7 @@ function Index() {
                 Higienização profissional de sofás, colchões, tapetes, cadeiras, poltronas e veículos em {siteConfig.city}/{siteConfig.state}.
               </p>
               <div className="flex gap-3 mt-5">
-                <a href={whatsappLink} className="btn btn-wa !py-2.5 !px-4 !text-sm">WhatsApp</a>
+                <a href={whatsappLink} onClick={() => track("whatsapp_click", { location: "footer" })} className="btn btn-wa !py-2.5 !px-4 !text-sm">WhatsApp</a>
                 <a
                   href={siteConfig.instagramUrl}
                   target="_blank"
@@ -440,7 +440,7 @@ function Index() {
         </footer>
 
         {/* WhatsApp flutuante */}
-        <a href={whatsappLink} className="wa" aria-label="Fale no WhatsApp">
+        <a href={whatsappLink} onClick={() => track("whatsapp_click", { location: "floating" })} className="wa" aria-label="Fale no WhatsApp">
           <span className="ic">💬</span>
           WhatsApp
         </a>
