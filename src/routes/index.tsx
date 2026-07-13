@@ -130,6 +130,7 @@ function Index() {
               <a href="#galeria" className="hover:text-[color:var(--ink)] transition">Antes / Depois</a>
               <a href="#avaliacoes" className="hover:text-[color:var(--ink)] transition">Avaliações</a>
               <a href="#faq" className="hover:text-[color:var(--ink)] transition">FAQ</a>
+              <a href="#contato" className="hover:text-[color:var(--ink)] transition">Contato</a>
             </div>
             <a href={whatsappLink} onClick={() => track("whatsapp_click", { location: "nav" })} className="btn btn-wa !py-2.5 !px-5 !text-sm">Orçamento grátis</a>
           </div>
