@@ -14,11 +14,13 @@ export const siteConfig = {
   email: "siqueira_higienizacao@gmail.com",
   instagram: "siqueira_higienizacao",
   instagramUrl: "https://instagram.com/siqueira_higienizacao",
+  facebookUrl: "",
 
   // Localização / horário
   city: "São Luís",
   state: "MA",
   region: "São Luís e região — MA",
+  address: "São Luís/MA — atendimento em domicílio",
   businessHours: "Seg a Sáb, 08h–18h",
 
   // SEO / Meta
@@ -28,114 +30,185 @@ export const siteConfig = {
 
   // Hero
   hero: {
-    kicker: "❄️ Orçamento grátis · atendimento no mesmo dia",
-    title: "Climatize com",
-    titleHighlight: "quem entende",
+    kicker: "✨ Orçamento grátis · atendimento em domicílio",
+    title: "Higienização que",
+    titleHighlight: "devolve o novo",
     subtitle:
-      "[Diga o que sua empresa faz e pra quem.] Instalação, manutenção e conserto de ar-condicionado com técnicos qualificados, peças de qualidade e garantia. Conforto térmico sem dor de cabeça — pra sua casa ou empresa.",
-    ctaPrimary: "Pedir orçamento grátis →",
-    ctaSecondary: "Ver serviços",
+      "Sofás, colchões, tapetes, cadeiras, poltronas e veículos em São Luís/MA. Produtos certificados, equipamentos profissionais e secagem rápida — sem manchas, ácaros ou mau cheiro.",
+    ctaPrimary: "Solicitar orçamento →",
+    ctaSecondary: "Agendar atendimento",
   },
 
   // Estatísticas
   stats: {
-    atendimentos: "+4 mil",
+    atendimentos: "+2 mil",
     nota: "4,9 ⭐",
-    garantia: "90 dias",
-    atendimento: "Mesmo dia",
+    garantia: "Qualidade",
+    atendimento: "Em domicílio",
   },
 
   // Problemas / dor
   painPoints: [
     {
-      icon: "🥵",
-      title: "Ambiente abafado",
-      text: "Casa ou empresa quente, noites mal dormidas. A gente resolve com o equipamento certo.",
+      icon: "🛋️",
+      title: "Sofá com manchas e cheiro",
+      text: "Suor, comida, pets e poeira acumulam ácaros e bactérias. A gente devolve o conforto e a cor original.",
     },
     {
-      icon: "💧",
-      title: "Aparelho pingando / fraco",
-      text: "Sujeira e falta de manutenção fazem gelar menos e gastar mais. A limpeza muda tudo.",
+      icon: "😴",
+      title: "Colchão com ácaros",
+      text: "Você passa 1/3 da vida em cima dele. Higienização profunda melhora alergia, respiração e o sono.",
     },
     {
-      icon: "🧰",
-      title: "Técnico que some",
-      text: "Profissionais que somem e não dão garantia. Aqui é compromisso e pós-serviço de verdade.",
+      icon: "🚗",
+      title: "Carro com bancos sujos",
+      text: "Bancos, teto, carpete e porta-malas ficam com aparência de zero KM — inclusive antes de vender.",
     },
   ],
 
-  // Serviços
+  // Serviços — cards individuais (imagem, descrição, benefícios, agendar)
   services: [
     {
-      title: "Instalação",
-      text: "Split, multi split e cassete instalados com segurança e acabamento impecável.",
+      title: "Sofás",
+      icon: "🛋️",
+      image:
+        "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?w=800&q=80",
+      text: "Extração profunda de manchas, ácaros e odores. Tecido, suede, couro e couro sintético.",
+      benefits: ["Remove manchas antigas", "Elimina ácaros e bactérias", "Secagem rápida"],
     },
     {
-      title: "Manutenção & limpeza",
-      text: "Higienização que faz gelar mais, gastar menos e tirar fungos e mau cheiro.",
+      title: "Colchões",
+      icon: "🛏️",
+      image:
+        "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&q=80",
+      text: "Casal, queen, king ou solteiro. Face única ou dupla, com opção de impermeabilização.",
+      benefits: ["Alívio de alergia", "Sem cheiro de suor", "Sono mais saudável"],
     },
     {
-      title: "Conserto",
-      text: "Não gela? Faz barulho? Diagnóstico rápido e reparo com peças de qualidade.",
+      title: "Tapetes",
+      icon: "🧶",
+      image:
+        "https://images.unsplash.com/photo-1600166898405-da9535204843?w=800&q=80",
+      text: "Todos os tamanhos e materiais. Lavagem em domicílio ou no nosso espaço.",
+      benefits: ["Cores restauradas", "Sem ácaros", "Fibras preservadas"],
     },
     {
-      title: "Recarga de gás",
-      text: "Carga correta pro seu aparelho voltar a gelar como novo.",
+      title: "Bancos automotivos",
+      icon: "💺",
+      image:
+        "https://images.unsplash.com/photo-1552642986-ccb41e7059e7?w=800&q=80",
+      text: "Higienização completa dos bancos em tecido ou couro, incluindo cintos e apoios.",
+      benefits: ["Aparência de novo", "Sem cheiro", "Ideal antes de vender"],
     },
     {
-      title: "PMOC pra empresas",
-      text: "Plano de manutenção dentro da norma pra empresas e estabelecimentos.",
+      title: "Veículos completos",
+      icon: "🚗",
+      image:
+        "https://images.unsplash.com/photo-1607860108855-64acf2078ed9?w=800&q=80",
+      text: "Higienização interna completa: bancos, teto, portas, painel, carpete e porta-malas.",
+      benefits: ["Interior impecável", "Ar mais puro", "Valorização do veículo"],
     },
     {
-      title: "Projetos",
-      text: "Dimensionamento e projeto de climatização pro seu espaço, do residencial ao comercial.",
+      title: "Cadeiras",
+      icon: "🪑",
+      image:
+        "https://images.unsplash.com/photo-1580480055273-228ff5388ef8?w=800&q=80",
+      text: "Cadeiras de escritório, jantar e gamer. Extração profunda em tecido, mesh e couro.",
+      benefits: ["Sem manchas", "Sem odores", "Mais durabilidade"],
+    },
+    {
+      title: "Poltronas",
+      icon: "🛋️",
+      image:
+        "https://images.unsplash.com/photo-1567016432779-094069958ea5?w=800&q=80",
+      text: "Poltronas comuns, reclináveis e de amamentação — tratadas com cuidado peça a peça.",
+      benefits: ["Tecido revitalizado", "Ambiente saudável", "Toque macio"],
+    },
+    {
+      title: "Outros serviços",
+      icon: "✨",
+      image:
+        "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=800&q=80",
+      text: "Puffs, cortinas, cabeceiras, carrinhos de bebê e itens especiais — consulte pelo WhatsApp.",
+      benefits: ["Orçamento sob medida", "Atendemos itens especiais", "Produtos certificados"],
     },
   ],
 
   // Diferenciais
   differentials: [
-    "Orçamento grátis e transparente",
-    "Garantia no serviço",
-    "Atendimento rápido",
+    "Produtos certificados e biodegradáveis",
+    "Atendimento em domicílio, sem transtorno",
+    "Equipamentos profissionais de extração",
+    "Secagem rápida (algumas horas)",
+    "Garantia de qualidade no serviço",
+    "Equipe treinada e uniformizada",
   ],
   aboutText:
-    "[Fale da empresa: anos de experiência, equipe, certificações.] Técnicos qualificados, orçamento transparente, peças de qualidade e garantia no serviço. A gente faz certo da primeira vez — e fica disponível depois.",
+    "A Siqueira Higienização atende famílias, empresas, condomínios e proprietários de veículos em São Luís/MA. Trabalhamos com equipamentos profissionais de extração e produtos certificados, com foco em resultado visível, ambiente saudável e atendimento pontual — direto na sua casa, empresa ou garagem.",
 
   // Passo a passo
   steps: [
     {
       number: "01",
-      title: "Chama no zap",
-      text: "Conta o que precisa (instalar, limpar ou consertar) e a gente já te passa o orçamento.",
+      title: "Chama no WhatsApp",
+      text: "Conta o que precisa (sofá, colchão, carro…) e mande uma foto. Já te passamos o orçamento.",
     },
     {
       number: "02",
       title: "Agendamos a visita",
-      text: "Marcamos no melhor horário pra você, com pontualidade.",
+      text: "Escolhe o melhor horário. Vamos até você com todos os equipamentos e produtos.",
     },
     {
       number: "03",
-      title: "Conforto garantido",
-      text: "Serviço feito com capricho, ambiente limpo e garantia. É só relaxar no fresco.",
+      title: "Peça higienizada",
+      text: "Serviço feito na hora, com secagem rápida. Você recebe sua peça pronta pra usar de novo.",
     },
   ],
 
   // Depoimentos
   testimonials: [
     {
-      text: "Instalaram meu split no mesmo dia, super organizados e limparam tudo no final. Gela demais agora!",
+      text: "Fizeram a higienização do meu sofá de tecido cinza que estava horrível de manchas. Ficou como novo, sem cheiro nenhum. Recomendo demais!",
       name: "Camila S.",
+      role: "Cliente · São Luís",
       avatar: "https://i.pravatar.cc/80?img=52",
     },
     {
-      text: "Meu ar não gelava e o técnico achou o problema na hora. Preço justo e com garantia. Recomendo!",
+      text: "Higienizaram o colchão do meu filho que tem alergia. A diferença no sono foi imediata. Equipe pontual e super educada.",
       name: "Rogério T.",
+      role: "Cliente · São Luís",
       avatar: "https://i.pravatar.cc/80?img=14",
     },
     {
-      text: "Faço a limpeza com eles todo ano. Pontuais, educados e o ar fica novinho. Empresa de confiança.",
+      text: "Meu carro parecia novo depois da higienização interna. Bancos, teto, porta-malas — tudo impecável. Preço justo, faço todo ano.",
       name: "Patrícia L.",
+      role: "Cliente · São Luís",
       avatar: "https://i.pravatar.cc/80?img=49",
+    },
+  ],
+
+  // Galeria antes/depois
+  gallery: [
+    {
+      before:
+        "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&q=80",
+      after:
+        "https://images.unsplash.com/photo-1540574163026-643ea20ade25?w=600&q=80",
+      label: "Sofá 3 lugares",
+    },
+    {
+      before:
+        "https://images.unsplash.com/photo-1631049035182-249067d7618e?w=600&q=80",
+      after:
+        "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=600&q=80",
+      label: "Colchão queen",
+    },
+    {
+      before:
+        "https://images.unsplash.com/photo-1552642986-ccb41e7059e7?w=600&q=80",
+      after:
+        "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600&q=80",
+      label: "Bancos automotivos",
     },
   ],
 
@@ -144,34 +217,36 @@ export const siteConfig = {
     {
       question: "O orçamento é gratuito?",
       answer:
-        "Sim, o orçamento é gratuito e sem compromisso. Muitas vezes conseguimos passar o valor já pelo WhatsApp.",
+        "Sim, o orçamento é 100% gratuito e sem compromisso. Muitas vezes conseguimos passar o valor direto pelo WhatsApp, com base nas fotos que você enviar.",
     },
     {
-      question: "De quanto em quanto tempo limpar o ar?",
+      question: "Vocês vão até minha casa?",
       answer:
-        "Recomendamos a higienização ao menos 1x por ano (ou semestral em uso intenso) pra gelar bem e evitar fungos.",
+        "Sim! Atendemos em domicílio em São Luís e região. Sofás, colchões, cadeiras e poltronas são higienizados dentro da sua casa, sem precisar levar em lugar nenhum.",
     },
     {
-      question: "Atendem residência e empresa?",
+      question: "Quanto tempo leva pra secar?",
       answer:
-        "Sim, atendemos residências, comércios e empresas, inclusive com PMOC dentro da norma.",
+        "Depende do tecido e da ventilação, mas em geral entre 3 a 6 horas. Trabalhamos com equipamentos de extração que retiram até 95% da umidade.",
     },
     {
-      question: "Vocês vendem o aparelho também?",
+      question: "Os produtos são seguros para crianças e pets?",
       answer:
-        "[Informe.] Podemos indicar e fornecer o equipamento ideal pro seu ambiente, ou instalar o seu.",
+        "Sim. Usamos produtos certificados, biodegradáveis e hipoalergênicos, seguros para crianças, idosos e animais de estimação.",
     },
     {
-      question: "Tem garantia?",
+      question: "De quanto em quanto tempo higienizar?",
       answer:
-        "Sim, todo serviço tem garantia. E peças/equipamentos têm a garantia do fabricante.",
+        "Recomendamos higienização de sofás e colchões pelo menos 1x por ano (ou a cada 6 meses se tiver crianças, pets ou alergia). Veículos: 1x por ano ou antes de vender.",
     },
     {
-      question: "Qual a região de atendimento?",
+      question: "Como faço para agendar?",
       answer:
-        "[Cidade e região.] Em caso de dúvida sobre o seu bairro, é só perguntar no WhatsApp.",
+        "É só chamar no WhatsApp com o item e uma foto (se possível). Passamos o orçamento na hora e agendamos a melhor data pra você.",
     },
   ],
 };
 
-export const whatsappLink = `https://wa.me/${siteConfig.whatsappNumber}`;
+export const whatsappLink = `https://wa.me/${siteConfig.whatsappNumber}?text=${encodeURIComponent(
+  "Olá! Gostaria de um orçamento de higienização.",
+)}`;
