@@ -5,23 +5,26 @@
 
 export const siteConfig = {
   // Marca
-  brandName: "[Sua Empresa]",
-  logoLetter: "A",
+  brandName: "Siqueira Higienização",
+  logoLetter: "S",
 
   // Contato
-  whatsappNumber: "5511900000000", // número completo com DDD e código do país, sem espaços
-  phoneDisplay: "(11) 90000-0000",
-  email: "contato@suaempresa.com",
+  whatsappNumber: "5598988660241",
+  phoneDisplay: "(98) 98866-0241",
+  email: "siqueira_higienizacao@gmail.com",
+  instagram: "siqueira_higienizacao",
+  instagramUrl: "https://instagram.com/siqueira_higienizacao",
 
   // Localização / horário
-  city: "[Sua cidade]",
-  region: "[Região atendida]",
-  businessHours: "Seg a Sáb [08h–18h]",
+  city: "São Luís",
+  state: "MA",
+  region: "São Luís e região — MA",
+  businessHours: "Seg a Sáb, 08h–18h",
 
   // SEO / Meta
-  title: "[Sua Empresa] — Ar-condicionado: instalação e manutenção",
+  title: "Siqueira Higienização — Sofás, colchões, tapetes e veículos em São Luís/MA",
   description:
-    "Instalação, manutenção e conserto de ar-condicionado em [sua cidade]. Técnicos qualificados, orçamento grátis e atendimento rápido.",
+    "Higienização profissional de sofás, colchões, tapetes, cadeiras, poltronas, bancos automotivos e veículos em São Luís/MA. Orçamento grátis, atendimento em domicílio e secagem rápida.",
 
   // Hero
   hero: {
