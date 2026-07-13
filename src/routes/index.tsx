@@ -447,7 +447,7 @@ function Index() {
                 <a
                   href={siteConfig.instagramUrl}
                   target="_blank"
-                  rel="noreferrer"
+                  rel="noopener noreferrer"
                   className="btn btn-ghost !py-2.5 !px-4 !text-sm"
                 >
                   Instagram
@@ -468,7 +468,7 @@ function Index() {
                   <a
                     href={siteConfig.instagramUrl}
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer"
                   >
                     📷 @{siteConfig.instagram}
                   </a>
