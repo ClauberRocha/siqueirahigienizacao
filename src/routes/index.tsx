@@ -137,7 +137,7 @@ function Index() {
               <a href="#faq" className="hover:text-[color:var(--ink)] transition">FAQ</a>
               <a href="#contato" className="hover:text-[color:var(--ink)] transition">Contato</a>
             </div>
-            <a href={whatsappLink} onClick={() => track("whatsapp_click", { location: "nav" })} className="btn btn-wa shrink-0 !py-2 !px-3.5 !text-xs sm:!py-2.5 sm:!px-5 sm:!text-sm whitespace-nowrap">Orçamento<span className="hidden sm:inline" target="_blank" rel="noopener noreferrer"> grátis</span></a>
+            <a href={whatsappLink} onClick={() => track("whatsapp_click", { location: "nav" })} target="_blank" rel="noopener noreferrer" className="btn btn-wa shrink-0 !py-2 !px-3.5 !text-xs sm:!py-2.5 sm:!px-5 sm:!text-sm whitespace-nowrap">Orçamento<span className="hidden sm:inline"> grátis</span></a>
           </div>
         </nav>
 
