@@ -124,7 +124,10 @@ function Index() {
           <div className="container flex items-center justify-between h-[64px] px-5">
             <a href="#topo" className="flex items-center gap-3">
               <span className="mark"><img src={logoAsset.url} alt={`Logo ${siteConfig.brandName}`} /></span>
-              <span className="display text-xl">{siteConfig.brandName}</span>
+              <span className="flex flex-col leading-tight">
+                <span className="display text-xl">{siteConfig.brandName}</span>
+                <span className="text-[11px] text-[color:var(--cyan2)] italic font-medium">Só não limpamos o nome</span>
+              </span>
             </a>
             <div className="hidden md:flex items-center gap-7 text-sm text-[color:var(--muted)]">
               <a href="#servicos" className="hover:text-[color:var(--ink)] transition">Serviços</a>
