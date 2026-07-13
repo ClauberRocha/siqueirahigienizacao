@@ -221,6 +221,40 @@ function Index() {
           </div>
         </section>
 
+        {/* PERIGOS */}
+        <section id="perigos" className="container py-24">
+          <div className="reveal max-w-3xl">
+            <div className="kicker mb-6">Alerta de saúde</div>
+            <h2 className="display text-5xl md:text-6xl">Os perigos da falta de higienização de sofás e estofados.</h2>
+            <p className="text-[color:var(--muted)] text-lg mt-6 leading-relaxed">
+              Estofados acumulam suor, células mortas, poeira, restos de alimentos e umidade. Sem higienização periódica, viram o ambiente perfeito para micro-organismos que afetam diretamente a saúde da sua família.
+            </p>
+          </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 mt-14">
+            {[
+              { icon: "🦠", title: "Ácaros e alergias", text: "Um sofá pode abrigar milhões de ácaros, principal causa de rinite, asma, coceira nos olhos e crises alérgicas — sobretudo em crianças." },
+              { icon: "🫁", title: "Problemas respiratórios", text: "Poeira, fungos e esporos ficam presos no tecido e voltam ao ar a cada vez que alguém senta, agravando bronquite, sinusite e tosse crônica." },
+              { icon: "🍄", title: "Fungos e mofo", text: "Umidade de suor, bebidas e limpezas caseiras mal feitas criam mofo interno no estofado, com cheiro característico e risco de infecções de pele." },
+              { icon: "🐛", title: "Bactérias e maus odores", text: "E. coli, salmonela e outras bactérias se multiplicam em restos orgânicos invisíveis, causando aquele odor persistente que perfume nenhum resolve." },
+              { icon: "🐜", title: "Pulgas, percevejos e traças", text: "Estofados sem manutenção viram abrigo para insetos que picam, contaminam e se espalham para camas, tapetes e roupas de cama." },
+              { icon: "⚠️", title: "Desgaste precoce", text: "Sujeira acumulada corrói fibras e espuma, mancha permanentemente o tecido e reduz pela metade a vida útil do seu estofado." },
+            ].map((p, i) => (
+              <div className="reveal card p-8" key={i}>
+                <div className="text-3xl mb-3">{p.icon}</div>
+                <h3 className="text-xl font-bold">{p.title}</h3>
+                <p className="text-[color:var(--muted)] mt-3 leading-relaxed text-sm">{p.text}</p>
+              </div>
+            ))}
+          </div>
+          <div className="reveal card mt-10 p-8 md:p-10 flex flex-col md:flex-row items-start md:items-center gap-6 justify-between">
+            <div>
+              <h3 className="display text-2xl md:text-3xl">Proteja quem você ama.</h3>
+              <p className="text-[color:var(--muted)] mt-2 leading-relaxed">Recomendamos higienização profissional a cada 6 meses — ou a cada 3 meses em casas com crianças, pets ou alérgicos.</p>
+            </div>
+            <a href={whatsappLink} onClick={() => track("whatsapp_click", { location: "perigos" })} className="btn btn-wa shrink-0">Agendar higienização</a>
+          </div>
+        </section>
+
         {/* SERVIÇOS */}
         <section id="servicos" className="container py-24">
           <div className="reveal max-w-2xl">
