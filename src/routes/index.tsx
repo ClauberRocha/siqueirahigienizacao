@@ -121,12 +121,12 @@ function Index() {
       <div className="wrap">
         {/* NAV */}
         <nav className="navwrap" id="nav">
-          <div className="container flex items-center justify-between h-[64px] px-5">
-            <a href="#topo" className="flex items-center gap-3">
-              <span className="mark"><img src={logoAsset.url} alt={`Logo ${siteConfig.brandName}`} /></span>
-              <span className="flex flex-col justify-center leading-none gap-1">
-                <span className="display text-[17px] tracking-tight">{siteConfig.brandName}</span>
-                <span className="text-[10px] tracking-[0.08em] text-[color:var(--cyan2)] font-semibold uppercase">Só não limpamos o nome</span>
+          <div className="container grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 sm:gap-4 h-[64px] px-4 sm:px-5">
+            <a href="#topo" className="flex min-w-0 items-center gap-2.5 sm:gap-3">
+              <span className="mark shrink-0"><img src={logoAsset.url} alt={`Logo ${siteConfig.brandName}`} /></span>
+              <span className="flex min-w-0 flex-col justify-center leading-none gap-1">
+                <span className="display text-[15px] sm:text-[17px] tracking-tight truncate">{siteConfig.brandName}</span>
+                <span className="text-[9px] sm:text-[10px] tracking-[0.08em] text-[color:var(--cyan2)] font-semibold uppercase truncate">Só não limpamos o nome</span>
               </span>
             </a>
             <div className="hidden md:flex items-center gap-7 text-sm text-[color:var(--muted)]">
@@ -137,7 +137,7 @@ function Index() {
               <a href="#faq" className="hover:text-[color:var(--ink)] transition">FAQ</a>
               <a href="#contato" className="hover:text-[color:var(--ink)] transition">Contato</a>
             </div>
-            <a href={whatsappLink} onClick={() => track("whatsapp_click", { location: "nav" })} className="btn btn-wa !py-2.5 !px-5 !text-sm">Orçamento grátis</a>
+            <a href={whatsappLink} onClick={() => track("whatsapp_click", { location: "nav" })} className="btn btn-wa shrink-0 !py-2 !px-3.5 !text-xs sm:!py-2.5 sm:!px-5 sm:!text-sm whitespace-nowrap">Orçamento<span className="hidden sm:inline"> grátis</span></a>
           </div>
         </nav>
 
