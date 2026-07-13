@@ -196,24 +196,18 @@ export const siteConfig = {
   // Galeria antes/depois
   gallery: [
     {
-      before:
-        "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&q=80",
-      after:
-        "https://images.unsplash.com/photo-1540574163026-643ea20ade25?w=600&q=80",
+      before: "/src/assets/ba-sofa-antes.jpg",
+      after: "/src/assets/ba-sofa-depois.jpg",
       label: "Sofá 3 lugares",
     },
     {
-      before:
-        "https://images.unsplash.com/photo-1631049035182-249067d7618e?w=600&q=80",
-      after:
-        "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=600&q=80",
+      before: "/src/assets/ba-colchao-antes.jpg",
+      after: "/src/assets/ba-colchao-depois.jpg",
       label: "Colchão queen",
     },
     {
-      before:
-        "https://images.unsplash.com/photo-1552642986-ccb41e7059e7?w=600&q=80",
-      after:
-        "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600&q=80",
+      before: "/src/assets/ba-banco-antes.jpg",
+      after: "/src/assets/ba-banco-depois.jpg",
       label: "Bancos automotivos",
     },
   ],
