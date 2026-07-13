@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect } from "react";
 import heroAirImage from "@/assets/hero-ar-condicionado-instalado.jpg";
+import { siteConfig, whatsappLink } from "@/lib/site-config";
+
 const CSS = `@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');
 
   :root{--bg:#f1f7fb;--bg2:#e3eff7;--ink:#0e2433;--muted:#577488;--blue:#1f8fe0;--blue2:#1166ad;--cyan:#22c3e6;--line:#d6e6f0}
@@ -44,182 +46,319 @@ const CSS = `@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400
   @keyframes pr{0%{transform:translateY(-50%) scale(.6);opacity:.7}70%,100%{transform:translateY(-50%) scale(1.8);opacity:0}}
   @media (prefers-reduced-motion:reduce){.l1,.l2,.wa::before{animation:none}.reveal.in{animation:none}}
 `;
-const BODY = `
-<!--
-  ╔══════════════════════════════════════════════════════════════╗
-  ║  CONFIG — EDITE AQUI. [colchetes], fotos, WhatsApp, cores      ║
-  ║  no :root (--blue, --bg). Nicho: AR-CONDICIONADO / CLIMATIZAÇÃO║
-  ╚══════════════════════════════════════════════════════════════╝
--->
-<div class="cine"><div class="l l1"></div><div class="l l2"></div></div>
 
-<div class="wrap">
-  <nav class="navwrap" id="nav"><div class="container flex items-center justify-between h-[64px] px-5">
-    <a href="#topo" class="flex items-center gap-3"><span class="mark">A</span><span class="display text-xl">[Sua Empresa]</span></a>
-    <div class="hidden md:flex items-center gap-7 text-sm text-[color:var(--muted)]">
-      <a href="#servicos" class="hover:text-[color:var(--ink)] transition">Serviços</a>
-      <a href="#porque" class="hover:text-[color:var(--ink)] transition">Por que nós</a>
-      <a href="#como" class="hover:text-[color:var(--ink)] transition">Como funciona</a>
-      <a href="#avaliacoes" class="hover:text-[color:var(--ink)] transition">Avaliações</a>
-      <a href="#faq" class="hover:text-[color:var(--ink)] transition">FAQ</a>
-    </div>
-    <a href="https://wa.me/5511900000000" class="btn btn-wa !py-2.5 !px-5 !text-sm">Orçamento grátis</a>
-  </div></nav>
+export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: siteConfig.title },
+      { name: "description", content: siteConfig.description },
+      { property: "og:title", content: siteConfig.title },
+      { property: "og:description", content: siteConfig.description },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
+  component: Index,
+});
 
-  <header id="topo" class="container pt-36 pb-20 md:pt-44 md:pb-28 grid lg:grid-cols-[1.05fr_.95fr] gap-14 items-center">
-    <div>
-      <div class="reveal kicker">❄️ Orçamento grátis · atendimento no mesmo dia</div>
-      <h1 class="reveal display text-6xl md:text-7xl mt-7">Climatize com<br>quem <span class="grad">entende</span>.</h1>
-      <p class="reveal text-lg md:text-xl text-[color:var(--muted)] max-w-xl mt-7 leading-relaxed">[Diga o que sua empresa faz e pra quem.] Instalação, manutenção e conserto de ar-condicionado com técnicos qualificados, peças de qualidade e garantia. Conforto térmico sem dor de cabeça — pra sua casa ou empresa.</p>
-      <div class="reveal flex flex-col sm:flex-row gap-4 mt-10"><a href="https://wa.me/5511900000000" class="btn btn-wa">Pedir orçamento grátis →</a><a href="#servicos" class="btn btn-ghost">Ver serviços</a></div>
-      <div class="reveal flex items-center gap-4 mt-10">
-        <div class="flex -space-x-3">
-          <img src="https://i.pravatar.cc/80?img=12" class="w-10 h-10 rounded-full border-2 object-cover" style="border-color:var(--bg)">
-          <img src="https://i.pravatar.cc/80?img=33" class="w-10 h-10 rounded-full border-2 object-cover" style="border-color:var(--bg)">
-          <img src="https://i.pravatar.cc/80?img=8" class="w-10 h-10 rounded-full border-2 object-cover" style="border-color:var(--bg)">
-        </div>
-        <div><div class="bluetext text-sm">★★★★★</div><div class="text-xs text-[color:var(--muted)]">+4.000 atendimentos · nota 4,9 no Google</div></div>
-      </div>
-    </div>
-    <div class="reveal frame"><img src="${heroAirImage}" alt="Ar-condicionado split instalado" class="w-full h-[540px] object-cover"></div>
-  </header>
-
-  <section class="border-y border-[color:var(--line)]" style="background:#fff"><div class="container py-8 grid grid-cols-2 md:grid-cols-4 gap-6 text-center text-sm">
-    <div class="reveal"><div class="display bluetext text-4xl">+4 mil</div><div class="text-[color:var(--muted)] mt-1">atendimentos</div></div>
-    <div class="reveal"><div class="display bluetext text-4xl">4,9 ⭐</div><div class="text-[color:var(--muted)] mt-1">no Google</div></div>
-    <div class="reveal"><div class="display bluetext text-4xl">90 dias</div><div class="text-[color:var(--muted)] mt-1">de garantia no serviço</div></div>
-    <div class="reveal"><div class="display bluetext text-4xl">Mesmo dia</div><div class="text-[color:var(--muted)] mt-1">atendimento rápido</div></div>
-  </div></section>
-
-  <section class="container py-24">
-    <div class="reveal max-w-2xl"><div class="kicker mb-6">Reconhece?</div><h2 class="display text-5xl md:text-6xl">Calor demais, conforto de menos.</h2></div>
-    <div class="grid md:grid-cols-3 gap-5 mt-14">
-      <div class="reveal card p-8"><div class="text-3xl mb-3">🥵</div><h3 class="text-xl font-bold">Ambiente abafado</h3><p class="text-[color:var(--muted)] mt-3 leading-relaxed">Casa ou empresa quente, noites mal dormidas. A gente resolve com o equipamento certo.</p></div>
-      <div class="reveal card p-8"><div class="text-3xl mb-3">💧</div><h3 class="text-xl font-bold">Aparelho pingando / fraco</h3><p class="text-[color:var(--muted)] mt-3 leading-relaxed">Sujeira e falta de manutenção fazem gelar menos e gastar mais. A limpeza muda tudo.</p></div>
-      <div class="reveal card p-8"><div class="text-3xl mb-3">🧰</div><h3 class="text-xl font-bold">Técnico que some</h3><p class="text-[color:var(--muted)] mt-3 leading-relaxed">Profissionais que somem e não dão garantia. Aqui é compromisso e pós-serviço de verdade.</p></div>
-    </div>
-  </section>
-
-  <section id="servicos" class="container py-24">
-    <div class="reveal max-w-2xl"><div class="kicker mb-6">O que fazemos</div><h2 class="display text-5xl md:text-6xl">Climatização completa.</h2></div>
-    <div class="grid md:grid-cols-3 gap-5 mt-14">
-      <div class="reveal card p-8"><h3 class="text-2xl font-bold">Instalação</h3><p class="text-[color:var(--muted)] mt-3 leading-relaxed">Split, multi split e cassete instalados com segurança e acabamento impecável.</p></div>
-      <div class="reveal card p-8"><h3 class="text-2xl font-bold">Manutenção & limpeza</h3><p class="text-[color:var(--muted)] mt-3 leading-relaxed">Higienização que faz gelar mais, gastar menos e tirar fungos e mau cheiro.</p></div>
-      <div class="reveal card p-8"><h3 class="text-2xl font-bold">Conserto</h3><p class="text-[color:var(--muted)] mt-3 leading-relaxed">Não gela? Faz barulho? Diagnóstico rápido e reparo com peças de qualidade.</p></div>
-      <div class="reveal card p-8"><h3 class="text-2xl font-bold">Recarga de gás</h3><p class="text-[color:var(--muted)] mt-3 leading-relaxed">Carga correta pro seu aparelho voltar a gelar como novo.</p></div>
-      <div class="reveal card p-8"><h3 class="text-2xl font-bold">PMOC pra empresas</h3><p class="text-[color:var(--muted)] mt-3 leading-relaxed">Plano de manutenção dentro da norma pra empresas e estabelecimentos.</p></div>
-      <div class="reveal card p-8"><h3 class="text-2xl font-bold">Projetos</h3><p class="text-[color:var(--muted)] mt-3 leading-relaxed">Dimensionamento e projeto de climatização pro seu espaço, do residencial ao comercial.</p></div>
-    </div>
-  </section>
-
-  <section id="porque" class="container py-24 grid lg:grid-cols-2 gap-16 items-center">
-    <div class="reveal frame"><img src="https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=800&q=80" alt="" class="w-full h-[520px] object-cover"></div>
-    <div class="reveal">
-      <div class="kicker mb-6">Por que com a gente</div>
-      <h2 class="display text-5xl md:text-6xl">Serviço sério,<br>com garantia.</h2>
-      <p class="text-[color:var(--muted)] text-lg mt-6 leading-relaxed">[Fale da empresa: anos de experiência, equipe, certificações.] Técnicos qualificados, orçamento transparente, peças de qualidade e garantia no serviço. A gente faz certo da primeira vez — e fica disponível depois.</p>
-      <div class="space-y-4 mt-8">
-        <div class="flex gap-3"><span class="bluetext text-xl">✓</span><div><span class="font-semibold">Orçamento grátis e transparente</span> — sem surpresa no final.</div></div>
-        <div class="flex gap-3"><span class="bluetext text-xl">✓</span><div><span class="font-semibold">Garantia no serviço</span> — você fica tranquilo.</div></div>
-        <div class="flex gap-3"><span class="bluetext text-xl">✓</span><div><span class="font-semibold">Atendimento rápido</span> — muitas vezes no mesmo dia.</div></div>
-      </div>
-    </div>
-  </section>
-
-  <section id="como" class="container py-24">
-    <div class="reveal max-w-2xl mx-auto text-center"><div class="kicker mb-6">Sem complicação</div><h2 class="display text-5xl md:text-6xl">Resolvido em 3 passos.</h2></div>
-    <div class="grid md:grid-cols-3 gap-5 mt-14">
-      <div class="reveal card p-8"><div class="display grad text-5xl">01</div><h3 class="text-2xl font-bold mt-3">Chama no zap</h3><p class="text-[color:var(--muted)] mt-2 leading-relaxed">Conta o que precisa (instalar, limpar ou consertar) e a gente já te passa o orçamento.</p></div>
-      <div class="reveal card p-8"><div class="display grad text-5xl">02</div><h3 class="text-2xl font-bold mt-3">Agendamos a visita</h3><p class="text-[color:var(--muted)] mt-2 leading-relaxed">Marcamos no melhor horário pra você, com pontualidade.</p></div>
-      <div class="reveal card p-8"><div class="display grad text-5xl">03</div><h3 class="text-2xl font-bold mt-3">Conforto garantido</h3><p class="text-[color:var(--muted)] mt-2 leading-relaxed">Serviço feito com capricho, ambiente limpo e garantia. É só relaxar no fresco.</p></div>
-    </div>
-  </section>
-
-  <section id="avaliacoes" class="container py-24">
-    <div class="reveal max-w-2xl"><div class="kicker mb-6">Clientes satisfeitos</div><h2 class="display text-5xl md:text-6xl">Quem chama, recomenda.</h2></div>
-    <div class="grid md:grid-cols-3 gap-5 mt-14">
-      <div class="reveal card p-7"><div class="bluetext text-sm mb-3">★★★★★</div><p class="leading-relaxed">"Instalaram meu split no mesmo dia, super organizados e limparam tudo no final. Gela demais agora!"</p><div class="flex items-center gap-3 mt-6"><img src="https://i.pravatar.cc/80?img=52" class="w-11 h-11 rounded-full object-cover"><div><div class="font-semibold">Camila S.</div><div class="text-xs text-[color:var(--muted)]">Cliente · Google ✓</div></div></div></div>
-      <div class="reveal card p-7"><div class="bluetext text-sm mb-3">★★★★★</div><p class="leading-relaxed">"Meu ar não gelava e o técnico achou o problema na hora. Preço justo e com garantia. Recomendo!"</p><div class="flex items-center gap-3 mt-6"><img src="https://i.pravatar.cc/80?img=14" class="w-11 h-11 rounded-full object-cover"><div><div class="font-semibold">Rogério T.</div><div class="text-xs text-[color:var(--muted)]">Cliente · Google ✓</div></div></div></div>
-      <div class="reveal card p-7"><div class="bluetext text-sm mb-3">★★★★★</div><p class="leading-relaxed">"Faço a limpeza com eles todo ano. Pontuais, educados e o ar fica novinho. Empresa de confiança."</p><div class="flex items-center gap-3 mt-6"><img src="https://i.pravatar.cc/80?img=49" class="w-11 h-11 rounded-full object-cover"><div><div class="font-semibold">Patrícia L.</div><div class="text-xs text-[color:var(--muted)]">Cliente · Google ✓</div></div></div></div>
-    </div>
-  </section>
-
-  <section class="container py-24">
-    <div class="reveal card p-10 md:p-16 max-w-3xl mx-auto text-center relative overflow-hidden">
-      <div class="kicker mb-6 mx-auto">Condição especial</div>
-      <h2 class="display text-4xl md:text-5xl">Orçamento <span class="grad">grátis</span> e sem compromisso.</h2>
-      <p class="text-[color:var(--muted)] mt-5 max-w-md mx-auto">Manda uma mensagem com o que precisa e a gente já te passa o valor. Atendimento rápido, muitas vezes no mesmo dia.</p>
-      <a href="https://wa.me/5511900000000" class="btn btn-wa mt-8 text-lg">Pedir orçamento agora →</a>
-    </div>
-  </section>
-
-  <section class="container py-12"><div class="reveal card p-8 flex flex-col sm:flex-row items-center gap-6 max-w-3xl mx-auto" style="border:1px dashed var(--blue)">
-    <div class="w-16 h-16 rounded-full flex items-center justify-center shrink-0 text-3xl" style="background:rgba(31,143,224,.12)">🛡️</div>
-    <div><h3 class="text-2xl font-bold">90 dias de garantia</h3><p class="text-[color:var(--muted)] mt-1 leading-relaxed">Todo serviço tem garantia. Se algo não ficar como combinado, a gente volta e resolve — sem custo extra.</p></div>
-  </div></section>
-
-  <section id="faq" class="container py-24 max-w-3xl">
-    <h2 class="reveal display text-5xl md:text-6xl mb-10 text-center">Perguntas frequentes</h2>
-    <div class="reveal">
-      <details class="faq"><summary>O orçamento é gratuito? <span class="pl">+</span></summary><p class="pb-5 text-[color:var(--muted)] leading-relaxed">Sim, o orçamento é gratuito e sem compromisso. Muitas vezes conseguimos passar o valor já pelo WhatsApp.</p></details>
-      <details class="faq"><summary>De quanto em quanto tempo limpar o ar? <span class="pl">+</span></summary><p class="pb-5 text-[color:var(--muted)] leading-relaxed">Recomendamos a higienização ao menos 1x por ano (ou semestral em uso intenso) pra gelar bem e evitar fungos.</p></details>
-      <details class="faq"><summary>Atendem residência e empresa? <span class="pl">+</span></summary><p class="pb-5 text-[color:var(--muted)] leading-relaxed">Sim, atendemos residências, comércios e empresas, inclusive com PMOC dentro da norma.</p></details>
-      <details class="faq"><summary>Vocês vendem o aparelho também? <span class="pl">+</span></summary><p class="pb-5 text-[color:var(--muted)] leading-relaxed">[Informe.] Podemos indicar e fornecer o equipamento ideal pro seu ambiente, ou instalar o seu.</p></details>
-      <details class="faq"><summary>Tem garantia? <span class="pl">+</span></summary><p class="pb-5 text-[color:var(--muted)] leading-relaxed">Sim, todo serviço tem garantia. E peças/equipamentos têm a garantia do fabricante.</p></details>
-      <details class="faq"><summary>Qual a região de atendimento? <span class="pl">+</span></summary><p class="pb-5 text-[color:var(--muted)] leading-relaxed">[Cidade e região.] Em caso de dúvida sobre o seu bairro, é só perguntar no WhatsApp.</p></details>
-    </div>
-  </section>
-
-  <section class="container py-20">
-    <div class="reveal max-w-xl mx-auto text-center"><div class="kicker mb-6 mx-auto">Orçamento grátis</div><h2 class="display text-5xl md:text-6xl">Peça o seu agora.</h2><p class="text-[color:var(--muted)] mt-5">Deixe seus dados ou chame no WhatsApp com o que você precisa.</p></div>
-    <form class="reveal card p-7 md:p-9 max-w-xl mx-auto mt-10 space-y-4" onsubmit="return false">
-      <input class="field" placeholder="Seu nome">
-      <input class="field" placeholder="WhatsApp (com DDD)">
-      <textarea class="field" rows="3" placeholder="O que você precisa? (instalar, limpar, consertar...)"></textarea>
-      <a href="https://wa.me/5511900000000" class="btn btn-wa w-full text-lg">Pedir orçamento pelo WhatsApp →</a>
-    </form>
-  </section>
-
-  <footer class="border-t border-[color:var(--line)]" style="background:#fff">
-    <div class="container py-16 grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
-      <div class="lg:col-span-2">
-        <div class="flex items-center gap-3"><span class="mark">A</span><span class="display text-xl">[Sua Empresa]</span></div>
-        <p class="text-sm text-[color:var(--muted)] mt-4 max-w-sm leading-relaxed">Instalação, manutenção e conserto de ar-condicionado em [sua cidade]. Conforto térmico com garantia.</p>
-      </div>
-      <div>
-        <p class="text-xs font-bold uppercase tracking-wider mb-4">Navegação</p>
-        <ul class="space-y-2 text-sm text-[color:var(--muted)]">
-          <li><a href="#servicos" class="hover:text-[color:var(--ink)]">Serviços</a></li>
-          <li><a href="#porque" class="hover:text-[color:var(--ink)]">Por que nós</a></li>
-          <li><a href="#avaliacoes" class="hover:text-[color:var(--ink)]">Avaliações</a></li>
-          <li><a href="#faq" class="hover:text-[color:var(--ink)]">FAQ</a></li>
-        </ul>
-      </div>
-      <div>
-        <p class="text-xs font-bold uppercase tracking-wider mb-4">Contato</p>
-        <ul class="space-y-2 text-sm text-[color:var(--muted)]">
-          <li>📍 [Cidade / região atendida]</li>
-          <li>📱 (11) 90000-0000</li>
-          <li>🕒 Seg a Sáb [08h–18h]</li>
-        </ul>
-      </div>
-    </div>
-    <div class="container pb-8"><div class="hair mb-6"></div><div class="flex flex-col sm:flex-row justify-between gap-3 text-xs text-[color:var(--muted)]"><span>© 2026 [Sua Empresa]. Todos os direitos reservados.</span><span>Política de Privacidade · Termos</span></div></div>
-  </footer>
-</div>
-
-<a href="https://wa.me/5511900000000" class="wa" target="_blank" rel="noreferrer"><span class="ic">●</span><span>Falar no WhatsApp</span></a>
-
-
-`;
-export const Route = createFileRoute("/")({ head: () => ({ meta: [ { title: "[Sua Empresa] — Ar-condicionado: instalação e manutenção" } ] }), component: Index });
-function Index(){
+function Index() {
   useEffect(() => {
-    const io=new IntersectionObserver((es)=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target);}}),{threshold:0.12});
-    document.querySelectorAll(".reveal").forEach((el)=>io.observe(el));
-    const onScroll=()=>{const n=document.getElementById("nav"); if(n) n.classList.toggle("s", window.scrollY>20);};
-    addEventListener("scroll", onScroll, {passive:true});
-    return () => { io.disconnect(); removeEventListener("scroll", onScroll); };
+    const io = new IntersectionObserver(
+      (es) =>
+        es.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add("in");
+            io.unobserve(e.target);
+          }
+        }),
+      { threshold: 0.12 }
+    );
+    document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+    const onScroll = () => {
+      const n = document.getElementById("nav");
+      if (n) n.classList.toggle("s", window.scrollY > 20);
+    };
+    addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      io.disconnect();
+      removeEventListener("scroll", onScroll);
+    };
   }, []);
-  return (<><style dangerouslySetInnerHTML={{ __html: CSS }} /><div dangerouslySetInnerHTML={{ __html: BODY }} /></>);
+
+  return (
+    <>
+      <style dangerouslySetInnerHTML={{ __html: CSS }} />
+      <div className="cine">
+        <div className="l l1" />
+        <div className="l l2" />
+      </div>
+
+      <div className="wrap">
+        <nav className="navwrap" id="nav">
+          <div className="container flex items-center justify-between h-[64px] px-5">
+            <a href="#topo" className="flex items-center gap-3">
+              <span className="mark">{siteConfig.logoLetter}</span>
+              <span className="display text-xl">{siteConfig.brandName}</span>
+            </a>
+            <div className="hidden md:flex items-center gap-7 text-sm text-[color:var(--muted)]">
+              <a href="#servicos" className="hover:text-[color:var(--ink)] transition">Serviços</a>
+              <a href="#porque" className="hover:text-[color:var(--ink)] transition">Por que nós</a>
+              <a href="#como" className="hover:text-[color:var(--ink)] transition">Como funciona</a>
+              <a href="#avaliacoes" className="hover:text-[color:var(--ink)] transition">Avaliações</a>
+              <a href="#faq" className="hover:text-[color:var(--ink)] transition">FAQ</a>
+            </div>
+            <a href={whatsappLink} className="btn btn-wa !py-2.5 !px-5 !text-sm">Orçamento grátis</a>
+          </div>
+        </nav>
+
+        <header id="topo" className="container pt-36 pb-20 md:pt-44 md:pb-28 grid lg:grid-cols-[1.05fr_.95fr] gap-14 items-center">
+          <div>
+            <div className="reveal kicker">{siteConfig.hero.kicker}</div>
+            <h1 className="reveal display text-6xl md:text-7xl mt-7">
+              {siteConfig.hero.title}
+              <br />
+              <span className="grad">{siteConfig.hero.titleHighlight}</span>.
+            </h1>
+            <p className="reveal text-lg md:text-xl text-[color:var(--muted)] max-w-xl mt-7 leading-relaxed">
+              {siteConfig.hero.subtitle}
+            </p>
+            <div className="reveal flex flex-col sm:flex-row gap-4 mt-10">
+              <a href={whatsappLink} className="btn btn-wa">{siteConfig.hero.ctaPrimary}</a>
+              <a href="#servicos" className="btn btn-ghost">{siteConfig.hero.ctaSecondary}</a>
+            </div>
+            <div className="reveal flex items-center gap-4 mt-10">
+              <div className="flex -space-x-3">
+                <img src="https://i.pravatar.cc/80?img=12" className="w-10 h-10 rounded-full border-2 object-cover" style={{ borderColor: "var(--bg)" }} alt="" />
+                <img src="https://i.pravatar.cc/80?img=33" className="w-10 h-10 rounded-full border-2 object-cover" style={{ borderColor: "var(--bg)" }} alt="" />
+                <img src="https://i.pravatar.cc/80?img=8" className="w-10 h-10 rounded-full border-2 object-cover" style={{ borderColor: "var(--bg)" }} alt="" />
+              </div>
+              <div>
+                <div className="bluetext text-sm">★★★★★</div>
+                <div className="text-xs text-[color:var(--muted)]">+4.000 atendimentos · nota {siteConfig.stats.nota.replace(" ⭐", "")} no Google</div>
+              </div>
+            </div>
+          </div>
+          <div className="reveal frame">
+            <img src={heroAirImage} alt="Ar-condicionado split instalado" className="w-full h-[540px] object-cover" />
+          </div>
+        </header>
+
+        <section className="border-y border-[color:var(--line)]" style={{ background: "#fff" }}>
+          <div className="container py-8 grid grid-cols-2 md:grid-cols-4 gap-6 text-center text-sm">
+            <div className="reveal">
+              <div className="display bluetext text-4xl">{siteConfig.stats.atendimentos}</div>
+              <div className="text-[color:var(--muted)] mt-1">atendimentos</div>
+            </div>
+            <div className="reveal">
+              <div className="display bluetext text-4xl">{siteConfig.stats.nota}</div>
+              <div className="text-[color:var(--muted)] mt-1">no Google</div>
+            </div>
+            <div className="reveal">
+              <div className="display bluetext text-4xl">{siteConfig.stats.garantia}</div>
+              <div className="text-[color:var(--muted)] mt-1">de garantia no serviço</div>
+            </div>
+            <div className="reveal">
+              <div className="display bluetext text-4xl">{siteConfig.stats.atendimento}</div>
+              <div className="text-[color:var(--muted)] mt-1">atendimento rápido</div>
+            </div>
+          </div>
+        </section>
+
+        <section className="container py-24">
+          <div className="reveal max-w-2xl">
+            <div className="kicker mb-6">Reconhece?</div>
+            <h2 className="display text-5xl md:text-6xl">Calor demais, conforto de menos.</h2>
+          </div>
+          <div className="grid md:grid-cols-3 gap-5 mt-14">
+            {siteConfig.painPoints.map((p, i) => (
+              <div className="reveal card p-8" key={i}>
+                <div className="text-3xl mb-3">{p.icon}</div>
+                <h3 className="text-xl font-bold">{p.title}</h3>
+                <p className="text-[color:var(--muted)] mt-3 leading-relaxed">{p.text}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section id="servicos" className="container py-24">
+          <div className="reveal max-w-2xl">
+            <div className="kicker mb-6">O que fazemos</div>
+            <h2 className="display text-5xl md:text-6xl">Climatização completa.</h2>
+          </div>
+          <div className="grid md:grid-cols-3 gap-5 mt-14">
+            {siteConfig.services.map((s, i) => (
+              <div className="reveal card p-8" key={i}>
+                <h3 className="text-2xl font-bold">{s.title}</h3>
+                <p className="text-[color:var(--muted)] mt-3 leading-relaxed">{s.text}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section id="porque" className="container py-24 grid lg:grid-cols-2 gap-16 items-center">
+          <div className="reveal frame">
+            <img src="https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=800&q=80" alt="Técnico trabalhando em ar-condicionado" className="w-full h-[520px] object-cover" />
+          </div>
+          <div className="reveal">
+            <div className="kicker mb-6">Por que com a gente</div>
+            <h2 className="display text-5xl md:text-6xl">
+              Serviço sério,
+              <br />
+              com garantia.
+            </h2>
+            <p className="text-[color:var(--muted)] text-lg mt-6 leading-relaxed">{siteConfig.aboutText}</p>
+            <div className="space-y-4 mt-8">
+              {siteConfig.differentials.map((d, i) => (
+                <div className="flex gap-3" key={i}>
+                  <span className="bluetext text-xl">✓</span>
+                  <div>
+                    <span className="font-semibold">{d}</span>{" "}
+                    {i === 0 && "— sem surpresa no final."}
+                    {i === 1 && "— você fica tranquilo."}
+                    {i === 2 && "— muitas vezes no mesmo dia."}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="como" className="container py-24">
+          <div className="reveal max-w-2xl mx-auto text-center">
+            <div className="kicker mb-6">Sem complicação</div>
+            <h2 className="display text-5xl md:text-6xl">Resolvido em 3 passos.</h2>
+          </div>
+          <div className="grid md:grid-cols-3 gap-5 mt-14">
+            {siteConfig.steps.map((s, i) => (
+              <div className="reveal card p-8" key={i}>
+                <div className="display grad text-5xl">{s.number}</div>
+                <h3 className="text-2xl font-bold mt-3">{s.title}</h3>
+                <p className="text-[color:var(--muted)] mt-2 leading-relaxed">{s.text}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section id="avaliacoes" className="container py-24">
+          <div className="reveal max-w-2xl">
+            <div className="kicker mb-6">Clientes satisfeitos</div>
+            <h2 className="display text-5xl md:text-6xl">Quem chama, recomenda.</h2>
+          </div>
+          <div className="grid md:grid-cols-3 gap-5 mt-14">
+            {siteConfig.testimonials.map((t, i) => (
+              <div className="reveal card p-7" key={i}>
+                <div className="bluetext text-sm mb-3">★★★★★</div>
+                <p className="leading-relaxed">“{t.text}”</p>
+                <div className="flex items-center gap-3 mt-6">
+                  <img src={t.avatar} alt={t.name} className="w-11 h-11 rounded-full object-cover" />
+                  <div>
+                    <div className="font-semibold">{t.name}</div>
+                    <div className="text-xs text-[color:var(--muted)]">Cliente · Google ✓</div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="container py-24">
+          <div className="reveal card p-10 md:p-16 max-w-3xl mx-auto text-center relative overflow-hidden">
+            <div className="kicker mb-6 mx-auto">Condição especial</div>
+            <h2 className="display text-4xl md:text-5xl">
+              Orçamento <span className="grad">grátis</span> e sem compromisso.
+            </h2>
+            <p className="text-[color:var(--muted)] mt-5 max-w-md mx-auto">
+              Manda uma mensagem com o que precisa e a gente já te passa o valor. Atendimento rápido, muitas vezes no mesmo dia.
+            </p>
+            <a href={whatsappLink} className="btn btn-wa mt-8 text-lg">Pedir orçamento agora →</a>
+          </div>
+        </section>
+
+        <section className="container py-12">
+          <div className="reveal card p-8 flex flex-col sm:flex-row items-center gap-6 max-w-3xl mx-auto" style={{ border: "1px dashed var(--blue)" }}>
+            <div className="w-16 h-16 rounded-full flex items-center justify-center shrink-0 text-3xl" style={{ background: "rgba(31,143,224,.12)" }}>
+              🛡️
+            </div>
+            <div>
+              <h3 className="text-2xl font-bold">{siteConfig.stats.garantia} de garantia</h3>
+              <p className="text-[color:var(--muted)] mt-1 leading-relaxed">
+                Todo serviço tem garantia. Se algo não ficar como combinado, a gente volta e resolve — sem custo extra.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section id="faq" className="container py-24 max-w-3xl">
+          <h2 className="reveal display text-5xl md:text-6xl mb-10 text-center">Perguntas frequentes</h2>
+          <div className="reveal">
+            {siteConfig.faq.map((f, i) => (
+              <details className="faq" key={i}>
+                <summary>
+                  {f.question} <span className="pl">+</span>
+                </summary>
+                <p className="pb-5 text-[color:var(--muted)] leading-relaxed">{f.answer}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        <section className="container py-20">
+          <div className="reveal max-w-xl mx-auto text-center">
+            <div className="kicker mb-6 mx-auto">Orçamento grátis</div>
+            <h2 className="display text-5xl md:text-6xl">Peça o seu agora.</h2>
+            <p className="text-[color:var(--muted)] mt-5">Deixe seus dados ou chame no WhatsApp com o que você precisa.</p>
+          </div>
+          <form className="reveal card p-7 md:p-9 max-w-xl mx-auto mt-10 space-y-4" onSubmit={(e) => e.preventDefault()}>
+            <input className="field" placeholder="Seu nome" />
+            <input className="field" placeholder="WhatsApp (com DDD)" />
+            <textarea className="field" rows={3} placeholder="O que você precisa? (instalar, limpar, consertar...)"></textarea>
+            <a href={whatsappLink} className="btn btn-wa w-full text-lg">Pedir orçamento pelo WhatsApp →</a>
+          </form>
+        </section>
+
+        <footer className="border-t border-[color:var(--line)]" style={{ background: "#fff" }}>
+          <div className="container py-16 grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
+            <div className="lg:col-span-2">
+              <div className="flex items-center gap-3">
+                <span className="mark">{siteConfig.logoLetter}</span>
+                <span className="display text-xl">{siteConfig.brandName}</span>
+              </div>
+              <p className="text-sm text-[color:var(--muted)] mt-4 max-w-sm leading-relaxed">
+                Instalação, manutenção e conserto de ar-condicionado em {siteConfig.city}. Conforto térmico com garantia.
+              </p>
+            </div>
+            <div>
+              <p className="text-xs font-bold uppercase tracking-wider mb-4">Navegação</p>
+              <ul className="space-y-2 text-sm text-[color:var(--muted)]">
+                <li><a href="#servicos" className="hover:text-[color:var(--ink)]">Serviços</a></li>
+                <li><a href="#porque" className="hover:text-[color:var(--ink)]">Por que nós</a></li>
+                <li><a href="#avaliacoes" className="hover:text-[color:var(--ink)]">Avaliações</a></li>
+                <li><a href="#faq" className="hover:text-[color:var(--ink)]">FAQ</a></li>
+              </ul>
+            </div>
+            <div>
+              <p className="text-xs font-bold uppercase tracking-wider mb-4">Contato</p>
+              <ul className="space-y-2 text-sm text-[color:var(--muted)]">
+                <li>📍 {siteConfig.city} / {siteConfig.region}</li>
+                <li>📱 {siteConfig.phoneDisplay}</li>
+                <li>🕒 {siteConfig.businessHours}</li>
+              </ul>
+            </div>
+          </div>
+          <div className="container pb-8">
+            <div className="hair mb-6"></div>
+            <div className="flex flex-col sm:flex-row justify-between gap-3 text-xs text-[color:var(--muted)]">
+              <span>© 2026 {siteConfig.brandName}. Todos os direitos reservados.</span>
+              <span>Política de Privacidade · Termos</span>
+            </div>
+          </div>
+        </footer>
+      </div>
+
+      <a href={whatsappLink} className="wa" target="_blank" rel="noreferrer">
+        <span className="ic">●</span>
+        <span>Falar no WhatsApp</span>
+      </a>
+    </>
+  );
 }
