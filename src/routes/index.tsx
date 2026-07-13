@@ -84,6 +84,17 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   useEffect(() => {
+    const forceExternalBlank = (event: MouseEvent) => {
+      const target = event.target instanceof Element
+        ? event.target.closest<HTMLAnchorElement>('a[target="_blank"][href^="http"]')
+        : null;
+
+      if (!target) return;
+
+      event.preventDefault();
+      window.open(target.href, "_blank", "noopener,noreferrer");
+    };
+
     const io = new IntersectionObserver(
       (es) =>
         es.forEach((e) => {
@@ -99,9 +110,11 @@ function Index() {
       const n = document.getElementById("nav");
       if (n) n.classList.toggle("s", window.scrollY > 20);
     };
+    document.addEventListener("click", forceExternalBlank);
     addEventListener("scroll", onScroll, { passive: true });
     return () => {
       io.disconnect();
+      document.removeEventListener("click", forceExternalBlank);
       removeEventListener("scroll", onScroll);
     };
   }, []);

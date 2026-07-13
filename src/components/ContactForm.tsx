@@ -86,7 +86,7 @@ export function ContactForm() {
       source: "contact_section",
     });
 
-    // Abre WhatsApp em nova aba
+    // Abre WhatsApp em nova aba, sem navegar o iframe do preview
     window.open(url, "_blank", "noopener,noreferrer");
 
     toast.success("Mensagem pronta pra enviar!", {
