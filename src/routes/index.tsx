@@ -346,19 +346,30 @@ function Index() {
           </div>
         </section>
 
-        {/* CTA */}
-        <section className="container py-16">
-          <div className="reveal card p-10 md:p-16 max-w-3xl mx-auto text-center relative overflow-hidden">
-            <div className="kicker mb-6 mx-auto">Condição especial</div>
-            <h2 className="display text-4xl md:text-5xl">
-              Orçamento <span className="grad">grátis</span> e sem compromisso.
-            </h2>
-            <p className="text-[color:var(--muted)] mt-5 max-w-md mx-auto">
-              Mande uma foto da peça no WhatsApp. Já te passamos o valor e agendamos a visita.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center mt-8">
-              <a href={whatsappLink} onClick={() => track("whatsapp_click", { location: "cta_section", cta: "orcamento" })} className="btn btn-wa text-lg">Pedir orçamento →</a>
-              <a href={waAgendar} onClick={() => track("whatsapp_click", { location: "cta_section", cta: "agendar" })} className="btn btn-cyan text-lg">Agendar visita</a>
+        {/* CONTATO + FORMULÁRIO */}
+        <section id="contato" className="container py-24">
+          <div className="grid lg:grid-cols-[1.1fr_.9fr] gap-10 items-start">
+            <div className="reveal">
+              <div className="kicker mb-6">Fale com a gente</div>
+              <h2 className="display text-5xl md:text-6xl">
+                Orçamento <span className="grad">grátis</span> e sem compromisso.
+              </h2>
+              <p className="text-[color:var(--muted)] mt-5 max-w-lg leading-relaxed text-lg">
+                Preencha o formulário ao lado e nós já abrimos o WhatsApp com seus dados prontos.
+                Se preferir, chame direto:
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3 mt-8">
+                <a href={whatsappLink} onClick={() => track("whatsapp_click", { location: "cta_section", cta: "orcamento" })} className="btn btn-wa">Pedir orçamento →</a>
+                <a href={waAgendar} onClick={() => track("whatsapp_click", { location: "cta_section", cta: "agendar" })} className="btn btn-cyan">Agendar visita</a>
+              </div>
+              <ul className="mt-10 space-y-3 text-sm">
+                <li className="flex gap-3"><span className="cyantext">📱</span> {siteConfig.phoneDisplay}</li>
+                <li className="flex gap-3"><span className="cyantext">✉️</span> {siteConfig.email}</li>
+                <li className="flex gap-3"><span className="cyantext">📍</span> {siteConfig.city}/{siteConfig.state} · {siteConfig.businessHours}</li>
+              </ul>
+            </div>
+            <div className="reveal card p-7 md:p-9">
+              <ContactForm />
             </div>
           </div>
         </section>
