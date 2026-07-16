@@ -7,7 +7,7 @@ import { siteConfig, whatsappLink } from "@/lib/site-config";
 import { track } from "@/lib/analytics";
 import { ContactForm } from "@/components/ContactForm";
 
-const CSS = `@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');
+const CSS = `
 
   :root{
     --bg:#ECFEFF;
