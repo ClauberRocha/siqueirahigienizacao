@@ -173,7 +173,9 @@ function AdminPage() {
                     <thead>
                       <tr className="border-b text-left text-xs uppercase tracking-wide text-muted-foreground">
                         <th className="py-2 pr-3">Data</th>
+                        <th className="py-2 pr-3">Turno</th>
                         <th className="py-2 pr-3">Cliente</th>
+                        <th className="py-2 pr-3">Telefone</th>
                         <th className="py-2 pr-3">Serviço</th>
                         <th className="py-2 pr-3">Endereço</th>
                         <th className="py-2 pr-3">CPF</th>
@@ -188,8 +190,12 @@ function AdminPage() {
                               locale: ptBR,
                             })}
                           </td>
+                          <td className="py-2 pr-3 whitespace-nowrap">
+                            {a.time_slot === "afternoon" ? "Tarde (13–18h)" : "Manhã (08–12h)"}
+                          </td>
                           <td className="py-2 pr-3">{a.customer_name}</td>
-                          <td className="py-2 pr-3">{a.service ?? "—"}</td>
+                          <td className="py-2 pr-3 whitespace-nowrap">{a.customer_phone || "—"}</td>
+                          <td className="py-2 pr-3 max-w-[280px]">{a.service ?? "—"}</td>
                           <td className="py-2 pr-3 max-w-[260px]">{a.customer_address}</td>
                           <td className="py-2 pr-3 whitespace-nowrap">{a.customer_cpf}</td>
                           <td className="py-2 pr-3">
