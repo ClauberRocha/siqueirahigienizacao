@@ -53,7 +53,7 @@ export const listAppointments = createServerFn({ method: "GET" })
 
 const statusSchema = z.object({
   id: z.string().uuid(),
-  status: z.enum(["confirmed", "in_progress", "done", "cancelled"]),
+  status: z.enum(["pending", "confirmed", "in_progress", "done", "cancelled"]),
 });
 
 export const updateAppointmentStatus = createServerFn({ method: "POST" })

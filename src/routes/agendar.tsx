@@ -66,6 +66,11 @@ function maskPhone(v: string) {
     .replace(/(\d{5})(\d{1,4})$/, "$1-$2");
 }
 
+function isPhoneValid(v: string): boolean {
+  const d = v.replace(/\D/g, "");
+  return d.length === 10 || d.length === 11;
+}
+
 type Confirmation = {
   id: string;
   dateLabel: string;
@@ -389,7 +394,14 @@ function BookingForm(props: {
                 <Label htmlFor="phone">Telefone / WhatsApp</Label>
                 <Input id="phone" required inputMode="tel" value={phone}
                   onChange={(e) => setPhone(maskPhone(e.target.value))}
-                  placeholder="(98) 98866-0241" maxLength={16} />
+                  onBlur={() => {/* trigger revalidation on blur */}}
+                  placeholder="(98) 98866-0241" maxLength={16}
+                  aria-invalid={phone.length > 0 && !isPhoneValid(phone)} />
+                {phone.length > 0 && !isPhoneValid(phone) && (
+                  <p className="mt-1 text-xs text-destructive">
+                    Formato inválido. Use DDD + número (10 ou 11 dígitos). Ex.: (98) 98866-0241.
+                  </p>
+                )}
               </div>
               <div className="sm:col-span-2">
                 <Label htmlFor="address">Endereço completo</Label>
@@ -411,7 +423,7 @@ function BookingForm(props: {
 
             <Button
               type="submit"
-              disabled={!date || !slot || submitting}
+              disabled={!date || !slot || submitting || !isPhoneValid(phone)}
               className="w-full"
               size="lg"
             >
