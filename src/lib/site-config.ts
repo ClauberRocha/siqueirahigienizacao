@@ -17,7 +17,7 @@ export const siteConfig = {
   // Contato
   whatsappNumber: "5598988660241",
   phoneDisplay: "(98) 98866-0241",
-  email: "siqueira_higienizacao@gmail.com",
+  email: "siqueirahigienizacao2@gmail.com",
   instagram: "siqueira_higienizacao",
   instagramUrl: "https://instagram.com/siqueira_higienizacao",
   facebookUrl: "",
