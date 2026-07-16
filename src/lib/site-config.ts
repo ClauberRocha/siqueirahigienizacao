@@ -21,6 +21,7 @@ export const siteConfig = {
   email: "siqueirahigienizacao2@gmail.com",
   instagram: "siqueira_higienizacao",
   instagramUrl: "https://instagram.com/siqueira_higienizacao",
+  googleReviewsUrl: "https://g.page/r/siqueira-higienizacao/review",
   facebookUrl: "",
 
   // Localização / horário

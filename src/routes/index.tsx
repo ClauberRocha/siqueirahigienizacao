@@ -240,8 +240,20 @@ function Index() {
               <div className="text-[color:var(--muted)] mt-1">atendimentos realizados</div>
             </div>
             <div className="reveal">
-              <div className="display cyantext text-4xl">{siteConfig.stats.nota}</div>
-              <div className="text-[color:var(--muted)] mt-1">satisfação dos clientes</div>
+              <a
+                href={siteConfig.googleReviewsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => track("google_reviews_click", { location: "stats" })}
+                className="inline-flex flex-col items-center hover:opacity-80 transition"
+                aria-label="Ver avaliações no Google"
+              >
+                <div className="display cyantext text-4xl">{siteConfig.stats.nota}</div>
+                <div className="text-[color:var(--muted)] mt-1 flex items-center gap-1.5">
+                  <span className="font-semibold">no Google</span>
+                  <span aria-hidden>↗</span>
+                </div>
+              </a>
             </div>
             <div className="reveal">
               <div className="display cyantext text-4xl">{siteConfig.stats.garantia}</div>
@@ -250,6 +262,23 @@ function Index() {
             <div className="reveal">
               <div className="display cyantext text-4xl">{siteConfig.stats.atendimento}</div>
               <div className="text-[color:var(--muted)] mt-1">atendimento em domicílio</div>
+            </div>
+          </div>
+        </section>
+
+        {/* SELO DE GARANTIA */}
+        <section className="container pt-10">
+          <div className="reveal card p-6 md:p-8 flex flex-col md:flex-row items-center gap-5 md:gap-8"
+               style={{ background: "linear-gradient(135deg, #ECFEFF 0%, #FFFFFF 100%)", borderColor: "var(--cyan)" }}>
+            <div className="shrink-0 w-20 h-20 rounded-full flex items-center justify-center text-4xl"
+                 style={{ background: "linear-gradient(135deg,var(--cyan),var(--cyan2))", color: "#fff", boxShadow: "0 12px 30px rgba(6,182,212,.35)" }}>
+              🛡️
+            </div>
+            <div className="text-center md:text-left flex-1">
+              <div className="display text-xl md:text-2xl">Garantia de Satisfação</div>
+              <p className="text-[color:var(--muted)] mt-1.5 leading-relaxed">
+                Se não ficar impecável, <strong className="text-[color:var(--ink)]">refazemos o serviço sem custo adicional</strong>. Você não corre risco nenhum.
+              </p>
             </div>
           </div>
         </section>
