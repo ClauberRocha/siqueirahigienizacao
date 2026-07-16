@@ -243,7 +243,7 @@ function Index() {
             <div className="kicker mb-6">Reconhece?</div>
             <h2 className="display text-5xl md:text-6xl">Sujeira que você não vê. Ácaros que você respira.</h2>
           </div>
-          <div className="grid md:grid-cols-3 gap-5 mt-14">
+          <div className="pain-grid grid md:grid-cols-3 mt-14">
             {siteConfig.painPoints.map((p, i) => (
               <div className="reveal card p-8 hover-lift" key={i}>
                 <div className="text-3xl mb-3">{p.icon}</div>
