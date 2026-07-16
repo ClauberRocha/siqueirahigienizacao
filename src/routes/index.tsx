@@ -41,8 +41,10 @@ const CSS = `@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400
   .btn-ghost{border:1px solid rgba(15,23,42,.18);color:var(--ink);background:transparent}.btn-ghost:hover{background:rgba(15,23,42,.04)}
   .reveal{opacity:1}.reveal.in{animation:rin .7s cubic-bezier(.16,1,.3,1) both}@keyframes rin{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
   .card{background:var(--white);border:1px solid var(--line);border-radius:18px;box-shadow:0 10px 34px rgba(14,116,144,.06)}
-  .service-card{overflow:hidden;transition:transform .3s,box-shadow .3s}
-  .service-card:hover{transform:translateY(-4px);box-shadow:0 20px 48px rgba(14,116,144,.14)}
+  .hover-lift{transition:transform .3s ease-out,box-shadow .3s ease-out;will-change:transform}
+  .hover-lift:hover{transform:translateY(-8px);box-shadow:0 22px 50px rgba(14,116,144,.16)}
+  @media (max-width:640px){.hover-lift:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(14,116,144,.12)}}
+  .service-card{overflow:hidden}
   .service-card .thumb{width:100%;height:180px;object-fit:cover;display:block}
   .frame{border-radius:22px;overflow:hidden;position:relative;box-shadow:0 40px 90px rgba(11,60,90,.2)}
   .navwrap{position:fixed;top:14px;left:0;right:0;z-index:40;transition:.3s}
@@ -65,7 +67,25 @@ const CSS = `@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400
   .ba .tag.tl{left:12px}
   .ba .tag.tr{right:12px}
   .ba .label{position:absolute;left:12px;bottom:12px;padding:6px 12px;border-radius:999px;font-size:12px;font-weight:600;background:rgba(255,255,255,.9);color:var(--ink)}
-  @media (prefers-reduced-motion:reduce){.l1,.l2{animation:none}.reveal.in{animation:none}}
+  .pain-grid{gap:1.25rem}
+  .pain-grid > .reveal{opacity:0}
+  .pain-grid > .reveal.in{animation:painIn .7s cubic-bezier(.16,1,.3,1) both}
+  @keyframes painIn{from{opacity:0;transform:translateY(28px) scale(.98)}to{opacity:1;transform:none}}
+  .pain-grid > .reveal.in:nth-child(1){animation-delay:.05s}
+  .pain-grid > .reveal.in:nth-child(2){animation-delay:.15s}
+  .pain-grid > .reveal.in:nth-child(3){animation-delay:.25s}
+  .pain-grid > .reveal.in:nth-child(4){animation-delay:.35s}
+  .pain-grid > .reveal.in:nth-child(5){animation-delay:.45s}
+  .pain-grid > .reveal.in:nth-child(6){animation-delay:.55s}
+  @media (max-width:640px){.pain-grid{gap:1rem}}
+  @media (prefers-reduced-motion:reduce){
+    .l1,.l2{animation:none}
+    .reveal.in,.pain-grid > .reveal.in{animation:none;opacity:1}
+    .hover-lift{transition:none}
+    .hover-lift:hover{transform:none;box-shadow:0 10px 34px rgba(14,116,144,.06)}
+    .btn-wa:hover,.btn-cyan:hover{transform:none}
+  }
+
 `;
 
 export const Route = createFileRoute("/")({
@@ -223,9 +243,9 @@ function Index() {
             <div className="kicker mb-6">Reconhece?</div>
             <h2 className="display text-5xl md:text-6xl">Sujeira que você não vê. Ácaros que você respira.</h2>
           </div>
-          <div className="grid md:grid-cols-3 gap-5 mt-14">
+          <div className="pain-grid grid md:grid-cols-3 mt-14">
             {siteConfig.painPoints.map((p, i) => (
-              <div className="reveal card p-8 transition-transform duration-300 ease-out hover:-translate-y-2 hover:shadow-2xl" key={i}>
+              <div className="reveal card p-8 hover-lift" key={i}>
                 <div className="text-3xl mb-3">{p.icon}</div>
                 <h3 className="text-xl font-bold">{p.title}</h3>
                 <p className="text-[color:var(--muted)] mt-3 leading-relaxed">{p.text}</p>
@@ -252,14 +272,14 @@ function Index() {
               { icon: "🐜", title: "Pulgas, percevejos e traças", text: "Estofados sem manutenção viram abrigo para insetos que picam, contaminam e se espalham para camas, tapetes e roupas de cama." },
               { icon: "⚠️", title: "Desgaste precoce", text: "Sujeira acumulada corrói fibras e espuma, mancha permanentemente o tecido e reduz pela metade a vida útil do seu estofado." },
             ].map((p, i) => (
-              <div className="reveal card p-8 transition-transform duration-300 ease-out hover:-translate-y-2 hover:shadow-2xl" key={i}>
+              <div className="reveal card p-8 hover-lift" key={i}>
                 <div className="text-3xl mb-3">{p.icon}</div>
                 <h3 className="text-xl font-bold">{p.title}</h3>
                 <p className="text-[color:var(--muted)] mt-3 leading-relaxed text-sm">{p.text}</p>
               </div>
             ))}
           </div>
-          <div className="reveal card mt-10 p-8 md:p-10 flex flex-col md:flex-row items-start md:items-center gap-6 justify-between">
+          <div className="reveal card hover-lift mt-10 p-8 md:p-10 flex flex-col md:flex-row items-start md:items-center gap-6 justify-between">
             <div>
               <h3 className="display text-2xl md:text-3xl">Proteja quem você ama.</h3>
               <p className="text-[color:var(--muted)] mt-2 leading-relaxed">Recomendamos higienização profissional a cada 6 meses — ou a cada 3 meses em casas com crianças, pets ou alérgicos.</p>
@@ -279,7 +299,7 @@ function Index() {
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mt-14">
             {siteConfig.services.map((s, i) => (
-              <div className="reveal card service-card flex flex-col transition-transform duration-300 ease-out hover:-translate-y-2 hover:shadow-2xl" key={i}>
+              <div className="reveal card service-card flex flex-col hover-lift" key={i}>
                 <img src={s.image} alt={s.title} className="thumb" loading="lazy" />
                 <div className="p-6 flex flex-col flex-1">
                   <div className="flex items-center gap-2">
@@ -349,7 +369,7 @@ function Index() {
           </div>
           <div className="grid md:grid-cols-3 gap-5 mt-14">
             {siteConfig.steps.map((s, i) => (
-              <div className="reveal card p-8 transition-transform duration-300 ease-out hover:-translate-y-2 hover:shadow-2xl" key={i}>
+              <div className="reveal card p-8 hover-lift" key={i}>
                 <div className="display grad text-5xl">{s.number}</div>
                 <h3 className="text-2xl font-bold mt-3">{s.title}</h3>
                 <p className="text-[color:var(--muted)] mt-2 leading-relaxed">{s.text}</p>
@@ -366,7 +386,7 @@ function Index() {
           </div>
           <div className="grid md:grid-cols-3 gap-5 mt-14">
             {siteConfig.gallery.map((g, i) => (
-              <div className="reveal ba transition-transform duration-300 ease-out hover:-translate-y-2 hover:shadow-2xl" key={i}>
+              <div className="reveal ba hover-lift" key={i}>
                 <img src={g.before} alt={`Antes — ${g.label}`} loading="lazy" />
                 <img className="after" src={g.after} alt={`Depois — ${g.label}`} loading="lazy" />
                 <div className="divider" />
@@ -386,7 +406,7 @@ function Index() {
           </div>
           <div className="grid md:grid-cols-3 gap-5 mt-14">
             {siteConfig.testimonials.map((t, i) => (
-              <div className="reveal card p-7 transition-transform duration-300 ease-out hover:-translate-y-2 hover:shadow-2xl" key={i}>
+              <div className="reveal card p-7 hover-lift" key={i}>
                 <div className="cyantext text-sm mb-3">★★★★★</div>
                 <p className="leading-relaxed">“{t.text}”</p>
                 <div className="flex items-center gap-3 mt-6">
@@ -423,7 +443,7 @@ function Index() {
                 <li className="flex gap-3"><span className="cyantext">📍</span> {siteConfig.city}/{siteConfig.state} · {siteConfig.businessHours}</li>
               </ul>
             </div>
-            <div className="reveal card p-7 md:p-9">
+            <div className="reveal card hover-lift p-7 md:p-9">
               <ContactForm />
             </div>
           </div>
