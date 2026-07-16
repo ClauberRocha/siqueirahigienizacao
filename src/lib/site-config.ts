@@ -38,9 +38,9 @@ export const siteConfig = {
   plausibleDomain: "" as string,
 
   // SEO / Meta
-  title: "Siqueira Higienização — Sofás, colchões, tapetes e veículos em São Luís/MA",
+  title: "Higienização de Sofás e Colchões em São Luís/MA | Siqueira",
   description:
-    "Higienização profissional de sofás, colchões, tapetes, cadeiras, poltronas, bancos automotivos e veículos em São Luís/MA. Orçamento grátis, atendimento em domicílio e secagem rápida.",
+    "Higienização profissional de sofás, colchões, tapetes, cadeiras e bancos automotivos em São Luís/MA. Orçamento grátis no WhatsApp e atendimento em domicílio.",
 
   // Hero
   hero: {
@@ -84,6 +84,7 @@ export const siteConfig = {
   services: [
     {
       title: "Sofás",
+      alt: "Higienização profissional de sofá de tecido",
       icon: "🛋️",
       image:
         "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?w=800&q=75&fm=webp",
@@ -92,6 +93,7 @@ export const siteConfig = {
     },
     {
       title: "Colchões",
+      alt: "Limpeza profunda de colchão com equipamento de extração",
       icon: "🛏️",
       image:
         "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&q=75&fm=webp",
@@ -100,6 +102,7 @@ export const siteConfig = {
     },
     {
       title: "Tapetes",
+      alt: "Lavagem e higienização de tapete em domicílio",
       icon: "🧶",
       image:
         "https://images.unsplash.com/photo-1600166898405-da9535204843?w=800&q=75&fm=webp",
@@ -108,6 +111,7 @@ export const siteConfig = {
     },
     {
       title: "Bancos automotivos",
+      alt: "Higienização de bancos automotivos em tecido e couro",
       icon: "💺",
       image: serviceBancosAutomotivos,
       text: "Higienização completa dos bancos em tecido ou couro, incluindo cintos e apoios.",
@@ -115,6 +119,7 @@ export const siteConfig = {
     },
     {
       title: "Veículos completos",
+      alt: "Higienização interna completa de veículo",
       icon: "🚗",
       image:
         "https://images.unsplash.com/photo-1607860108855-64acf2078ed9?w=800&q=75&fm=webp",
@@ -123,6 +128,7 @@ export const siteConfig = {
     },
     {
       title: "Cadeiras",
+      alt: "Limpeza de cadeiras de escritório, jantar e gamer",
       icon: "🪑",
       image:
         "https://images.unsplash.com/photo-1580480055273-228ff5388ef8?w=800&q=75&fm=webp",
@@ -131,6 +137,7 @@ export const siteConfig = {
     },
     {
       title: "Poltronas",
+      alt: "Higienização de poltronas e cadeiras reclináveis",
       icon: "🛋️",
       image:
         "https://images.unsplash.com/photo-1567016432779-094069958ea5?w=800&q=75&fm=webp",
@@ -139,6 +146,7 @@ export const siteConfig = {
     },
     {
       title: "Outros serviços",
+      alt: "Higienização de puffs, cortinas e itens especiais",
       icon: "✨",
       image:
         "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=800&q=75&fm=webp",

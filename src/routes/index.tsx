@@ -101,6 +101,8 @@ const CSS = `
 
 `;
 
+const SITE_URL = "https://siqueirahigienizacao.lovable.app";
+
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
@@ -109,10 +111,64 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: siteConfig.title },
       { property: "og:description", content: siteConfig.description },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: `${SITE_URL}/` },
       { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
+      { rel: "canonical", href: `${SITE_URL}/` },
       { rel: "preload", as: "image", href: heroImageWebp, type: "image/webp", fetchpriority: "high" },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "LocalBusiness",
+              "@id": `${SITE_URL}/#business`,
+              name: siteConfig.brandName,
+              image: `${SITE_URL}/og-image.jpg`,
+              url: SITE_URL,
+              telephone: `+${siteConfig.whatsappNumber}`,
+              email: siteConfig.email,
+              address: {
+                "@type": "PostalAddress",
+                addressLocality: siteConfig.city,
+                addressRegion: siteConfig.state,
+                addressCountry: "BR",
+              },
+              areaServed: siteConfig.region,
+              openingHours: "Mo-Sa 08:00-18:00",
+              sameAs: [siteConfig.instagramUrl].filter(Boolean),
+              aggregateRating: {
+                "@type": "AggregateRating",
+                ratingValue: "4.9",
+                reviewCount: "200",
+              },
+            },
+            {
+              "@type": "Service",
+              name: "Higienização de estofados",
+              serviceType: "Higienização de sofás, colchões, tapetes, cadeiras e bancos automotivos",
+              provider: { "@id": `${SITE_URL}/#business` },
+              areaServed: {
+                "@type": "City",
+                name: `${siteConfig.city}, ${siteConfig.state}`,
+              },
+              description: siteConfig.description,
+            },
+            {
+              "@type": "FAQPage",
+              mainEntity: siteConfig.faq.map((f) => ({
+                "@type": "Question",
+                name: f.question,
+                acceptedAnswer: { "@type": "Answer", text: f.answer },
+              })),
+            },
+          ],
+        }),
+      },
     ],
   }),
   component: Index,
@@ -356,7 +412,7 @@ function Index() {
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mt-14">
             {siteConfig.services.map((s, i) => (
               <div className="reveal card service-card flex flex-col hover-lift" key={i}>
-                <img src={s.image} alt={s.title} className="thumb" loading="lazy" />
+                <img src={s.image} alt={s.alt ?? `Higienização de ${s.title}`} className="thumb" loading="lazy" />
                 <div className="p-6 flex flex-col flex-1">
                   <div className="flex items-center gap-2">
                     <span className="text-2xl">{s.icon}</span>
