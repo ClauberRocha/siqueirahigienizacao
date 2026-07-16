@@ -349,7 +349,7 @@ function Index() {
           </div>
           <div className="grid md:grid-cols-3 gap-5 mt-14">
             {siteConfig.steps.map((s, i) => (
-              <div className="reveal card p-8" key={i}>
+              <div className="reveal card p-8 transition-transform duration-300 ease-out hover:-translate-y-2 hover:shadow-2xl" key={i}>
                 <div className="display grad text-5xl">{s.number}</div>
                 <h3 className="text-2xl font-bold mt-3">{s.title}</h3>
                 <p className="text-[color:var(--muted)] mt-2 leading-relaxed">{s.text}</p>
