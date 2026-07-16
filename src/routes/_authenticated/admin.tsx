@@ -117,7 +117,7 @@ function AdminPage() {
   });
 
   const statusMut = useMutation({
-    mutationFn: (v: { id: string; status: "confirmed" | "in_progress" | "done" | "cancelled" }) =>
+    mutationFn: (v: { id: string; status: "pending" | "confirmed" | "in_progress" | "done" | "cancelled" }) =>
       setStatus({ data: v }),
     onSuccess: () => {
       toast.success("Status atualizado");
