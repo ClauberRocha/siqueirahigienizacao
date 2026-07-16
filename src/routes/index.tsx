@@ -6,6 +6,7 @@ import logoAsset from "@/assets/logo-siqueira.png.asset.json";
 import { siteConfig, whatsappLink } from "@/lib/site-config";
 import { track } from "@/lib/analytics";
 import { ContactForm } from "@/components/ContactForm";
+import { BeforeAfterSlider } from "@/components/BeforeAfterSlider";
 
 const CSS = `
 
@@ -402,16 +403,14 @@ function Index() {
           </div>
           <div className="grid md:grid-cols-3 gap-5 mt-14">
             {siteConfig.gallery.map((g, i) => (
-              <div className="reveal ba hover-lift" key={i}>
-                <img src={g.before} alt={`Antes — ${g.label}`} loading="lazy" />
-                <img className="after" src={g.after} alt={`Depois — ${g.label}`} loading="lazy" />
-                <div className="divider" />
-                <span className="tag tl">ANTES</span>
-                <span className="tag tr">DEPOIS</span>
-                <span className="label">{g.label}</span>
+              <div className="reveal" key={i}>
+                <BeforeAfterSlider before={g.before} after={g.after} label={g.label} />
               </div>
             ))}
           </div>
+          <p className="text-center text-sm text-[color:var(--muted)] mt-6">
+            👆 Arraste a barra para revelar a transformação
+          </p>
         </section>
 
         {/* AVALIAÇÕES */}
