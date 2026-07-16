@@ -527,7 +527,7 @@ function Index() {
           <div className="border-t border-[color:var(--line)]">
             <div className="container py-5 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-[color:var(--muted)]">
               <div>© {new Date().getFullYear()} {siteConfig.brandName}. Todos os direitos reservados.</div>
-              <div>Feito com 💧 em {siteConfig.city}/{siteConfig.state}</div>
+              
             </div>
           </div>
         </footer>
