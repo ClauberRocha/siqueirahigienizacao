@@ -46,14 +46,22 @@ export const listAppointments = createServerFn({ method: "GET" })
         "id, scheduled_date, time_slot, customer_name, customer_cpf, customer_phone, customer_address, service, status, created_at",
       )
       .order("scheduled_date", { ascending: false })
-      .limit(500);
+      .limit(1000);
     if (error) throw new Error(error.message);
     return data ?? [];
   });
 
+const statusEnum = z.enum([
+  "pending",
+  "confirmed",
+  "in_progress",
+  "done",
+  "cancelled",
+]);
+
 const statusSchema = z.object({
   id: z.string().uuid(),
-  status: z.enum(["pending", "confirmed", "in_progress", "done", "cancelled"]),
+  status: statusEnum,
 });
 
 export const updateAppointmentStatus = createServerFn({ method: "POST" })
@@ -64,6 +72,36 @@ export const updateAppointmentStatus = createServerFn({ method: "POST" })
       .from("appointments")
       .update({ status: data.status })
       .eq("id", data.id);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+// Validação de telefone consistente com o formulário público.
+const phoneSchema = z
+  .string()
+  .transform((v) => v.replace(/\D/g, ""))
+  .refine((v) => v.length === 10 || v.length === 11, {
+    message: "Telefone deve ter 10 ou 11 dígitos",
+  });
+
+const updateSchema = z.object({
+  id: z.string().uuid(),
+  customer_name: z.string().trim().min(3, "Nome muito curto").max(120),
+  customer_phone: phoneSchema,
+  customer_address: z.string().trim().min(5, "Endereço muito curto").max(300),
+  service: z.string().trim().min(3, "Descreva o serviço").max(1000),
+  status: statusEnum,
+});
+
+export const updateAppointment = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: unknown) => updateSchema.parse(data))
+  .handler(async ({ data, context }) => {
+    const { id, ...patch } = data;
+    const { error } = await context.supabase
+      .from("appointments")
+      .update(patch)
+      .eq("id", id);
     if (error) throw new Error(error.message);
     return { ok: true };
   });
