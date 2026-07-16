@@ -18,26 +18,26 @@ type FormState = {
   nome: string;
   whatsapp: string;
   servico: string;
+  bairro: string;
   mensagem: string;
 };
 
 type Errors = Partial<Record<keyof FormState, string>>;
 
-const emptyForm: FormState = { nome: "", whatsapp: "", servico: "", mensagem: "" };
+const emptyForm: FormState = { nome: "", whatsapp: "", servico: "", bairro: "", mensagem: "" };
 
 function validate(v: FormState): Errors {
   const e: Errors = {};
   if (v.nome.trim().length < 2) e.nome = "Informe seu nome completo";
   if (v.nome.trim().length > 100) e.nome = "Nome muito longo";
 
-  // whatsapp: aceita 10 ou 11 dígitos (só números)
   const onlyDigits = v.whatsapp.replace(/\D/g, "");
   if (onlyDigits.length < 10 || onlyDigits.length > 11) {
     e.whatsapp = "Informe um WhatsApp válido com DDD";
   }
 
   if (!v.servico) e.servico = "Selecione o tipo de serviço";
-  if (v.mensagem.trim().length < 5) e.mensagem = "Descreva rapidamente o que precisa";
+  if (v.bairro.trim().length < 2) e.bairro = "Informe seu bairro";
   if (v.mensagem.trim().length > 1000) e.mensagem = "Mensagem muito longa";
   return e;
 }
@@ -54,6 +54,7 @@ export function ContactForm() {
   const [values, setValues] = useState<FormState>(emptyForm);
   const [errors, setErrors] = useState<Errors>({});
   const [submitting, setSubmitting] = useState(false);
+  const [photoName, setPhotoName] = useState<string>("");
 
   const setField = <K extends keyof FormState>(k: K, v: FormState[K]) => {
     setValues((prev) => ({ ...prev, [k]: v }));
@@ -72,28 +73,35 @@ export function ContactForm() {
     setSubmitting(true);
 
     const digits = values.whatsapp.replace(/\D/g, "");
+    const extra = values.mensagem.trim() ? `\n\n💬 ${values.mensagem.trim()}` : "";
+    const photoLine = photoName ? `\n\n📎 Vou enviar a foto do estofado em seguida.` : "";
     const message =
-      `*Novo contato — ${siteConfig.brandName}*\n\n` +
-      `👤 *Nome:* ${values.nome.trim()}\n` +
-      `📱 *WhatsApp:* ${formatWhatsappDisplay(digits)}\n` +
-      `🧽 *Serviço:* ${values.servico}\n\n` +
-      `💬 *Mensagem:*\n${values.mensagem.trim()}`;
+      `Olá! Meu nome é ${values.nome.trim()}. ` +
+      `Gostaria de um orçamento para ${values.servico}. ` +
+      `Meu bairro é ${values.bairro.trim()}.` +
+      `\n\n📱 ${formatWhatsappDisplay(digits)}` +
+      extra +
+      photoLine;
 
     const url = `https://wa.me/${siteConfig.whatsappNumber}?text=${encodeURIComponent(message)}`;
 
     track("contact_form_submit", {
       servico: values.servico,
+      bairro: values.bairro,
+      has_photo: Boolean(photoName),
       source: "contact_section",
     });
 
-    // Abre WhatsApp em nova aba, sem navegar o iframe do preview
     window.open(url, "_blank", "noopener,noreferrer");
 
     toast.success("Mensagem pronta pra enviar!", {
-      description: "Abrimos o WhatsApp com seus dados. É só apertar enviar.",
+      description: photoName
+        ? "Abrimos o WhatsApp com seus dados. Anexe a foto direto no chat."
+        : "Abrimos o WhatsApp com seus dados. É só apertar enviar.",
     });
 
     setValues(emptyForm);
+    setPhotoName("");
     setSubmitting(false);
   };
 
@@ -137,40 +145,87 @@ export function ContactForm() {
         {errors.whatsapp && <p className="text-xs text-red-500 mt-1">{errors.whatsapp}</p>}
       </div>
 
-      <div>
-        <label htmlFor="cf-servico" className="block text-sm font-medium mb-1.5">
-          Tipo de serviço *
-        </label>
-        <select
-          id="cf-servico"
-          className={fieldCls("servico")}
-          value={values.servico}
-          onChange={(e) => setField("servico", e.target.value)}
-        >
-          <option value="">Selecione...</option>
-          {SERVICOS.map((s) => (
-            <option key={s} value={s}>
-              {s}
-            </option>
-          ))}
-        </select>
-        {errors.servico && <p className="text-xs text-red-500 mt-1">{errors.servico}</p>}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label htmlFor="cf-servico" className="block text-sm font-medium mb-1.5">
+            Tipo de serviço *
+          </label>
+          <select
+            id="cf-servico"
+            className={fieldCls("servico")}
+            value={values.servico}
+            onChange={(e) => setField("servico", e.target.value)}
+          >
+            <option value="">Selecione...</option>
+            {SERVICOS.map((s) => (
+              <option key={s} value={s}>
+                {s}
+              </option>
+            ))}
+          </select>
+          {errors.servico && <p className="text-xs text-red-500 mt-1">{errors.servico}</p>}
+        </div>
+
+        <div>
+          <label htmlFor="cf-bairro" className="block text-sm font-medium mb-1.5">
+            Bairro *
+          </label>
+          <input
+            id="cf-bairro"
+            type="text"
+            maxLength={80}
+            className={fieldCls("bairro")}
+            value={values.bairro}
+            onChange={(e) => setField("bairro", e.target.value)}
+            placeholder="Ex.: Cohama"
+          />
+          {errors.bairro && <p className="text-xs text-red-500 mt-1">{errors.bairro}</p>}
+        </div>
       </div>
 
       <div>
         <label htmlFor="cf-mensagem" className="block text-sm font-medium mb-1.5">
-          Mensagem *
+          Detalhes (opcional)
         </label>
         <textarea
           id="cf-mensagem"
-          rows={4}
+          rows={3}
           maxLength={1000}
           className={fieldCls("mensagem")}
           value={values.mensagem}
           onChange={(e) => setField("mensagem", e.target.value)}
-          placeholder="Descreva a peça, quantidade e endereço (bairro)"
+          placeholder="Quantidade, tipo de tecido, manchas específicas…"
         />
         {errors.mensagem && <p className="text-xs text-red-500 mt-1">{errors.mensagem}</p>}
+      </div>
+
+      <div>
+        <label htmlFor="cf-foto" className="block text-sm font-medium mb-1.5">
+          Anexar foto do estofado (opcional)
+        </label>
+        <label
+          htmlFor="cf-foto"
+          className="field flex items-center justify-between gap-3 cursor-pointer hover:border-[color:var(--cyan)] transition-colors"
+        >
+          <span className="text-sm text-[color:var(--muted)] truncate">
+            {photoName || "📷 Escolher foto (acelera muito o orçamento)"}
+          </span>
+          <span className="text-xs font-semibold text-[color:var(--cyan2)] shrink-0">
+            {photoName ? "Trocar" : "Selecionar"}
+          </span>
+        </label>
+        <input
+          id="cf-foto"
+          type="file"
+          accept="image/*"
+          className="sr-only"
+          onChange={(e) => setPhotoName(e.target.files?.[0]?.name ?? "")}
+        />
+        {photoName && (
+          <p className="text-xs text-[color:var(--muted)] mt-1">
+            A foto será enviada direto no chat do WhatsApp após abrir.
+          </p>
+        )}
       </div>
 
       <button
@@ -178,11 +233,11 @@ export function ContactForm() {
         disabled={submitting}
         className="btn btn-wa w-full text-base disabled:opacity-60"
       >
-        {submitting ? "Enviando..." : "Enviar via WhatsApp →"}
+        {submitting ? "Abrindo WhatsApp..." : "Enviar via WhatsApp →"}
       </button>
 
       <p className="text-xs text-[color:var(--muted)] text-center">
-        Ao enviar, seus dados abrem o WhatsApp da {siteConfig.brandName} com a mensagem preenchida.
+        ⚠️ Últimas 3 vagas da semana · orçamento grátis válido por 48h
       </p>
     </form>
   );
