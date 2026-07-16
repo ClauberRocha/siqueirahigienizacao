@@ -21,8 +21,8 @@ const CSS = `
     --white:#FFFFFF;
   }
   *{box-sizing:border-box}html{scroll-behavior:smooth}
-  body{margin:0;background:var(--bg);color:var(--ink);font-family:"Sora",sans-serif;overflow-x:hidden}
-  .display{font-family:"Space Grotesk",sans-serif;font-weight:700;line-height:1.02;letter-spacing:-.02em}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:"Inter",system-ui,sans-serif;overflow-x:hidden;line-height:1.6}
+  .display{font-family:"Poppins",sans-serif;font-weight:800;line-height:1.05;letter-spacing:-.02em}
   .container{max-width:1180px;margin:0 auto;padding-left:26px;padding-right:26px}
   .cine{position:fixed;inset:0;z-index:0;overflow:hidden;background:var(--bg);transform:translateZ(0)}
   .cine .l{position:absolute;inset:-25%;filter:blur(72px);opacity:.55;will-change:transform}
