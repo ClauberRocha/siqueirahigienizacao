@@ -35,12 +35,13 @@ const CSS = `
   .cyantext{color:var(--cyan2)}
   .grad{background:linear-gradient(100deg,var(--cyan),var(--cyan2));-webkit-background-clip:text;background-clip:text;color:transparent}
   .kicker{display:inline-flex;align-items:center;gap:9px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--cyan2);border:1px solid rgba(14,116,144,.28);background:var(--cyan-soft);padding:8px 15px;border-radius:999px}
-  .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;font-weight:700;border-radius:13px;padding:16px 28px;text-decoration:none;transition:transform .25s,box-shadow .25s;font-size:15px;cursor:pointer;border:0}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;font-weight:700;border-radius:13px;padding:16px 28px;text-decoration:none;transition:transform .25s,box-shadow .25s;font-size:15px;cursor:pointer;border:0;min-height:48px}
   .btn-wa{background:linear-gradient(135deg,#25D366,#128C7E);color:#fff;box-shadow:0 16px 40px rgba(37,211,102,.3)}
   .btn-wa:hover{transform:translateY(-2px)}
   .btn-cyan{background:linear-gradient(180deg,var(--cyan),var(--cyan2));color:#fff;box-shadow:0 16px 40px rgba(6,182,212,.35)}
   .btn-cyan:hover{transform:translateY(-2px)}
   .btn-ghost{border:1px solid rgba(15,23,42,.18);color:var(--ink);background:transparent}.btn-ghost:hover{background:rgba(15,23,42,.04)}
+  @media (max-width:640px){.btn{width:100%;padding:15px 22px;font-size:15px}}
   .reveal{opacity:1}.reveal.in{animation:rin .7s cubic-bezier(.16,1,.3,1) both}@keyframes rin{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
   .card{background:var(--white);border:1px solid var(--line);border-radius:18px;box-shadow:0 10px 34px rgba(14,116,144,.06)}
   .hover-lift{transition:transform .3s ease-out,box-shadow .3s ease-out;will-change:transform}
