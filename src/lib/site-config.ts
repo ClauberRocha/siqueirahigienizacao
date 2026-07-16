@@ -8,6 +8,7 @@ import baColchaoAntes from "@/assets/ba-colchao-antes.jpg";
 import baColchaoDepois from "@/assets/ba-colchao-depois.jpg";
 import baBancoAntes from "@/assets/ba-banco-antes.jpg";
 import baBancoDepois from "@/assets/ba-banco-depois.jpg";
+import serviceBancosAutomotivos from "@/assets/service-bancos-automotivos.jpg";
 
 export const siteConfig = {
   // Marca
@@ -107,8 +108,7 @@ export const siteConfig = {
     {
       title: "Bancos automotivos",
       icon: "💺",
-      image:
-        "https://images.unsplash.com/photo-1552642986-ccb41e7059e7?w=800&q=80",
+      image: serviceBancosAutomotivos,
       text: "Higienização completa dos bancos em tecido ou couro, incluindo cintos e apoios.",
       benefits: ["Aparência de novo", "Sem cheiro", "Ideal antes de vender"],
     },
