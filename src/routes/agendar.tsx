@@ -96,6 +96,7 @@ function AgendarPage() {
       const msg =
         `*Novo agendamento — ${siteConfig.brandName}*\n\n` +
         `📅 Data: ${dateLabel}\n` +
+        `⏰ Horário: ${siteConfig.businessHours} (atendimento de dia inteiro, ~8h)\n` +
         `👤 Nome: ${name}\n` +
         `🪪 CPF: ${cpf}\n` +
         `📍 Endereço: ${address}\n` +
