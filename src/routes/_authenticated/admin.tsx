@@ -38,11 +38,41 @@ export const Route = createFileRoute("/_authenticated/admin")({
 });
 
 const STATUS_LABELS: Record<string, string> = {
+  pending: "Pendente",
   confirmed: "Confirmado",
   in_progress: "Em andamento",
   done: "Concluído",
   cancelled: "Cancelado",
 };
+
+const SLOT_LABEL: Record<string, string> = {
+  morning: "Manhã (08–12h)",
+  afternoon: "Tarde (13–18h)",
+};
+
+function digitsOnly(s: string) {
+  return (s ?? "").replace(/\D/g, "");
+}
+
+function csvEscape(v: unknown): string {
+  const s = v == null ? "" : String(v);
+  if (/[",\n;]/.test(s)) return `"${s.replace(/"/g, '""')}"`;
+  return s;
+}
+
+function downloadCsv(filename: string, rows: string[][]) {
+  const csv = rows.map((r) => r.map(csvEscape).join(",")).join("\n");
+  // BOM p/ Excel abrir com acentos corretos
+  const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
 
 function AdminPage() {
   const qc = useQueryClient();
