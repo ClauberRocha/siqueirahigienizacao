@@ -43,7 +43,7 @@ export const listAppointments = createServerFn({ method: "GET" })
     const { data, error } = await context.supabase
       .from("appointments")
       .select(
-        "id, scheduled_date, customer_name, customer_cpf, customer_address, service, status, created_at",
+        "id, scheduled_date, time_slot, customer_name, customer_cpf, customer_phone, customer_address, service, status, created_at",
       )
       .order("scheduled_date", { ascending: false })
       .limit(500);
