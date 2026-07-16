@@ -83,16 +83,35 @@ function AgendarPage() {
       });
     },
     onSuccess: (res) => {
+      const dateLabel = format(
+        new Date(res.scheduled_date + "T00:00:00"),
+        "PPPP",
+        { locale: ptBR },
+      );
       toast.success("Agendamento confirmado!", {
-        description: `Sua visita está marcada para ${format(new Date(res.scheduled_date + "T00:00:00"), "PPPP", { locale: ptBR })}.`,
+        description: `Sua visita está marcada para ${dateLabel}. Abrindo o WhatsApp para enviar os dados ao responsável…`,
       });
       qc.invalidateQueries({ queryKey: ["booked-dates"] });
+
+      const msg =
+        `*Novo agendamento — ${siteConfig.brandName}*\n\n` +
+        `📅 Data: ${dateLabel}\n` +
+        `👤 Nome: ${name}\n` +
+        `🪪 CPF: ${cpf}\n` +
+        `📍 Endereço: ${address}\n` +
+        `🧼 Serviço: ${service || "Não informado"}`;
+      const waUrl = `https://wa.me/${siteConfig.whatsappNumber}?text=${encodeURIComponent(msg)}`;
+
       setName("");
       setCpf("");
       setAddress("");
       setService("");
       setDate(undefined);
       router.invalidate();
+
+      if (typeof window !== "undefined") {
+        window.open(waUrl, "_blank", "noopener,noreferrer");
+      }
     },
     onError: (err: Error) => {
       toast.error("Não foi possível agendar", { description: err.message });
