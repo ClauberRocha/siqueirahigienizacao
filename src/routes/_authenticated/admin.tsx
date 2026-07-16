@@ -317,7 +317,7 @@ function AdminPage() {
                       </tr>
                     </thead>
                     <tbody>
-                      {apps.map((a) => (
+                      {filtered.map((a) => (
                         <tr key={a.id} className="border-b last:border-b-0 align-top">
                           <td className="py-2 pr-3 whitespace-nowrap">
                             {format(new Date(a.scheduled_date + "T00:00:00"), "dd/MM/yyyy", {
