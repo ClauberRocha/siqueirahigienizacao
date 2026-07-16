@@ -20,30 +20,36 @@ export type Database = {
           customer_address: string
           customer_cpf: string
           customer_name: string
+          customer_phone: string
           id: string
           scheduled_date: string
           service: string | null
           status: string
+          time_slot: string
         }
         Insert: {
           created_at?: string
           customer_address: string
           customer_cpf: string
           customer_name: string
+          customer_phone?: string
           id?: string
           scheduled_date: string
           service?: string | null
           status?: string
+          time_slot?: string
         }
         Update: {
           created_at?: string
           customer_address?: string
           customer_cpf?: string
           customer_name?: string
+          customer_phone?: string
           id?: string
           scheduled_date?: string
           service?: string | null
           status?: string
+          time_slot?: string
         }
         Relationships: []
       }
