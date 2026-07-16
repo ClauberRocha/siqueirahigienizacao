@@ -356,7 +356,7 @@ function Index() {
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mt-14">
             {siteConfig.services.map((s, i) => (
               <div className="reveal card service-card flex flex-col hover-lift" key={i}>
-                <img src={s.image} alt={s.title} className="thumb" loading="lazy" />
+                <img src={s.image} alt={s.alt ?? `Higienização de ${s.title}`} className="thumb" loading="lazy" />
                 <div className="p-6 flex flex-col flex-1">
                   <div className="flex items-center gap-2">
                     <span className="text-2xl">{s.icon}</span>

@@ -101,8 +101,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       meta: [
         { charSet: "utf-8" },
         { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
-        { title: siteConfig.title },
-        { name: "description", content: siteConfig.description },
+        { property: "og:site_name", content: siteConfig.brandName },
+        { property: "og:type", content: "website" },
       ],
       links: [
         { rel: "stylesheet", href: appCss },
