@@ -245,7 +245,7 @@ function Index() {
           </div>
           <div className="grid md:grid-cols-3 gap-5 mt-14">
             {siteConfig.painPoints.map((p, i) => (
-              <div className="reveal card p-8 transition-transform duration-300 ease-out hover:-translate-y-2 hover:shadow-2xl" key={i}>
+              <div className="reveal card p-8 hover-lift" key={i}>
                 <div className="text-3xl mb-3">{p.icon}</div>
                 <h3 className="text-xl font-bold">{p.title}</h3>
                 <p className="text-[color:var(--muted)] mt-3 leading-relaxed">{p.text}</p>
@@ -272,14 +272,14 @@ function Index() {
               { icon: "🐜", title: "Pulgas, percevejos e traças", text: "Estofados sem manutenção viram abrigo para insetos que picam, contaminam e se espalham para camas, tapetes e roupas de cama." },
               { icon: "⚠️", title: "Desgaste precoce", text: "Sujeira acumulada corrói fibras e espuma, mancha permanentemente o tecido e reduz pela metade a vida útil do seu estofado." },
             ].map((p, i) => (
-              <div className="reveal card p-8 transition-transform duration-300 ease-out hover:-translate-y-2 hover:shadow-2xl" key={i}>
+              <div className="reveal card p-8 hover-lift" key={i}>
                 <div className="text-3xl mb-3">{p.icon}</div>
                 <h3 className="text-xl font-bold">{p.title}</h3>
                 <p className="text-[color:var(--muted)] mt-3 leading-relaxed text-sm">{p.text}</p>
               </div>
             ))}
           </div>
-          <div className="reveal card mt-10 p-8 md:p-10 flex flex-col md:flex-row items-start md:items-center gap-6 justify-between">
+          <div className="reveal card hover-lift mt-10 p-8 md:p-10 flex flex-col md:flex-row items-start md:items-center gap-6 justify-between">
             <div>
               <h3 className="display text-2xl md:text-3xl">Proteja quem você ama.</h3>
               <p className="text-[color:var(--muted)] mt-2 leading-relaxed">Recomendamos higienização profissional a cada 6 meses — ou a cada 3 meses em casas com crianças, pets ou alérgicos.</p>
@@ -299,7 +299,7 @@ function Index() {
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mt-14">
             {siteConfig.services.map((s, i) => (
-              <div className="reveal card service-card flex flex-col transition-transform duration-300 ease-out hover:-translate-y-2 hover:shadow-2xl" key={i}>
+              <div className="reveal card service-card flex flex-col hover-lift" key={i}>
                 <img src={s.image} alt={s.title} className="thumb" loading="lazy" />
                 <div className="p-6 flex flex-col flex-1">
                   <div className="flex items-center gap-2">
@@ -369,7 +369,7 @@ function Index() {
           </div>
           <div className="grid md:grid-cols-3 gap-5 mt-14">
             {siteConfig.steps.map((s, i) => (
-              <div className="reveal card p-8 transition-transform duration-300 ease-out hover:-translate-y-2 hover:shadow-2xl" key={i}>
+              <div className="reveal card p-8 hover-lift" key={i}>
                 <div className="display grad text-5xl">{s.number}</div>
                 <h3 className="text-2xl font-bold mt-3">{s.title}</h3>
                 <p className="text-[color:var(--muted)] mt-2 leading-relaxed">{s.text}</p>
@@ -386,7 +386,7 @@ function Index() {
           </div>
           <div className="grid md:grid-cols-3 gap-5 mt-14">
             {siteConfig.gallery.map((g, i) => (
-              <div className="reveal ba transition-transform duration-300 ease-out hover:-translate-y-2 hover:shadow-2xl" key={i}>
+              <div className="reveal ba hover-lift" key={i}>
                 <img src={g.before} alt={`Antes — ${g.label}`} loading="lazy" />
                 <img className="after" src={g.after} alt={`Depois — ${g.label}`} loading="lazy" />
                 <div className="divider" />
@@ -406,7 +406,7 @@ function Index() {
           </div>
           <div className="grid md:grid-cols-3 gap-5 mt-14">
             {siteConfig.testimonials.map((t, i) => (
-              <div className="reveal card p-7 transition-transform duration-300 ease-out hover:-translate-y-2 hover:shadow-2xl" key={i}>
+              <div className="reveal card p-7 hover-lift" key={i}>
                 <div className="cyantext text-sm mb-3">★★★★★</div>
                 <p className="leading-relaxed">“{t.text}”</p>
                 <div className="flex items-center gap-3 mt-6">
@@ -443,7 +443,7 @@ function Index() {
                 <li className="flex gap-3"><span className="cyantext">📍</span> {siteConfig.city}/{siteConfig.state} · {siteConfig.businessHours}</li>
               </ul>
             </div>
-            <div className="reveal card p-7 md:p-9">
+            <div className="reveal card hover-lift p-7 md:p-9">
               <ContactForm />
             </div>
           </div>
