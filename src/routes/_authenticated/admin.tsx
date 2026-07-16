@@ -153,6 +153,57 @@ function AdminPage() {
 
   const apps = appointmentsQ.data ?? [];
 
+  const [search, setSearch] = useState("");
+  const [slotFilter, setSlotFilter] = useState<string>("all");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+
+  const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    const qDigits = digitsOnly(search);
+    return apps.filter((a) => {
+      if (slotFilter !== "all" && a.time_slot !== slotFilter) return false;
+      if (statusFilter !== "all" && a.status !== statusFilter) return false;
+      if (!q) return true;
+      const nameMatch = (a.customer_name ?? "").toLowerCase().includes(q);
+      const cpfMatch = qDigits.length > 0 && digitsOnly(a.customer_cpf).includes(qDigits);
+      const phoneMatch =
+        qDigits.length > 0 && digitsOnly(a.customer_phone ?? "").includes(qDigits);
+      return nameMatch || cpfMatch || phoneMatch;
+    });
+  }, [apps, search, slotFilter, statusFilter]);
+
+  const exportCsv = () => {
+    if (filtered.length === 0) {
+      toast.error("Nada para exportar", { description: "Ajuste os filtros e tente novamente." });
+      return;
+    }
+    const header = [
+      "Data",
+      "Turno",
+      "Cliente",
+      "Telefone",
+      "CPF",
+      "Endereço",
+      "Serviço",
+      "Status",
+      "Criado em",
+    ];
+    const rows = filtered.map((a) => [
+      format(new Date(a.scheduled_date + "T00:00:00"), "dd/MM/yyyy", { locale: ptBR }),
+      SLOT_LABEL[a.time_slot] ?? a.time_slot,
+      a.customer_name ?? "",
+      a.customer_phone ?? "",
+      a.customer_cpf ?? "",
+      a.customer_address ?? "",
+      a.service ?? "",
+      STATUS_LABELS[a.status] ?? a.status,
+      a.created_at ? format(new Date(a.created_at), "dd/MM/yyyy HH:mm", { locale: ptBR }) : "",
+    ]);
+    const stamp = format(new Date(), "yyyy-MM-dd_HHmm");
+    downloadCsv(`agendamentos_${stamp}.csv`, [header, ...rows]);
+    toast.success(`Exportadas ${filtered.length} linhas em CSV.`);
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <header className="border-b border-border/60">
