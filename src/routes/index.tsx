@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect } from "react";
 import heroImage from "@/assets/hero-higienizacao-sofa.jpg";
+import heroImageWebp from "@/assets/hero-higienizacao-sofa.webp";
 import logoAsset from "@/assets/logo-siqueira.png.asset.json";
 import { siteConfig, whatsappLink } from "@/lib/site-config";
 import { track } from "@/lib/analytics";
@@ -205,13 +206,18 @@ function Index() {
             </div>
           </div>
           <div className="reveal frame">
-            <img
-              src={heroImage}
-              alt="Técnico higienizando sofá de tecido cinza com equipamento de extração"
-              className="w-full h-[540px] object-cover"
-              width={1200}
-              height={1408}
-            />
+            <picture>
+              <source srcSet={heroImageWebp} type="image/webp" />
+              <img
+                src={heroImage}
+                alt="Técnico higienizando sofá de tecido cinza com equipamento de extração"
+                className="w-full h-[540px] object-cover"
+                width={900}
+                height={1117}
+                fetchPriority="high"
+                decoding="async"
+              />
+            </picture>
           </div>
         </header>
 
