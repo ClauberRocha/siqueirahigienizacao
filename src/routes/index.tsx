@@ -60,6 +60,12 @@ const CSS = `
   details.faq[open] .pl{transform:rotate(45deg)} .pl{transition:.3s;color:var(--cyan);font-size:24px;font-weight:700}
   .field{width:100%;background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px;color:var(--ink);outline:none;font-size:15px}.field:focus{border-color:var(--cyan)}
   .wa{position:fixed;right:20px;bottom:20px;z-index:45;display:flex;align-items:center;gap:10px;padding:13px 18px 13px 14px;border-radius:999px;background:linear-gradient(135deg,#25D366,#128C7E);color:#fff;font-weight:700;font-size:14px;text-decoration:none;box-shadow:0 16px 40px rgba(37,211,102,.45)}
+  .wa-float{position:fixed;right:20px;bottom:20px;z-index:45;display:flex;align-items:center;gap:10px}
+  .wa-float .wa{position:static}
+  .wa-bubble{background:#fff;color:var(--ink);font-size:13px;font-weight:600;padding:10px 14px;border-radius:14px;box-shadow:0 10px 30px rgba(11,60,90,.15);border:1px solid var(--line);position:relative;animation:waBub 3s ease-in-out infinite}
+  .wa-bubble::after{content:"";position:absolute;right:-6px;top:50%;transform:translateY(-50%) rotate(45deg);width:12px;height:12px;background:#fff;border-right:1px solid var(--line);border-top:1px solid var(--line)}
+  @keyframes waBub{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+  @media (max-width:640px){.wa-bubble{display:none}}
   .ba{position:relative;border-radius:16px;overflow:hidden;aspect-ratio:4/3;background:#000}
   .ba img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
   .ba .after{clip-path:inset(0 0 0 50%)}
