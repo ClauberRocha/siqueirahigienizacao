@@ -477,7 +477,7 @@ function Index() {
 
         {/* CONTATO + FORMULÁRIO */}
         <section id="contato" className="container py-24">
-          <div className="grid lg:grid-cols-[1.1fr_.9fr] gap-10 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_.9fr] gap-10 items-start">
             <div className="reveal">
               <div className="kicker mb-6">Fale com a gente</div>
               <h2 className="display text-5xl md:text-6xl">
