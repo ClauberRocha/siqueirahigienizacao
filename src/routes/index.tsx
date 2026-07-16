@@ -252,7 +252,7 @@ function Index() {
               { icon: "🐜", title: "Pulgas, percevejos e traças", text: "Estofados sem manutenção viram abrigo para insetos que picam, contaminam e se espalham para camas, tapetes e roupas de cama." },
               { icon: "⚠️", title: "Desgaste precoce", text: "Sujeira acumulada corrói fibras e espuma, mancha permanentemente o tecido e reduz pela metade a vida útil do seu estofado." },
             ].map((p, i) => (
-              <div className="reveal card p-8" key={i}>
+              <div className="reveal card p-8 transition-transform duration-300 ease-out hover:-translate-y-2 hover:shadow-2xl" key={i}>
                 <div className="text-3xl mb-3">{p.icon}</div>
                 <h3 className="text-xl font-bold">{p.title}</h3>
                 <p className="text-[color:var(--muted)] mt-3 leading-relaxed text-sm">{p.text}</p>
