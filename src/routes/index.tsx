@@ -191,6 +191,10 @@ function Index() {
               <a href={whatsappLink} onClick={() => track("whatsapp_click", { location: "hero", cta: "orcamento" })} className="btn btn-wa" target="_blank" rel="noopener noreferrer">{siteConfig.hero.ctaPrimary}</a>
               <a href="/agendar" onClick={() => track("agendar_click", { location: "hero" })} className="btn btn-cyan">Agendar online →</a>
             </div>
+            <div className="reveal mt-5 flex flex-wrap gap-2 text-xs font-semibold">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-orange-50 text-orange-700 border border-orange-200">⚠️ Agenda da semana com apenas 3 vagas disponíveis</span>
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">✅ Orçamento grátis válido por 48h</span>
+            </div>
             <div className="reveal flex items-center gap-4 mt-10">
               <div className="flex -space-x-3">
                 <img src="https://i.pravatar.cc/80?img=12" className="w-10 h-10 rounded-full border-2 object-cover" style={{ borderColor: "var(--bg)" }} alt="" />
