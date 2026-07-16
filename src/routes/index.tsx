@@ -6,6 +6,7 @@ import logoAsset from "@/assets/logo-siqueira.png.asset.json";
 import { siteConfig, whatsappLink } from "@/lib/site-config";
 import { track } from "@/lib/analytics";
 import { ContactForm } from "@/components/ContactForm";
+import { BeforeAfterSlider } from "@/components/BeforeAfterSlider";
 
 const CSS = `
 
