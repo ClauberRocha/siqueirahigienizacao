@@ -225,7 +225,7 @@ function Index() {
           </div>
           <div className="grid md:grid-cols-3 gap-5 mt-14">
             {siteConfig.painPoints.map((p, i) => (
-              <div className="reveal card p-8" key={i}>
+              <div className="reveal card p-8 transition-transform duration-300 ease-out hover:-translate-y-2 hover:shadow-2xl" key={i}>
                 <div className="text-3xl mb-3">{p.icon}</div>
                 <h3 className="text-xl font-bold">{p.title}</h3>
                 <p className="text-[color:var(--muted)] mt-3 leading-relaxed">{p.text}</p>
