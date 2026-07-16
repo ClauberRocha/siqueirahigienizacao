@@ -168,7 +168,7 @@ function Index() {
             </p>
             <div className="reveal flex flex-col sm:flex-row gap-4 mt-10">
               <a href={whatsappLink} onClick={() => track("whatsapp_click", { location: "hero", cta: "orcamento" })} className="btn btn-wa" target="_blank" rel="noopener noreferrer">{siteConfig.hero.ctaPrimary}</a>
-              <a href={waAgendar} onClick={() => track("whatsapp_click", { location: "hero", cta: "agendar" })} className="btn btn-cyan" target="_blank" rel="noopener noreferrer">{siteConfig.hero.ctaSecondary}</a>
+              <a href="/agendar" onClick={() => track("agendar_click", { location: "hero" })} className="btn btn-cyan">Agendar online →</a>
             </div>
             <div className="reveal flex items-center gap-4 mt-10">
               <div className="flex -space-x-3">
