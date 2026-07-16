@@ -66,6 +66,11 @@ function maskPhone(v: string) {
     .replace(/(\d{5})(\d{1,4})$/, "$1-$2");
 }
 
+function isPhoneValid(v: string): boolean {
+  const d = v.replace(/\D/g, "");
+  return d.length === 10 || d.length === 11;
+}
+
 type Confirmation = {
   id: string;
   dateLabel: string;
