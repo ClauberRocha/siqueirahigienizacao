@@ -389,7 +389,14 @@ function BookingForm(props: {
                 <Label htmlFor="phone">Telefone / WhatsApp</Label>
                 <Input id="phone" required inputMode="tel" value={phone}
                   onChange={(e) => setPhone(maskPhone(e.target.value))}
-                  placeholder="(98) 98866-0241" maxLength={16} />
+                  onBlur={() => {/* trigger revalidation on blur */}}
+                  placeholder="(98) 98866-0241" maxLength={16}
+                  aria-invalid={phone.length > 0 && !isPhoneValid(phone)} />
+                {phone.length > 0 && !isPhoneValid(phone) && (
+                  <p className="mt-1 text-xs text-destructive">
+                    Formato inválido. Use DDD + número (10 ou 11 dígitos). Ex.: (98) 98866-0241.
+                  </p>
+                )}
               </div>
               <div className="sm:col-span-2">
                 <Label htmlFor="address">Endereço completo</Label>
