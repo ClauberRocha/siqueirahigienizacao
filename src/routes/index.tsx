@@ -67,7 +67,25 @@ const CSS = `@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400
   .ba .tag.tl{left:12px}
   .ba .tag.tr{right:12px}
   .ba .label{position:absolute;left:12px;bottom:12px;padding:6px 12px;border-radius:999px;font-size:12px;font-weight:600;background:rgba(255,255,255,.9);color:var(--ink)}
-  @media (prefers-reduced-motion:reduce){.l1,.l2{animation:none}.reveal.in{animation:none}}
+  .pain-grid{gap:1.25rem}
+  .pain-grid > .reveal{opacity:0}
+  .pain-grid > .reveal.in{animation:painIn .7s cubic-bezier(.16,1,.3,1) both}
+  @keyframes painIn{from{opacity:0;transform:translateY(28px) scale(.98)}to{opacity:1;transform:none}}
+  .pain-grid > .reveal.in:nth-child(1){animation-delay:.05s}
+  .pain-grid > .reveal.in:nth-child(2){animation-delay:.15s}
+  .pain-grid > .reveal.in:nth-child(3){animation-delay:.25s}
+  .pain-grid > .reveal.in:nth-child(4){animation-delay:.35s}
+  .pain-grid > .reveal.in:nth-child(5){animation-delay:.45s}
+  .pain-grid > .reveal.in:nth-child(6){animation-delay:.55s}
+  @media (max-width:640px){.pain-grid{gap:1rem}}
+  @media (prefers-reduced-motion:reduce){
+    .l1,.l2{animation:none}
+    .reveal.in,.pain-grid > .reveal.in{animation:none;opacity:1}
+    .hover-lift{transition:none}
+    .hover-lift:hover{transform:none;box-shadow:0 10px 34px rgba(14,116,144,.06)}
+    .btn-wa:hover,.btn-cyan:hover{transform:none}
+  }
+
 `;
 
 export const Route = createFileRoute("/")({
