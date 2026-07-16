@@ -43,12 +43,12 @@ export const siteConfig = {
 
   // Hero
   hero: {
-    kicker: "✨ Orçamento grátis · atendimento em domicílio",
-    title: "Higienização que",
-    titleHighlight: "devolve o novo",
+    kicker: "✨ Elimina 99% dos ácaros e bactérias",
+    title: "Seu estofado novo de novo,",
+    titleHighlight: "sem sair de casa",
     subtitle:
-      "Sofás, colchões, tapetes, cadeiras, poltronas e veículos em São Luís/MA. Produtos certificados, equipamentos profissionais e secagem rápida — sem manchas, ácaros ou mau cheiro.",
-    ctaPrimary: "Solicitar orçamento →",
+      "Atendimento em domicílio em São Luís/MA com equipamentos profissionais, secagem rápida e produtos 100% seguros para crianças e pets.",
+    ctaPrimary: "QUERO MEU ORÇAMENTO GRÁTIS NO WHATSAPP",
     ctaSecondary: "Agendar atendimento",
   },
 
