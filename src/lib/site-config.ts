@@ -8,6 +8,7 @@ import baColchaoAntes from "@/assets/ba-colchao-antes.jpg";
 import baColchaoDepois from "@/assets/ba-colchao-depois.jpg";
 import baBancoAntes from "@/assets/ba-banco-antes.jpg";
 import baBancoDepois from "@/assets/ba-banco-depois.jpg";
+import serviceBancosAutomotivos from "@/assets/service-bancos-automotivos.jpg";
 
 export const siteConfig = {
   // Marca
