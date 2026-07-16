@@ -41,8 +41,10 @@ const CSS = `@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400
   .btn-ghost{border:1px solid rgba(15,23,42,.18);color:var(--ink);background:transparent}.btn-ghost:hover{background:rgba(15,23,42,.04)}
   .reveal{opacity:1}.reveal.in{animation:rin .7s cubic-bezier(.16,1,.3,1) both}@keyframes rin{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
   .card{background:var(--white);border:1px solid var(--line);border-radius:18px;box-shadow:0 10px 34px rgba(14,116,144,.06)}
-  .service-card{overflow:hidden;transition:transform .3s,box-shadow .3s}
-  .service-card:hover{transform:translateY(-4px);box-shadow:0 20px 48px rgba(14,116,144,.14)}
+  .hover-lift{transition:transform .3s ease-out,box-shadow .3s ease-out;will-change:transform}
+  .hover-lift:hover{transform:translateY(-8px);box-shadow:0 22px 50px rgba(14,116,144,.16)}
+  @media (max-width:640px){.hover-lift:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(14,116,144,.12)}}
+  .service-card{overflow:hidden}
   .service-card .thumb{width:100%;height:180px;object-fit:cover;display:block}
   .frame{border-radius:22px;overflow:hidden;position:relative;box-shadow:0 40px 90px rgba(11,60,90,.2)}
   .navwrap{position:fixed;top:14px;left:0;right:0;z-index:40;transition:.3s}
