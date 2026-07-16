@@ -86,7 +86,7 @@ export const siteConfig = {
       title: "Sofás",
       icon: "🛋️",
       image:
-        "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?w=800&q=80",
+        "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?w=800&q=75&fm=webp",
       text: "Extração profunda de manchas, ácaros e odores. Tecido, suede, couro e couro sintético.",
       benefits: ["Remove manchas antigas", "Elimina ácaros e bactérias", "Secagem rápida"],
     },
@@ -94,7 +94,7 @@ export const siteConfig = {
       title: "Colchões",
       icon: "🛏️",
       image:
-        "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&q=80",
+        "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&q=75&fm=webp",
       text: "Casal, queen, king ou solteiro. Face única ou dupla, com opção de impermeabilização.",
       benefits: ["Alívio de alergia", "Sem cheiro de suor", "Sono mais saudável"],
     },
@@ -102,7 +102,7 @@ export const siteConfig = {
       title: "Tapetes",
       icon: "🧶",
       image:
-        "https://images.unsplash.com/photo-1600166898405-da9535204843?w=800&q=80",
+        "https://images.unsplash.com/photo-1600166898405-da9535204843?w=800&q=75&fm=webp",
       text: "Todos os tamanhos e materiais. Lavagem em domicílio ou no nosso espaço.",
       benefits: ["Cores restauradas", "Sem ácaros", "Fibras preservadas"],
     },
@@ -117,7 +117,7 @@ export const siteConfig = {
       title: "Veículos completos",
       icon: "🚗",
       image:
-        "https://images.unsplash.com/photo-1607860108855-64acf2078ed9?w=800&q=80",
+        "https://images.unsplash.com/photo-1607860108855-64acf2078ed9?w=800&q=75&fm=webp",
       text: "Higienização interna completa: bancos, teto, portas, painel, carpete e porta-malas.",
       benefits: ["Interior impecável", "Ar mais puro", "Valorização do veículo"],
     },
@@ -125,7 +125,7 @@ export const siteConfig = {
       title: "Cadeiras",
       icon: "🪑",
       image:
-        "https://images.unsplash.com/photo-1580480055273-228ff5388ef8?w=800&q=80",
+        "https://images.unsplash.com/photo-1580480055273-228ff5388ef8?w=800&q=75&fm=webp",
       text: "Cadeiras de escritório, jantar e gamer. Extração profunda em tecido, mesh e couro.",
       benefits: ["Sem manchas", "Sem odores", "Mais durabilidade"],
     },
@@ -133,7 +133,7 @@ export const siteConfig = {
       title: "Poltronas",
       icon: "🛋️",
       image:
-        "https://images.unsplash.com/photo-1567016432779-094069958ea5?w=800&q=80",
+        "https://images.unsplash.com/photo-1567016432779-094069958ea5?w=800&q=75&fm=webp",
       text: "Poltronas comuns, reclináveis e de amamentação — tratadas com cuidado peça a peça.",
       benefits: ["Tecido revitalizado", "Ambiente saudável", "Toque macio"],
     },
@@ -141,7 +141,7 @@ export const siteConfig = {
       title: "Outros serviços",
       icon: "✨",
       image:
-        "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=800&q=80",
+        "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=800&q=75&fm=webp",
       text: "Puffs, cortinas, cabeceiras, carrinhos de bebê e itens especiais — consulte pelo WhatsApp.",
       benefits: ["Orçamento sob medida", "Atendemos itens especiais", "Produtos certificados"],
     },
