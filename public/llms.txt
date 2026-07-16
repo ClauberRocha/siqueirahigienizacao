@@ -1,0 +1,15 @@
+# Siqueira Higienização
+
+> Higienização profissional de sofás, colchões, tapetes, cadeiras, poltronas e veículos em São Luís/MA. Atendimento em domicílio, orçamento grátis e secagem rápida.
+
+A Siqueira Higienização atende famílias, empresas e proprietários de veículos em São Luís e região com equipamentos profissionais de extração e produtos certificados, focada em resultado visível, ambiente saudável e atendimento pontual.
+
+## Pages
+
+- [Home](/): Apresenta os serviços de higienização, antes/depois, depoimentos, FAQ e botões para orçamento e agendamento.
+- [Agendar](/agendar): Página de agendamento online com calendário de datas disponíveis e formulário para confirmação imediata.
+
+## Optional
+
+- [WhatsApp](https://wa.me/5598988660241): Canal principal para orçamento e atendimento.
+- [Instagram](https://instagram.com/siqueira_higienizacao): Rede social da empresa.
