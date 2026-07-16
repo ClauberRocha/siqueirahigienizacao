@@ -68,6 +68,10 @@ const CSS = `
   .wa-bubble::after{content:"";position:absolute;right:-6px;top:50%;transform:translateY(-50%) rotate(45deg);width:12px;height:12px;background:#fff;border-right:1px solid var(--line);border-top:1px solid var(--line)}
   @keyframes waBub{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
   @media (max-width:640px){.wa-bubble{display:none}.wa-float{right:14px;bottom:14px}.wa{padding:12px 16px 12px 14px;font-size:13px}}
+  .totop{position:fixed;left:20px;bottom:22px;z-index:45;width:48px;height:48px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--cyan2);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;cursor:pointer;box-shadow:0 10px 30px rgba(11,60,90,.18);opacity:0;transform:translateY(12px);pointer-events:none;transition:opacity .3s,transform .3s,background .2s}
+  .totop.show{opacity:1;transform:translateY(0);pointer-events:auto}
+  .totop:hover{background:var(--cyan);color:#fff}
+  @media (max-width:640px){.totop{left:14px;bottom:16px;width:44px;height:44px;font-size:20px}}
   .ba{position:relative;border-radius:16px;overflow:hidden;aspect-ratio:4/3;background:#000}
   .ba img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
   .ba .after{clip-path:inset(0 0 0 50%)}
@@ -141,6 +145,8 @@ function Index() {
     const onScroll = () => {
       const n = document.getElementById("nav");
       if (n) n.classList.toggle("s", window.scrollY > 20);
+      const t = document.getElementById("totop");
+      if (t) t.classList.toggle("show", window.scrollY > 400);
     };
     document.addEventListener("click", forceExternalBlank);
     addEventListener("scroll", onScroll, { passive: true });
@@ -582,6 +588,20 @@ function Index() {
             WhatsApp
           </a>
         </div>
+
+        {/* Voltar ao topo */}
+        <button
+          id="totop"
+          type="button"
+          className="totop"
+          aria-label="Voltar ao topo"
+          onClick={() => {
+            track("back_to_top_click");
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }}
+        >
+          ↑
+        </button>
       </div>
     </>
   );
