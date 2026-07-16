@@ -279,7 +279,7 @@ function Index() {
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mt-14">
             {siteConfig.services.map((s, i) => (
-              <div className="reveal card service-card flex flex-col" key={i}>
+              <div className="reveal card service-card flex flex-col transition-transform duration-300 ease-out hover:-translate-y-2 hover:shadow-2xl" key={i}>
                 <img src={s.image} alt={s.title} className="thumb" loading="lazy" />
                 <div className="p-6 flex flex-col flex-1">
                   <div className="flex items-center gap-2">
@@ -366,7 +366,7 @@ function Index() {
           </div>
           <div className="grid md:grid-cols-3 gap-5 mt-14">
             {siteConfig.gallery.map((g, i) => (
-              <div className="reveal ba" key={i}>
+              <div className="reveal ba transition-transform duration-300 ease-out hover:-translate-y-2 hover:shadow-2xl" key={i}>
                 <img src={g.before} alt={`Antes — ${g.label}`} loading="lazy" />
                 <img className="after" src={g.after} alt={`Depois — ${g.label}`} loading="lazy" />
                 <div className="divider" />
@@ -386,7 +386,7 @@ function Index() {
           </div>
           <div className="grid md:grid-cols-3 gap-5 mt-14">
             {siteConfig.testimonials.map((t, i) => (
-              <div className="reveal card p-7" key={i}>
+              <div className="reveal card p-7 transition-transform duration-300 ease-out hover:-translate-y-2 hover:shadow-2xl" key={i}>
                 <div className="cyantext text-sm mb-3">★★★★★</div>
                 <p className="leading-relaxed">“{t.text}”</p>
                 <div className="flex items-center gap-3 mt-6">
