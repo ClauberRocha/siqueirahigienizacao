@@ -53,7 +53,7 @@ export const siteConfig = {
 
   // Estatísticas
   stats: {
-    atendimentos: "+2 mil",
+    atendimentos: "+200",
     nota: "4,9 ⭐",
     garantia: "Qualidade",
     atendimento: "Em domicílio",
