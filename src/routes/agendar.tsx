@@ -423,7 +423,7 @@ function BookingForm(props: {
 
             <Button
               type="submit"
-              disabled={!date || !slot || submitting}
+              disabled={!date || !slot || submitting || !isPhoneValid(phone)}
               className="w-full"
               size="lg"
             >
