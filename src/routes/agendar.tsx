@@ -8,11 +8,12 @@ import { toast } from "sonner";
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { siteConfig, whatsappLink } from "@/lib/site-config";
 import {
-  getBookedDates,
+  getBookedSlots,
   createAppointment,
 } from "@/lib/appointments.functions";
 import { getPublicSettings } from "@/lib/settings.functions";
@@ -38,6 +39,13 @@ export const Route = createFileRoute("/agendar")({
   component: AgendarPage,
 });
 
+type TimeSlot = "morning" | "afternoon";
+
+const SLOT_LABELS: Record<TimeSlot, string> = {
+  morning: "Manhã (08h – 12h)",
+  afternoon: "Tarde (13h – 18h)",
+};
+
 function maskCPF(v: string) {
   const d = v.replace(/\D/g, "").slice(0, 11);
   return d
@@ -46,11 +54,25 @@ function maskCPF(v: string) {
     .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
 }
 
+function maskPhone(v: string) {
+  const d = v.replace(/\D/g, "").slice(0, 11);
+  if (d.length <= 10) {
+    return d
+      .replace(/(\d{2})(\d)/, "($1) $2")
+      .replace(/(\d{4})(\d{1,4})$/, "$1-$2");
+  }
+  return d
+    .replace(/(\d{2})(\d)/, "($1) $2")
+    .replace(/(\d{5})(\d{1,4})$/, "$1-$2");
+}
+
 type Confirmation = {
   id: string;
   dateLabel: string;
+  slot: TimeSlot;
   name: string;
   cpf: string;
+  phone: string;
   address: string;
   service: string;
   ownerWhatsapp: string;
@@ -60,23 +82,24 @@ function buildWhatsappMessage(c: Confirmation) {
   return (
     `*Novo agendamento — ${siteConfig.brandName}*\n\n` +
     `📅 Data: ${c.dateLabel}\n` +
-    `⏰ Horário: ${siteConfig.businessHours} (atendimento de dia inteiro, ~8h)\n` +
+    `⏰ Horário: ${SLOT_LABELS[c.slot]}\n` +
     `👤 Nome: ${c.name}\n` +
     `🪪 CPF: ${c.cpf}\n` +
+    `📱 Telefone: ${c.phone}\n` +
     `📍 Endereço: ${c.address}\n` +
-    `🧼 Serviço: ${c.service || "Não informado"}`
+    `🧼 Serviço: ${c.service}`
   );
 }
 
 function AgendarPage() {
   const qc = useQueryClient();
   const router = useRouter();
-  const fetchBooked = useServerFn(getBookedDates);
+  const fetchBooked = useServerFn(getBookedSlots);
   const fetchSettings = useServerFn(getPublicSettings);
   const submitBooking = useServerFn(createAppointment);
 
   const { data: booked = [], isLoading } = useQuery({
-    queryKey: ["booked-dates"],
+    queryKey: ["booked-slots"],
     queryFn: () => fetchBooked(),
   });
   const { data: publicSettings } = useQuery({
@@ -84,7 +107,16 @@ function AgendarPage() {
     queryFn: () => fetchSettings(),
   });
 
-  const bookedSet = useMemo(() => new Set(booked), [booked]);
+  // Mapa de data -> set de slots ocupados.
+  const bookedMap = useMemo(() => {
+    const m = new Map<string, Set<TimeSlot>>();
+    for (const b of booked) {
+      const set = m.get(b.scheduled_date) ?? new Set<TimeSlot>();
+      set.add(b.time_slot as TimeSlot);
+      m.set(b.scheduled_date, set);
+    }
+    return m;
+  }, [booked]);
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -92,22 +124,30 @@ function AgendarPage() {
   maxDate.setDate(maxDate.getDate() + 60);
 
   const [date, setDate] = useState<Date | undefined>(undefined);
+  const [slot, setSlot] = useState<TimeSlot | "">("");
   const [name, setName] = useState("");
   const [cpf, setCpf] = useState("");
+  const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [service, setService] = useState("");
   const [confirmation, setConfirmation] = useState<Confirmation | null>(null);
 
+  const dateKey = date ? format(date, "yyyy-MM-dd") : "";
+  const takenSlots = dateKey ? bookedMap.get(dateKey) ?? new Set() : new Set();
+
   const mutation = useMutation({
     mutationFn: async () => {
       if (!date) throw new Error("Escolha uma data.");
+      if (!slot) throw new Error("Escolha um horário.");
       return submitBooking({
         data: {
           scheduled_date: format(date, "yyyy-MM-dd"),
+          time_slot: slot,
           customer_name: name,
           customer_cpf: cpf,
+          customer_phone: phone,
           customer_address: address,
-          service: service || null,
+          service: service,
         },
       });
     },
@@ -120,8 +160,10 @@ function AgendarPage() {
       const c: Confirmation = {
         id: res.id,
         dateLabel,
+        slot: res.time_slot as TimeSlot,
         name,
         cpf,
+        phone,
         address,
         service,
         ownerWhatsapp:
@@ -129,14 +171,16 @@ function AgendarPage() {
       };
       setConfirmation(c);
       toast.success("Agendamento confirmado!", {
-        description: `Sua visita está marcada para ${dateLabel}.`,
+        description: `${dateLabel} · ${SLOT_LABELS[c.slot]}`,
       });
-      qc.invalidateQueries({ queryKey: ["booked-dates"] });
+      qc.invalidateQueries({ queryKey: ["booked-slots"] });
       setName("");
       setCpf("");
+      setPhone("");
       setAddress("");
       setService("");
       setDate(undefined);
+      setSlot("");
       router.invalidate();
     },
     onError: (err: Error) => {
@@ -149,7 +193,9 @@ function AgendarPage() {
     if (d > maxDate) return true;
     if (d.getDay() === 0) return true;
     const key = format(d, "yyyy-MM-dd");
-    return bookedSet.has(key);
+    const s = bookedMap.get(key);
+    // Dia bloqueado apenas se os dois turnos estiverem ocupados.
+    return !!s && s.has("morning") && s.has("afternoon");
   };
 
   return (
@@ -180,14 +226,22 @@ function AgendarPage() {
           <BookingForm
             isLoading={isLoading}
             date={date}
-            setDate={setDate}
+            setDate={(d) => {
+              setDate(d);
+              setSlot("");
+            }}
             isDayDisabled={isDayDisabled}
             today={today}
             maxDate={maxDate}
+            slot={slot}
+            setSlot={setSlot}
+            takenSlots={takenSlots as Set<TimeSlot>}
             name={name}
             setName={setName}
             cpf={cpf}
             setCpf={setCpf}
+            phone={phone}
+            setPhone={setPhone}
             address={address}
             setAddress={setAddress}
             service={service}
@@ -208,10 +262,15 @@ function BookingForm(props: {
   isDayDisabled: (d: Date) => boolean;
   today: Date;
   maxDate: Date;
+  slot: TimeSlot | "";
+  setSlot: (s: TimeSlot) => void;
+  takenSlots: Set<TimeSlot>;
   name: string;
   setName: (v: string) => void;
   cpf: string;
   setCpf: (v: string) => void;
+  phone: string;
+  setPhone: (v: string) => void;
   address: string;
   setAddress: (v: string) => void;
   service: string;
@@ -221,7 +280,9 @@ function BookingForm(props: {
 }) {
   const {
     isLoading, date, setDate, isDayDisabled, today, maxDate,
-    name, setName, cpf, setCpf, address, setAddress, service, setService,
+    slot, setSlot, takenSlots,
+    name, setName, cpf, setCpf, phone, setPhone,
+    address, setAddress, service, setService,
     onSubmit, submitting,
   } = props;
   return (
@@ -234,9 +295,9 @@ function BookingForm(props: {
           Escolha uma data disponível
         </h1>
         <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-          Atendemos um serviço por dia (jornada de cerca de 8 horas), de segunda a
-          sábado. Selecione o melhor dia, preencha seus dados e receba a
-          confirmação automática.
+          Atendemos de segunda a sábado nos turnos manhã (08h–12h) e tarde
+          (13h–18h). Selecione o melhor dia e horário, preencha seus dados e
+          receba a confirmação automática.
         </p>
       </div>
 
@@ -276,6 +337,41 @@ function BookingForm(props: {
               </div>
             </div>
 
+            <div>
+              <Label className="mb-2 block">Horário</Label>
+              <div className="grid grid-cols-2 gap-2">
+                {(["morning", "afternoon"] as TimeSlot[]).map((s) => {
+                  const taken = takenSlots.has(s);
+                  const active = slot === s;
+                  return (
+                    <button
+                      key={s}
+                      type="button"
+                      disabled={!date || taken}
+                      onClick={() => setSlot(s)}
+                      className={
+                        "rounded-md border px-3 py-2 text-sm transition " +
+                        (active
+                          ? "border-primary bg-primary text-primary-foreground"
+                          : "border-input bg-background hover:bg-muted") +
+                        (!date || taken
+                          ? " cursor-not-allowed opacity-50 hover:bg-background"
+                          : "")
+                      }
+                    >
+                      {SLOT_LABELS[s]}
+                      {taken && <span className="ml-1 text-xs">(ocupado)</span>}
+                    </button>
+                  );
+                })}
+              </div>
+              {!date && (
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Selecione primeiro uma data para ver os horários.
+                </p>
+              )}
+            </div>
+
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="sm:col-span-2">
                 <Label htmlFor="name">Nome completo</Label>
@@ -290,10 +386,10 @@ function BookingForm(props: {
                   placeholder="000.000.000-00" maxLength={14} />
               </div>
               <div>
-                <Label htmlFor="service">Serviço (opcional)</Label>
-                <Input id="service" value={service}
-                  onChange={(e) => setService(e.target.value)}
-                  placeholder="Ex.: Sofá 3 lugares" maxLength={120} />
+                <Label htmlFor="phone">Telefone / WhatsApp</Label>
+                <Input id="phone" required inputMode="tel" value={phone}
+                  onChange={(e) => setPhone(maskPhone(e.target.value))}
+                  placeholder="(98) 98866-0241" maxLength={16} />
               </div>
               <div className="sm:col-span-2">
                 <Label htmlFor="address">Endereço completo</Label>
@@ -301,9 +397,24 @@ function BookingForm(props: {
                   value={address} onChange={(e) => setAddress(e.target.value)}
                   placeholder="Rua, número, bairro, cidade" />
               </div>
+              <div className="sm:col-span-2">
+                <Label htmlFor="service">Serviço</Label>
+                <Textarea id="service" required minLength={3} maxLength={1000}
+                  value={service} onChange={(e) => setService(e.target.value)}
+                  placeholder="Descreva o que precisa higienizar. Ex.: Sofá 3 lugares em tecido, 2 poltronas e tapete 2x3m."
+                  rows={5} className="resize-y" />
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Quanto mais detalhes, melhor preparamos o atendimento.
+                </p>
+              </div>
             </div>
 
-            <Button type="submit" disabled={!date || submitting} className="w-full" size="lg">
+            <Button
+              type="submit"
+              disabled={!date || !slot || submitting}
+              className="w-full"
+              size="lg"
+            >
               {submitting ? "Confirmando…" : "Confirmar agendamento"}
             </Button>
 
@@ -357,13 +468,12 @@ function ConfirmationPanel({
         <dl className="mt-3 space-y-2 text-sm">
           <Row label="Protocolo">{confirmation.id.slice(0, 8).toUpperCase()}</Row>
           <Row label="Data">{confirmation.dateLabel}</Row>
-          <Row label="Horário">
-            {siteConfig.businessHours} · atendimento de dia inteiro (~8h)
-          </Row>
+          <Row label="Horário">{SLOT_LABELS[confirmation.slot]}</Row>
           <Row label="Nome">{confirmation.name}</Row>
           <Row label="CPF">{confirmation.cpf}</Row>
+          <Row label="Telefone">{confirmation.phone}</Row>
           <Row label="Endereço">{confirmation.address}</Row>
-          <Row label="Serviço">{confirmation.service || "Não informado"}</Row>
+          <Row label="Serviço">{confirmation.service}</Row>
         </dl>
 
         <pre className="mt-5 max-h-64 overflow-auto rounded-md border bg-muted/40 p-3 text-xs whitespace-pre-wrap">
