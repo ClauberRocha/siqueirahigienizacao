@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect } from "react";
 import heroImage from "@/assets/hero-higienizacao-sofa.jpg";
+import heroImageWebp from "@/assets/hero-higienizacao-sofa.webp";
 import logoAsset from "@/assets/logo-siqueira.png.asset.json";
 import { siteConfig, whatsappLink } from "@/lib/site-config";
 import { track } from "@/lib/analytics";
