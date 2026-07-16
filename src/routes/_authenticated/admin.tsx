@@ -229,24 +229,77 @@ function AdminPage() {
 
           <TabsContent value="agenda" className="mt-4">
             <Card className="p-4">
-              <div className="mb-3 flex items-center justify-between">
+              <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
                 <div className="text-sm font-semibold">
-                  Histórico ({apps.length} {apps.length === 1 ? "solicitação" : "solicitações"})
+                  Histórico ({filtered.length} de {apps.length}
+                  {apps.length === 1 ? " solicitação" : " solicitações"})
                 </div>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => appointmentsQ.refetch()}
-                  disabled={appointmentsQ.isFetching}
-                >
-                  Atualizar
-                </Button>
+                <div className="flex gap-2">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => appointmentsQ.refetch()}
+                    disabled={appointmentsQ.isFetching}
+                  >
+                    Atualizar
+                  </Button>
+                  <Button size="sm" onClick={exportCsv} disabled={filtered.length === 0}>
+                    Exportar CSV
+                  </Button>
+                </div>
               </div>
+
+              <div className="mb-3 grid gap-2 sm:grid-cols-[1fr_auto_auto_auto]">
+                <Input
+                  placeholder="Buscar por nome, CPF ou telefone"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+                <Select value={slotFilter} onValueChange={setSlotFilter}>
+                  <SelectTrigger className="w-full sm:w-[180px]">
+                    <SelectValue placeholder="Turno" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Todos os turnos</SelectItem>
+                    <SelectItem value="morning">Manhã (08–12h)</SelectItem>
+                    <SelectItem value="afternoon">Tarde (13–18h)</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Select value={statusFilter} onValueChange={setStatusFilter}>
+                  <SelectTrigger className="w-full sm:w-[170px]">
+                    <SelectValue placeholder="Status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Todos os status</SelectItem>
+                    {Object.entries(STATUS_LABELS).map(([k, v]) => (
+                      <SelectItem key={k} value={k}>{v}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {(search || slotFilter !== "all" || statusFilter !== "all") && (
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => {
+                      setSearch("");
+                      setSlotFilter("all");
+                      setStatusFilter("all");
+                    }}
+                  >
+                    Limpar
+                  </Button>
+                )}
+              </div>
+
               {appointmentsQ.isLoading ? (
                 <div className="text-sm text-muted-foreground">Carregando…</div>
               ) : apps.length === 0 ? (
                 <div className="rounded-md border border-dashed p-6 text-center text-sm text-muted-foreground">
                   Nenhum agendamento registrado ainda.
+                </div>
+              ) : filtered.length === 0 ? (
+                <div className="rounded-md border border-dashed p-6 text-center text-sm text-muted-foreground">
+                  Nenhum resultado para os filtros aplicados.
                 </div>
               ) : (
                 <div className="overflow-x-auto">
