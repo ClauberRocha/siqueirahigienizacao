@@ -108,8 +108,7 @@ export const siteConfig = {
     {
       title: "Bancos automotivos",
       icon: "💺",
-      image:
-        "https://images.unsplash.com/photo-1552642986-ccb41e7059e7?w=800&q=80",
+      image: serviceBancosAutomotivos,
       text: "Higienização completa dos bancos em tecido ou couro, incluindo cintos e apoios.",
       benefits: ["Aparência de novo", "Sem cheiro", "Ideal antes de vender"],
     },
