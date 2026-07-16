@@ -156,7 +156,7 @@ export const siteConfig = {
     "Equipe treinada e uniformizada",
   ],
   aboutText:
-    "A Siqueira Higienização atende famílias, empresas, condomínios e proprietários de veículos em São Luís/MA. Trabalhamos com equipamentos profissionais de extração e produtos certificados, com foco em resultado visível, ambiente saudável e atendimento pontual — direto na sua casa, empresa ou garagem.",
+    "A Siqueira Higienização é especialista em limpeza profissional de estofados em São Luís/MA. Com equipamentos de alta performance e produtos biodegradáveis, devolvemos a cor, o conforto e a saúde ao seu sofá, colchão ou veículo. Atendimento em domicílio, secagem rápida e a garantia de mais de 200 clientes satisfeitos (nota 4,9 ⭐). Proteja sua família de ácaros e alergias com quem entende do assunto.",
 
   // Passo a passo
   steps: [
