@@ -624,7 +624,8 @@ function Index() {
                   href={siteConfig.instagramUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="btn btn-ghost !py-2.5 !px-4 !text-sm"
+                  className="inline-flex items-center justify-center rounded-lg font-semibold text-white !py-2.5 !px-4 !text-sm transition-transform hover:-translate-y-0.5"
+                  style={{ background: "linear-gradient(135deg,#F58529 0%,#DD2A7B 45%,#8134AF 80%,#515BD4 100%)", boxShadow: "0 8px 20px rgba(221,42,123,.35)" }}
                 >
                   Instagram
                 </a>
