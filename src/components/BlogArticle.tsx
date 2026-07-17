@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import type { BlogPost } from "@/lib/blog-data";
+import { blogPosts, type BlogPost } from "@/lib/blog-data";
 import { siteConfig, whatsappLink } from "@/lib/site-config";
 
 export function BlogArticle({ post }: { post: BlogPost }) {
