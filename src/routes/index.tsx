@@ -184,6 +184,20 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+  const [activeVideo, setActiveVideo] = useState<string | null>(null);
+
+  useEffect(() => {
+    document.body.style.overflow = activeVideo ? "hidden" : "";
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setActiveVideo(null);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [activeVideo]);
+
   useEffect(() => {
     const forceExternalBlank = (event: MouseEvent) => {
       const target = event.target instanceof Element
