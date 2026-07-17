@@ -373,10 +373,10 @@ function Index() {
                 { n: "+500", l: "avaliações positivas" },
                 { n: "Toda SL", l: "atendemos a Grande São Luís" },
               ].map((s, i) => (
-                <div key={i} className="p-5 md:p-6 rounded-2xl text-center backdrop-blur"
+                <div key={i} className="p-4 md:p-5 rounded-2xl text-center backdrop-blur flex flex-col items-center justify-center min-h-[7rem] md:min-h-[8.5rem]"
                      style={{ background: "rgba(255,255,255,.14)", border: "1px solid rgba(255,255,255,.28)" }}>
-                  <div className="display text-3xl md:text-5xl leading-none text-white drop-shadow-sm">{s.n}</div>
-                  <div className="text-white/90 text-xs md:text-sm mt-2 leading-snug font-medium">{s.l}</div>
+                  <div className="display text-2xl sm:text-3xl md:text-[2rem] lg:text-4xl leading-none text-white drop-shadow-sm break-words max-w-full">{s.n}</div>
+                  <div className="text-white/90 text-[11px] md:text-xs mt-2 leading-snug font-medium">{s.l}</div>
                 </div>
               ))}
             </div>
