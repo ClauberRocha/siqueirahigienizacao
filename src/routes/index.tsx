@@ -7,6 +7,15 @@ import { siteConfig, whatsappLink } from "@/lib/site-config";
 import { track } from "@/lib/analytics";
 import { ContactForm } from "@/components/ContactForm";
 import { BeforeAfterSlider } from "@/components/BeforeAfterSlider";
+import video1 from "@/assets/videos/trabalho-1.mp4.asset.json";
+import video2 from "@/assets/videos/trabalho-2.mp4.asset.json";
+import video3 from "@/assets/videos/trabalho-3.mp4.asset.json";
+import video4 from "@/assets/videos/trabalho-4.mp4.asset.json";
+import video5 from "@/assets/videos/trabalho-5.mp4.asset.json";
+import video6 from "@/assets/videos/trabalho-6.mp4.asset.json";
+import video7 from "@/assets/videos/trabalho-7.mp4.asset.json";
+
+const workVideos = [video1, video2, video3, video4, video5, video6, video7];
 
 const CSS = `
 
@@ -539,6 +548,32 @@ function Index() {
           <p className="text-center text-sm text-[color:var(--muted)] mt-6">
             👆 Arraste a barra para revelar a transformação
           </p>
+
+          {/* VÍDEOS DE TRABALHOS REAIS */}
+          <div className="mt-20">
+            <div className="reveal text-center max-w-2xl mx-auto mb-10">
+              <div className="kicker mb-4">Trabalhos reais</div>
+              <h3 className="display text-3xl md:text-4xl">Veja a higienização acontecendo.</h3>
+              <p className="text-[color:var(--muted)] mt-3 text-sm md:text-base">
+                Vídeos gravados em atendimentos reais em São Luís.
+              </p>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+              {workVideos.map((v, i) => (
+                <div key={i} className="reveal relative overflow-hidden rounded-2xl bg-black aspect-[9/16] border border-[color:var(--line)] shadow-sm hover:shadow-xl transition-shadow">
+                  <video
+                    src={v.url}
+                    className="w-full h-full object-cover"
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    preload="metadata"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
         </section>
 
         {/* AVALIAÇÕES */}
