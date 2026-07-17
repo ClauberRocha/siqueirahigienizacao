@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import type { BlogPost } from "@/lib/blog-data";
+import { blogPosts, type BlogPost } from "@/lib/blog-data";
 import { siteConfig, whatsappLink } from "@/lib/site-config";
 
 export function BlogArticle({ post }: { post: BlogPost }) {
@@ -143,6 +143,54 @@ export function BlogArticle({ post }: { post: BlogPost }) {
             </a>
           </div>
         </div>
+
+        {(() => {
+          const related = blogPosts.filter((p) => p.slug !== post.slug).slice(0, 3);
+          if (related.length === 0) return null;
+          return (
+            <section className="mt-12" aria-labelledby="related-posts">
+              <h2 id="related-posts" className="text-2xl font-bold tracking-tight">
+                Continue lendo
+              </h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Outros artigos que podem te ajudar
+              </p>
+              <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                {related.map((r) => (
+                  <Link
+                    key={r.slug}
+                    to="/blog/$slug"
+                    params={{ slug: r.slug }}
+                    className="group overflow-hidden rounded-2xl border border-border bg-card transition hover:border-primary/50 hover:shadow-lg"
+                  >
+                    <div className="aspect-[16/9] w-full overflow-hidden">
+                      <img
+                        src={r.cover}
+                        alt={r.title}
+                        loading="lazy"
+                        className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                      />
+                    </div>
+                    <div className="p-4">
+                      <span className="inline-block rounded-full bg-primary/10 px-2.5 py-0.5 text-[11px] font-medium text-primary">
+                        {r.category}
+                      </span>
+                      <h3 className="mt-2 line-clamp-2 text-base font-semibold leading-snug group-hover:text-primary">
+                        {r.h1}
+                      </h3>
+                      <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">
+                        {r.excerpt}
+                      </p>
+                      <span className="mt-3 inline-block text-xs font-medium text-primary">
+                        Ler artigo →
+                      </span>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </section>
+          );
+        })()}
 
         <div className="mt-8 text-center">
           <Link to="/blog" className="text-sm font-medium text-primary hover:underline">
