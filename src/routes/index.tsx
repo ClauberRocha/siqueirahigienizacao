@@ -366,32 +366,34 @@ function Index() {
           </div>
         </section>
 
-        {/* PERIGOS */}
+        {/* PERIGOS / ALERTA DE SAÚDE */}
         <section id="perigos" className="container py-24">
           <div className="reveal max-w-3xl">
-            <div className="kicker mb-6">Alerta de saúde</div>
-            <h2 className="display text-5xl md:text-6xl">Os perigos da falta de higienização de sofás e estofados.</h2>
+            <div className="kicker mb-6" style={{ color: "#B45309", background: "rgba(245,158,11,.12)", borderColor: "rgba(180,83,9,.35)" }}>
+              <span aria-hidden>⚠️</span> Alerta de saúde
+            </div>
+            <h2 className="display text-5xl md:text-6xl">O que mora no seu sofá e colchão sem você ver.</h2>
             <p className="text-[color:var(--muted)] text-lg mt-6 leading-relaxed">
-              Estofados acumulam suor, células mortas, poeira, restos de alimentos e umidade. Sem higienização periódica, viram o ambiente perfeito para micro-organismos que afetam diretamente a saúde da sua família.
+              Estofados acumulam suor, células mortas, poeira e umidade — o ambiente perfeito para micro-organismos que afetam a saúde da sua família todos os dias.
             </p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 mt-14">
             {[
-              { icon: "🦠", title: "Ácaros e alergias", text: "Um sofá pode abrigar milhões de ácaros, principal causa de rinite, asma, coceira nos olhos e crises alérgicas — sobretudo em crianças." },
-              { icon: "🫁", title: "Problemas respiratórios", text: "Poeira, fungos e esporos ficam presos no tecido e voltam ao ar a cada vez que alguém senta, agravando bronquite, sinusite e tosse crônica." },
-              { icon: "🍄", title: "Fungos e mofo", text: "Umidade de suor, bebidas e limpezas caseiras mal feitas criam mofo interno no estofado, com cheiro característico e risco de infecções de pele." },
-              { icon: "🐛", title: "Bactérias e maus odores", text: "E. coli, salmonela e outras bactérias se multiplicam em restos orgânicos invisíveis, causando aquele odor persistente que perfume nenhum resolve." },
-              { icon: "🐜", title: "Pulgas, percevejos e traças", text: "Estofados sem manutenção viram abrigo para insetos que picam, contaminam e se espalham para camas, tapetes e roupas de cama." },
-              { icon: "⚠️", title: "Desgaste precoce", text: "Sujeira acumulada corrói fibras e espuma, mancha permanentemente o tecido e reduz pela metade a vida útil do seu estofado." },
+              { icon: "🦠", title: "Seu colchão pode ter mais ácaros que a poeira do chão", text: "Milhões de ácaros vivem dentro da espuma — principal gatilho de rinite, asma e coceira nos olhos, sobretudo em crianças." },
+              { icon: "🤧", title: "Sofá sujo = rinite, asma e alergia sem fim em casa", text: "Poeira, pelos e esporos ficam presos no tecido e voltam ao ar a cada vez que alguém senta, alimentando crises respiratórias." },
+              { icon: "😴", title: "1/3 da sua vida em cima de bactérias invisíveis", text: "Suor e células mortas alimentam bactérias como E. coli e fungos que se multiplicam a poucos centímetros do seu rosto durante o sono." },
+              { icon: "🍄", title: "Cheiro de mofo no estofado? Fungos já estão no ar que você respira", text: "Umidade de bebidas, suor e limpezas caseiras mal feitas criam mofo interno — risco de infecções de pele e problemas respiratórios." },
+              { icon: "🧒", title: "Crianças e pets no sofá: contato direto com germes e resíduos", text: "Restos de comida, saliva e sujeira acumulados viram abrigo de pulgas, percevejos e bactérias que atingem quem tem menos defesa." },
             ].map((p, i) => (
               <div className="reveal card p-8 hover-lift" key={i}>
                 <div className="text-3xl mb-3">{p.icon}</div>
-                <h3 className="text-xl font-bold">{p.title}</h3>
+                <h3 className="text-lg font-bold leading-snug">{p.title}</h3>
                 <p className="text-[color:var(--muted)] mt-3 leading-relaxed text-sm">{p.text}</p>
               </div>
             ))}
           </div>
-          <div className="reveal card hover-lift mt-10 p-8 md:p-10 flex flex-col md:flex-row items-start md:items-center gap-6 justify-between">
+          <div className="reveal card hover-lift mt-10 p-8 md:p-10 flex flex-col md:flex-row items-start md:items-center gap-6 justify-between"
+               style={{ background: "linear-gradient(135deg,#FFFBEB 0%,#FFFFFF 100%)", borderColor: "rgba(245,158,11,.35)" }}>
             <div>
               <h3 className="display text-2xl md:text-3xl">Proteja quem você ama.</h3>
               <p className="text-[color:var(--muted)] mt-2 leading-relaxed">Recomendamos higienização profissional a cada 6 meses — ou a cada 3 meses em casas com crianças, pets ou alérgicos.</p>
@@ -399,6 +401,7 @@ function Index() {
             <a href={whatsappLink} onClick={() => track("whatsapp_click", { location: "perigos" })} className="btn btn-wa shrink-0" target="_blank" rel="noopener noreferrer">Agendar higienização</a>
           </div>
         </section>
+
 
         {/* SERVIÇOS */}
         <section id="servicos" className="container py-24">
