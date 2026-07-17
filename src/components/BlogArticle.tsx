@@ -104,9 +104,41 @@ function ShareButtons({
 export function BlogArticle({ post }: { post: BlogPost }) {
   const related = getRelatedPosts(post.slug, 3);
   const { prev, next } = getAdjacentPosts(post.slug);
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    const onScroll = () => {
+      const h = document.documentElement;
+      const scrollable = h.scrollHeight - h.clientHeight;
+      const pct = scrollable > 0 ? (h.scrollTop / scrollable) * 100 : 0;
+      setProgress(Math.min(100, Math.max(0, pct)));
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, [post.slug]);
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Reading progress bar */}
+      <div
+        role="progressbar"
+        aria-label="Progresso de leitura"
+        aria-valuenow={Math.round(progress)}
+        aria-valuemin={0}
+        aria-valuemax={100}
+        className="fixed inset-x-0 top-0 z-[60] h-1 bg-transparent"
+      >
+        <div
+          className="h-full bg-primary transition-[width] duration-100 ease-out"
+          style={{ width: `${progress}%` }}
+        />
+      </div>
+
       {/* Header */}
       <header className="sticky top-0 z-40 border-b border-border/60 bg-background/85 backdrop-blur">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
