@@ -612,6 +612,9 @@ function Index() {
               ))}
             </div>
           </div>
+        </section>
+
+
 
         {/* AVALIAÇÕES */}
         <section id="avaliacoes" className="container py-24">
