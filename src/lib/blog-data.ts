@@ -13,6 +13,7 @@ export interface BlogPost {
   category: string;
   cover: string;
   excerpt: string;
+  tags?: string[];
   /** Content blocks rendered in order. */
   blocks: Array<
     | { type: "p"; text: string }
