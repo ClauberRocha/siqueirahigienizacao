@@ -539,6 +539,32 @@ function Index() {
           <p className="text-center text-sm text-[color:var(--muted)] mt-6">
             👆 Arraste a barra para revelar a transformação
           </p>
+
+          {/* VÍDEOS DE TRABALHOS REAIS */}
+          <div className="mt-20">
+            <div className="reveal text-center max-w-2xl mx-auto mb-10">
+              <div className="kicker mb-4">Trabalhos reais</div>
+              <h3 className="display text-3xl md:text-4xl">Veja a higienização acontecendo.</h3>
+              <p className="text-[color:var(--muted)] mt-3 text-sm md:text-base">
+                Vídeos gravados em atendimentos reais em São Luís.
+              </p>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+              {workVideos.map((v, i) => (
+                <div key={i} className="reveal relative overflow-hidden rounded-2xl bg-black aspect-[9/16] border border-[color:var(--line)] shadow-sm hover:shadow-xl transition-shadow">
+                  <video
+                    src={v.url}
+                    className="w-full h-full object-cover"
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    preload="metadata"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
         </section>
 
         {/* AVALIAÇÕES */}
