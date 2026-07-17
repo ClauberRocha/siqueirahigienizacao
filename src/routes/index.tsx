@@ -563,18 +563,32 @@ function Index() {
             👆 Arraste a barra para revelar a transformação
           </p>
 
-          {/* VÍDEOS DE TRABALHOS REAIS */}
-          <div className="mt-20">
+        </section>
+
+        {/* VÍDEOS DE TRABALHOS REAIS — full width */}
+        <section className="py-20" style={{ background: "linear-gradient(180deg,#ECFEFF 0%,#FFFFFF 100%)" }}>
+          <div className="container">
             <div className="reveal text-center max-w-2xl mx-auto mb-10">
               <div className="kicker mb-4">Trabalhos reais</div>
-              <h3 className="display text-3xl md:text-4xl">Veja a higienização acontecendo.</h3>
+              <h3 className="display text-4xl md:text-5xl">Veja a higienização acontecendo.</h3>
               <p className="text-[color:var(--muted)] mt-3 text-sm md:text-base">
-                Vídeos gravados em atendimentos reais em São Luís.
+                Vídeos gravados em atendimentos reais em São Luís. Clique para ampliar.
               </p>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+          </div>
+          <div className="w-full px-3 md:px-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 gap-3 md:gap-4">
               {workVideos.map((v, i) => (
-                <div key={i} className="reveal relative overflow-hidden rounded-2xl bg-black aspect-[9/16] border border-[color:var(--line)] shadow-sm hover:shadow-xl transition-shadow">
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => {
+                    setActiveVideo(v.url);
+                    track("video_open", { location: "trabalhos_reais", index: i });
+                  }}
+                  className="reveal group relative overflow-hidden rounded-2xl bg-black aspect-[9/16] border border-[color:var(--line)] shadow-sm hover:shadow-2xl transition-all hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-[color:var(--cyan)]"
+                  aria-label={`Ampliar vídeo ${i + 1}`}
+                >
                   <video
                     src={v.url}
                     className="w-full h-full object-cover"
@@ -584,11 +598,20 @@ function Index() {
                     playsInline
                     preload="metadata"
                   />
-                </div>
+                  <span
+                    className="absolute inset-0 flex items-center justify-center bg-black/0 group-hover:bg-black/30 transition-colors"
+                    aria-hidden
+                  >
+                    <span className="opacity-0 group-hover:opacity-100 transition-opacity w-14 h-14 rounded-full bg-white/95 flex items-center justify-center shadow-xl">
+                      <svg viewBox="0 0 24 24" className="w-6 h-6 text-[color:var(--cyan2)] ml-0.5" fill="currentColor">
+                        <path d="M8 5v14l11-7z" />
+                      </svg>
+                    </span>
+                  </span>
+                </button>
               ))}
             </div>
           </div>
-        </section>
 
         {/* AVALIAÇÕES */}
         <section id="avaliacoes" className="container py-24">
