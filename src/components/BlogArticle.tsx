@@ -143,9 +143,10 @@ export function BlogArticle({ post }: { post: BlogPost }) {
       <header className="sticky top-0 z-40 border-b border-border/60 bg-background/85 backdrop-blur">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
           <Link to="/" className="flex items-center gap-2 text-sm font-semibold">
-            <span className="grid h-8 w-8 place-items-center rounded-lg bg-primary text-primary-foreground">
-              {siteConfig.logoLetter}
+            <span className="grid h-8 w-8 place-items-center overflow-hidden rounded-lg bg-primary">
+              <img src={siteConfig.logoUrl} alt={`Logo ${siteConfig.brandName}`} className="h-full w-full object-contain" />
             </span>
+
             <span className="hidden sm:inline">{siteConfig.brandName}</span>
           </Link>
           <div className="flex items-center gap-3 text-sm">
