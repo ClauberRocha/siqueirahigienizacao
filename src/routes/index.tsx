@@ -298,35 +298,6 @@ function Index() {
           </div>
         </header>
 
-        {/* STATS */}
-        <section className="border-y border-[color:var(--line)]" style={{ background: "#fff" }}>
-          <div className="container py-8 grid grid-cols-1 md:grid-cols-3 gap-6 text-center text-sm">
-            <div className="reveal">
-              <a
-                href={siteConfig.googleReviewsUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => track("google_reviews_click", { location: "stats" })}
-                className="inline-flex flex-col items-center hover:opacity-80 transition"
-                aria-label="Ver avaliações no Google"
-              >
-                <div className="display cyantext text-4xl">{siteConfig.stats.nota}</div>
-                <div className="text-[color:var(--muted)] mt-1 flex items-center gap-1.5">
-                  <span className="font-semibold">no Google</span>
-                  <span aria-hidden>↗</span>
-                </div>
-              </a>
-            </div>
-            <div className="reveal">
-              <div className="display cyantext text-4xl">{siteConfig.stats.garantia}</div>
-              <div className="text-[color:var(--muted)] mt-1">garantida no serviço</div>
-            </div>
-            <div className="reveal">
-              <div className="display cyantext text-4xl">{siteConfig.stats.atendimento}</div>
-              <div className="text-[color:var(--muted)] mt-1">atendimento em domicílio</div>
-            </div>
-          </div>
-        </section>
 
         {/* SELO DE GARANTIA */}
         <section className="container pt-10">
