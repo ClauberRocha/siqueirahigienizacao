@@ -13,6 +13,7 @@ export interface BlogPost {
   category: string;
   cover: string;
   excerpt: string;
+  tags?: string[];
   /** Content blocks rendered in order. */
   blocks: Array<
     | { type: "p"; text: string }
@@ -39,6 +40,7 @@ export const blogPosts: BlogPost[] = [
       "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?w=1200&q=75&fm=webp",
     excerpt:
       "Passo a passo prático para tirar manchas, cheiro e ácaros do sofá em casa — e quando vale a pena chamar um profissional.",
+    tags: ["sofá", "limpeza", "diy", "manchas", "ácaros"],
     blocks: [
       {
         type: "p",
@@ -132,6 +134,7 @@ export const blogPosts: BlogPost[] = [
       "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=1200&q=75&fm=webp",
     excerpt:
       "Você passa 1/3 da vida em cima do colchão. Higienizar profissionalmente melhora sono, alergia e prolonga o produto.",
+    tags: ["colchão", "ácaros", "alergia", "saúde", "sono"],
     blocks: [
       {
         type: "p",
@@ -217,6 +220,7 @@ export const blogPosts: BlogPost[] = [
       "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=75&fm=webp",
     excerpt:
       "Entenda o que influencia o preço de higienização e por que orçamento por foto no WhatsApp é sempre o mais justo.",
+    tags: ["preço", "orçamento", "sofá", "colchão", "carro"],
     blocks: [
       {
         type: "p",
@@ -301,6 +305,7 @@ export const blogPosts: BlogPost[] = [
       "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=1200&q=75&fm=webp",
     excerpt:
       "Lavagem molha e ensaboa. Higienização extrai ácaros, fungos e resíduos. Entenda quando cada técnica se aplica.",
+    tags: ["higienização", "lavagem", "sofá", "colchão", "educativo"],
     blocks: [
       {
         type: "p",
@@ -364,4 +369,67 @@ export const blogPosts: BlogPost[] = [
 
 export function getPostBySlug(slug: string): BlogPost | undefined {
   return blogPosts.find((p) => p.slug === slug);
+}
+
+/** Posts ordered chronologically (oldest → newest) for prev/next nav. */
+export function getOrderedPosts(): BlogPost[] {
+  return [...blogPosts].sort((a, b) => a.publishedAt.localeCompare(b.publishedAt));
+}
+
+export function getAdjacentPosts(slug: string): {
+  prev?: BlogPost;
+  next?: BlogPost;
+} {
+  const ordered = getOrderedPosts();
+  const i = ordered.findIndex((p) => p.slug === slug);
+  if (i === -1) return {};
+  return {
+    prev: i > 0 ? ordered[i - 1] : undefined,
+    next: i < ordered.length - 1 ? ordered[i + 1] : undefined,
+  };
+}
+
+/**
+ * Recomenda até `limit` posts por afinidade (categoria + tags em comum),
+ * evitando o artigo atual e reduzindo redundância entre as recomendações.
+ */
+export function getRelatedPosts(slug: string, limit = 3): BlogPost[] {
+  const current = getPostBySlug(slug);
+  if (!current) return [];
+  const currentTags = new Set((current.tags ?? []).map((t) => t.toLowerCase()));
+
+  const scored = blogPosts
+    .filter((p) => p.slug !== slug)
+    .map((p) => {
+      const tags = (p.tags ?? []).map((t) => t.toLowerCase());
+      const tagOverlap = tags.filter((t) => currentTags.has(t)).length;
+      const sameCategory = p.category === current.category ? 1 : 0;
+      // categoria pesa mais que tags individuais
+      const score = sameCategory * 3 + tagOverlap;
+      return { post: p, score, tags };
+    })
+    .sort((a, b) => b.score - a.score);
+
+  // Reduz redundância: evita recomendar dois posts que compartilhem exatamente
+  // a mesma categoria + conjunto de tags dominante.
+  const picked: typeof scored = [];
+  const usedCategories = new Map<string, number>();
+  for (const item of scored) {
+    const count = usedCategories.get(item.post.category) ?? 0;
+    // no máx. 1 post por categoria enquanto houver diversidade disponível
+    if (count >= 1 && picked.length < scored.length && picked.length < limit) {
+      continue;
+    }
+    picked.push(item);
+    usedCategories.set(item.post.category, count + 1);
+    if (picked.length >= limit) break;
+  }
+  // fallback: completa com os melhores restantes se não atingimos o limite
+  if (picked.length < limit) {
+    for (const item of scored) {
+      if (picked.length >= limit) break;
+      if (!picked.includes(item)) picked.push(item);
+    }
+  }
+  return picked.map((p) => p.post);
 }
