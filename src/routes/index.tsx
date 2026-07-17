@@ -300,11 +300,7 @@ function Index() {
 
         {/* STATS */}
         <section className="border-y border-[color:var(--line)]" style={{ background: "#fff" }}>
-          <div className="container py-8 grid grid-cols-2 md:grid-cols-4 gap-6 text-center text-sm">
-            <div className="reveal">
-              <div className="display cyantext text-4xl">{siteConfig.stats.atendimentos}</div>
-              <div className="text-[color:var(--muted)] mt-1">atendimentos realizados</div>
-            </div>
+          <div className="container py-8 grid grid-cols-1 md:grid-cols-3 gap-6 text-center text-sm">
             <div className="reveal">
               <a
                 href={siteConfig.googleReviewsUrl}
