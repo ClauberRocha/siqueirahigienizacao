@@ -9,11 +9,14 @@ import baColchaoDepois from "@/assets/ba-colchao-depois.jpg";
 import baBancoAntes from "@/assets/ba-banco-antes.jpg";
 import baBancoDepois from "@/assets/ba-banco-depois.jpg";
 import serviceBancosAutomotivos from "@/assets/service-bancos-automotivos.jpg";
+import logoSiqueira from "@/assets/logo-siqueira.png.asset.json";
 
 export const siteConfig = {
   // Marca
   brandName: "Siqueira Higienização",
   logoLetter: "S",
+  logoUrl: logoSiqueira.url,
+
 
   // Contato
   whatsappNumber: "5598988660241",
