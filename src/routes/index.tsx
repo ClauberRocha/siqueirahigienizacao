@@ -705,14 +705,6 @@ function Index() {
           </div>
         </footer>
 
-        {/* WhatsApp flutuante */}
-        <div className="wa-float">
-          <div className="wa-bubble">Olá! Precisa de um orçamento?</div>
-          <a href={whatsappLink} onClick={() => track("whatsapp_click", { location: "floating" })} className="wa" aria-label="Fale no WhatsApp" target="_blank" rel="noopener noreferrer">
-            <span className="ic" aria-hidden>💬</span>
-            WhatsApp
-          </a>
-        </div>
 
         {/* Voltar ao topo */}
         <button
