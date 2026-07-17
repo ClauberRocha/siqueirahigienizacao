@@ -759,6 +759,33 @@ function Index() {
         >
           ↑
         </button>
+
+        {activeVideo && (
+          <div
+            className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/90 backdrop-blur-sm p-4 animate-in fade-in duration-200"
+            onClick={() => setActiveVideo(null)}
+            role="dialog"
+            aria-modal="true"
+          >
+            <button
+              type="button"
+              onClick={() => setActiveVideo(null)}
+              aria-label="Fechar vídeo"
+              className="absolute top-4 right-4 md:top-6 md:right-6 w-11 h-11 rounded-full bg-white/95 hover:bg-white text-slate-900 flex items-center justify-center text-2xl font-bold shadow-xl transition"
+            >
+              ×
+            </button>
+            <video
+              key={activeVideo}
+              src={activeVideo}
+              className="max-w-full max-h-[90vh] w-auto h-auto rounded-2xl shadow-2xl"
+              controls
+              autoPlay
+              playsInline
+              onClick={(e) => e.stopPropagation()}
+            />
+          </div>
+        )}
       </div>
     </>
   );
