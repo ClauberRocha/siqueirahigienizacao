@@ -349,32 +349,68 @@ function Index() {
           </div>
         </section>
 
-        {/* CREDIBILIDADE / PROVA SOCIAL */}
-        <section className="container pt-10">
-          <div className="reveal card p-8 md:p-10" style={{ background: "linear-gradient(135deg,#FFFFFF 0%,#ECFEFF 100%)" }}>
-            <div className="text-center max-w-2xl mx-auto">
-              <div className="text-2xl tracking-widest" aria-label="5 estrelas">⭐⭐⭐⭐⭐</div>
-              <h2 className="display text-3xl md:text-4xl mt-3">Confiança que se comprova em números</h2>
-              <p className="text-[color:var(--muted)] mt-3 leading-relaxed">
-                Mais de 7 anos cuidando dos estofados das famílias de São Luís — com resultado, pontualidade e produtos seguros.
+        {/* PROVA SOCIAL GIGANTE */}
+        <section id="prova-social" className="container pt-16">
+          <div className="reveal card p-8 md:p-14 overflow-hidden relative"
+               style={{ background: "linear-gradient(135deg,#0E7490 0%,#06B6D4 60%,#22D3EE 100%)", borderColor: "transparent", color: "#fff" }}>
+            <div className="absolute inset-0 opacity-20 pointer-events-none"
+                 style={{ background: "radial-gradient(60% 60% at 20% 10%, rgba(255,255,255,.5), transparent 60%), radial-gradient(50% 50% at 90% 100%, rgba(255,255,255,.35), transparent 60%)" }} />
+            <div className="relative text-center max-w-3xl mx-auto">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold tracking-[.2em] uppercase"
+                   style={{ background: "rgba(255,255,255,.18)", border: "1px solid rgba(255,255,255,.35)" }}>
+                <span aria-hidden>💎</span> A referência em São Luís
+              </div>
+              <div className="text-3xl md:text-4xl tracking-widest mt-6" aria-label="5 estrelas">⭐⭐⭐⭐⭐</div>
+              <h2 className="display text-4xl md:text-6xl mt-4 leading-[1.05]">
+                Milhares de famílias já confiam na Siqueira.
+              </h2>
+              <p className="text-white/90 text-lg mt-5 leading-relaxed">
+                Números reais de quem trabalha há mais de 7 anos com higienização profissional em São Luís e região.
               </p>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-5 mt-10 text-center">
+
+            <div className="relative grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-5 mt-12">
               {[
-                { n: "+2.500", l: "higienizações realizadas" },
-                { n: "97%", l: "dos clientes voltam a contratar" },
-                { n: "5,0 ⭐", l: "nota no Google" },
-                { n: "+7 anos", l: "de experiência" },
-                { n: "Grande SL", l: "atendemos toda a região" },
+                { n: "+1.000", l: "clientes atendidos" },
+                { n: "+12.000", l: "estofados higienizados" },
+                { n: "98%", l: "de satisfação" },
+                { n: "+500", l: "avaliações positivas" },
+                { n: "Toda SL", l: "atendemos a Grande São Luís" },
               ].map((s, i) => (
-                <div key={i} className="p-4 rounded-2xl" style={{ background: "#fff", border: "1px solid var(--line)" }}>
-                  <div className="display cyantext text-2xl md:text-3xl leading-tight">{s.n}</div>
-                  <div className="text-[color:var(--muted)] text-sm mt-1.5 leading-snug">{s.l}</div>
+                <div key={i} className="p-5 md:p-6 rounded-2xl text-center backdrop-blur"
+                     style={{ background: "rgba(255,255,255,.14)", border: "1px solid rgba(255,255,255,.28)" }}>
+                  <div className="display text-3xl md:text-5xl leading-none text-white drop-shadow-sm">{s.n}</div>
+                  <div className="text-white/90 text-xs md:text-sm mt-2 leading-snug font-medium">{s.l}</div>
                 </div>
               ))}
             </div>
+
+            <div className="relative mt-12 flex flex-col items-center gap-4">
+              <p className="text-white/95 text-lg md:text-xl font-semibold text-center">
+                Veja o antes e depois de verdade no nosso Instagram 👇
+              </p>
+              <a
+                href={siteConfig.instagramUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => track("instagram_click", { location: "prova_social" })}
+                className="group inline-flex items-center gap-4 px-8 md:px-12 py-5 md:py-6 rounded-2xl font-extrabold text-lg md:text-2xl text-white shadow-2xl transition-transform hover:-translate-y-1"
+                style={{ background: "linear-gradient(135deg,#F58529 0%,#DD2A7B 45%,#8134AF 80%,#515BD4 100%)", boxShadow: "0 20px 50px rgba(221,42,123,.45)" }}
+                aria-label="Seguir Siqueira Higienização no Instagram"
+              >
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                  <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                </svg>
+                <span>Siga nosso Instagram</span>
+                <span className="transition-transform group-hover:translate-x-1" aria-hidden>→</span>
+              </a>
+              <div className="text-white/85 text-sm">@{siteConfig.instagram}</div>
+            </div>
           </div>
         </section>
+
 
         {/* DORES */}
         <section className="container py-24">
