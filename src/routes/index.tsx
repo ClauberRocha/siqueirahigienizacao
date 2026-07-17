@@ -7,6 +7,15 @@ import { siteConfig, whatsappLink } from "@/lib/site-config";
 import { track } from "@/lib/analytics";
 import { ContactForm } from "@/components/ContactForm";
 import { BeforeAfterSlider } from "@/components/BeforeAfterSlider";
+import video1 from "@/assets/videos/trabalho-1.mp4.asset.json";
+import video2 from "@/assets/videos/trabalho-2.mp4.asset.json";
+import video3 from "@/assets/videos/trabalho-3.mp4.asset.json";
+import video4 from "@/assets/videos/trabalho-4.mp4.asset.json";
+import video5 from "@/assets/videos/trabalho-5.mp4.asset.json";
+import video6 from "@/assets/videos/trabalho-6.mp4.asset.json";
+import video7 from "@/assets/videos/trabalho-7.mp4.asset.json";
+
+const workVideos = [video1, video2, video3, video4, video5, video6, video7];
 
 const CSS = `
 
