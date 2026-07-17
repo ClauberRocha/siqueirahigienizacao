@@ -349,6 +349,33 @@ function Index() {
           </div>
         </section>
 
+        {/* CREDIBILIDADE / PROVA SOCIAL */}
+        <section className="container pt-10">
+          <div className="reveal card p-8 md:p-10" style={{ background: "linear-gradient(135deg,#FFFFFF 0%,#ECFEFF 100%)" }}>
+            <div className="text-center max-w-2xl mx-auto">
+              <div className="text-2xl tracking-widest" aria-label="5 estrelas">⭐⭐⭐⭐⭐</div>
+              <h2 className="display text-3xl md:text-4xl mt-3">Confiança que se comprova em números</h2>
+              <p className="text-[color:var(--muted)] mt-3 leading-relaxed">
+                Mais de 7 anos cuidando dos estofados das famílias de São Luís — com resultado, pontualidade e produtos seguros.
+              </p>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-5 mt-10 text-center">
+              {[
+                { n: "+2.500", l: "higienizações realizadas" },
+                { n: "97%", l: "dos clientes voltam a contratar" },
+                { n: "5,0 ⭐", l: "nota no Google" },
+                { n: "+7 anos", l: "de experiência" },
+                { n: "Grande SL", l: "atendemos toda a região" },
+              ].map((s, i) => (
+                <div key={i} className="p-4 rounded-2xl" style={{ background: "#fff", border: "1px solid var(--line)" }}>
+                  <div className="display cyantext text-2xl md:text-3xl leading-tight">{s.n}</div>
+                  <div className="text-[color:var(--muted)] text-sm mt-1.5 leading-snug">{s.l}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* DORES */}
         <section className="container py-24">
           <div className="reveal max-w-2xl">
