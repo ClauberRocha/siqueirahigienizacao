@@ -9,7 +9,7 @@ import baColchaoDepois from "@/assets/ba-colchao-depois.jpg";
 import baBancoAntes from "@/assets/ba-banco-antes.jpg";
 import baBancoDepois from "@/assets/ba-banco-depois.jpg";
 import serviceBancosAutomotivos from "@/assets/service-bancos-automotivos.jpg";
-import logoSiqueira from "@/assets/logo-siqueira.png.asset.json";
+import logoSiqueira from "@/assets/logo-siqueira.png";
 
 export const siteConfig = {
   // Marca
