@@ -224,8 +224,6 @@ function Index() {
     const onScroll = () => {
       const n = document.getElementById("nav");
       if (n) n.classList.toggle("s", window.scrollY > 20);
-      const t = document.getElementById("totop");
-      if (t) t.classList.toggle("show", window.scrollY > 400);
     };
     document.addEventListener("click", forceExternalBlank);
     addEventListener("scroll", onScroll, { passive: true });
