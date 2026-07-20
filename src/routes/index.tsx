@@ -746,19 +746,6 @@ function Index() {
         </footer>
 
 
-        {/* Voltar ao topo */}
-        <button
-          id="totop"
-          type="button"
-          className="totop"
-          aria-label="Voltar ao topo"
-          onClick={() => {
-            track("back_to_top_click");
-            window.scrollTo({ top: 0, behavior: "smooth" });
-          }}
-        >
-          ↑
-        </button>
 
         {activeVideo && (
           <div
