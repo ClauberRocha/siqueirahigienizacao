@@ -251,7 +251,7 @@ function Index() {
         <nav className="navwrap" id="nav">
           <div className="container grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 sm:gap-4 h-[64px] px-4 sm:px-5">
             <a href="#topo" className="flex min-w-0 items-center gap-2.5 sm:gap-3">
-              <span className="mark shrink-0"><img src={logoAsset.url} alt={`Logo ${siteConfig.brandName}`} /></span>
+              <span className="mark shrink-0"><img src={logoAsset} alt={`Logo ${siteConfig.brandName}`} /></span>
               <span className="flex min-w-0 flex-col justify-center leading-none gap-1">
                 <span className="display text-[15px] sm:text-[17px] tracking-tight truncate">{siteConfig.brandName}</span>
                 <span className="text-[9px] sm:text-[10px] tracking-[0.08em] text-[color:var(--cyan2)] font-semibold uppercase truncate">Só não limpamos o nome</span>
@@ -685,7 +685,7 @@ function Index() {
           <div className="container py-16 grid md:grid-cols-4 gap-10">
             <div className="md:col-span-2">
               <div className="flex items-center gap-3">
-                <span className="mark"><img src={logoAsset.url} alt={`Logo ${siteConfig.brandName}`} /></span>
+                <span className="mark"><img src={logoAsset} alt={`Logo ${siteConfig.brandName}`} /></span>
                 <span className="display text-xl">{siteConfig.brandName}</span>
               </div>
               <p className="text-[color:var(--muted)] mt-4 max-w-sm leading-relaxed text-sm">
