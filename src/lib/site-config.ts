@@ -15,7 +15,7 @@ export const siteConfig = {
   // Marca
   brandName: "Siqueira Higienização",
   logoLetter: "S",
-  logoUrl: logoSiqueira.url,
+  logoUrl: logoSiqueira,
 
 
   // Contato
