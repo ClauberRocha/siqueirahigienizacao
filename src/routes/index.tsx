@@ -158,14 +158,30 @@ export const Route = createFileRoute("/")({
             },
             {
               "@type": "Service",
-              name: "Higienização de estofados",
-              serviceType: "Higienização de sofás, colchões, tapetes, cadeiras e bancos automotivos",
+              name: "Higienização de sofá em São Luís",
+              serviceType: "Higienização de sofá em domicílio",
               provider: { "@id": `${SITE_URL}/#business` },
-              areaServed: {
-                "@type": "City",
-                name: `${siteConfig.city}, ${siteConfig.state}`,
-              },
-              description: siteConfig.description,
+              areaServed: { "@type": "City", name: `${siteConfig.city}, ${siteConfig.state}` },
+              description:
+                "Higienização de sofá em São Luís/MA com extração profunda de manchas, ácaros e odores. Atendimento em domicílio na Grande São Luís.",
+            },
+            {
+              "@type": "Service",
+              name: "Lavagem de colchão em São Luís",
+              serviceType: "Lavagem e higienização de colchão",
+              provider: { "@id": `${SITE_URL}/#business` },
+              areaServed: { "@type": "City", name: `${siteConfig.city}, ${siteConfig.state}` },
+              description:
+                "Lavagem de colchão em São Luís/MA — casal, queen, king e solteiro. Elimina ácaros, suor e odores com secagem rápida.",
+            },
+            {
+              "@type": "Service",
+              name: "Limpeza de tapetes em São Luís",
+              serviceType: "Limpeza e higienização de tapetes",
+              provider: { "@id": `${SITE_URL}/#business` },
+              areaServed: { "@type": "City", name: `${siteConfig.city}, ${siteConfig.state}` },
+              description:
+                "Limpeza de tapetes em São Luís/MA para todos os tamanhos e materiais, em domicílio ou no nosso espaço.",
             },
             {
               "@type": "FAQPage",
