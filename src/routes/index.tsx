@@ -599,10 +599,10 @@ function Index() {
                     controls={false}
                   />
                   <span
-                    className="absolute inset-0 flex items-center justify-center bg-black/0 group-hover:bg-black/30 transition-colors"
+                    className="absolute inset-0 flex items-center justify-center bg-black/20 md:bg-black/0 md:group-hover:bg-black/30 transition-colors pointer-events-none"
                     aria-hidden
                   >
-                    <span className="opacity-0 group-hover:opacity-100 transition-opacity w-14 h-14 rounded-full bg-white/95 flex items-center justify-center shadow-xl">
+                    <span className="opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity w-14 h-14 rounded-full bg-white/95 flex items-center justify-center shadow-xl">
                       <svg viewBox="0 0 24 24" className="w-6 h-6 text-[color:var(--cyan2)] ml-0.5" fill="currentColor">
                         <path d="M8 5v14l11-7z" />
                       </svg>
