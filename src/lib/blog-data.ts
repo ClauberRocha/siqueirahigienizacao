@@ -122,6 +122,116 @@ export const blogPosts: BlogPost[] = [
     ],
   },
   {
+    slug: "como-limpar-sofa-de-tecido-em-casa",
+    title: "Como limpar sofá de tecido em casa: passo a passo seguro | Siqueira",
+    description:
+      "Guia completo para limpar sofá de tecido em casa sem danificar a fibra: materiais, receita caseira, passo a passo e quando chamar um profissional.",
+    h1: "Como limpar sofá de tecido em casa (sem estragar o estofado)",
+    readingTime: "7 min",
+    publishedAt: "2026-07-21",
+    category: "Sofá",
+    cover:
+      "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?w=1200&q=75&fm=webp",
+    excerpt:
+      "Tudo o que você precisa para limpar seu sofá de tecido em casa com segurança — receita caseira, técnica correta e os erros que danificam a fibra.",
+    tags: ["sofá de tecido", "limpeza de sofá", "diy", "manchas", "ácaros"],
+    blocks: [
+      {
+        type: "p",
+        text: "Sofá de tecido é um dos estofados mais comuns nas casas brasileiras — e também um dos que mais acumulam poeira, ácaros e manchas. A boa notícia é que dá para fazer uma limpeza caseira segura entre uma higienização profissional e outra. A má é que qualquer produto errado desbota, mancha ou compromete a espuma de vez.",
+      },
+      { type: "h2", text: "Antes de começar: identifique o tecido" },
+      {
+        type: "p",
+        text: "Vire uma almofada e procure a etiqueta com o código de limpeza. W = pode usar água; S = só produto seco; WS = ambos; X = só aspirar. Se não houver etiqueta, faça teste em área escondida antes de qualquer produto.",
+      },
+      { type: "h2", text: "Materiais para a limpeza caseira" },
+      {
+        type: "ul",
+        items: [
+          "Aspirador com bico fino e escova macia",
+          "2 panos brancos de microfibra",
+          "Balde com 1 L de água morna",
+          "1 colher de sopa de sabão neutro (ou shampoo infantil)",
+          "1 colher de sopa de vinagre branco",
+          "Bicarbonato de sódio",
+          "Escova de cerdas macias",
+        ],
+      },
+      { type: "h2", text: "Receita caseira que funciona (sem estragar)" },
+      {
+        type: "p",
+        text: "Misture 1 L de água morna + 1 colher de sabão neutro + 1 colher de vinagre branco. Bata levemente até formar espuma. Use só a espuma na limpeza — nunca a solução líquida direto no tecido.",
+      },
+      { type: "h2", text: "Passo a passo para limpar sofá de tecido em casa" },
+      {
+        type: "ol",
+        items: [
+          "Retire almofadas soltas e aspire todo o sofá, incluindo frestas, encostos, laterais e a parte de baixo.",
+          "Polvilhe bicarbonato por todo o tecido e deixe agir por 30 minutos para neutralizar odores. Aspire novamente.",
+          "Faça teste da receita em um canto escondido. Aguarde 10 minutos e veja se desbotou.",
+          "Com o pano de microfibra, aplique só a espuma em movimentos circulares suaves — sempre da borda para o centro da mancha.",
+          "Passe o segundo pano levemente úmido (só água) para retirar o sabão.",
+          "Deixe secar em local arejado, com ventilador ligado, por 4 a 8 horas antes de recolocar almofadas.",
+        ],
+      },
+      { type: "h2", text: "Erros comuns que danificam o sofá de tecido" },
+      {
+        type: "ul",
+        items: [
+          "Encharcar a espuma — gera mofo e cheiro azedo permanente",
+          "Esfregar com força — desfia a fibra e desbota a cor",
+          "Usar água sanitária, amoníaco ou multiuso — mancha na hora",
+          "Secar no sol direto — desbota o tecido em minutos",
+          "Passar ferro ou secador quente para acelerar a secagem",
+        ],
+      },
+      { type: "h2", text: "Quando a limpeza caseira NÃO resolve" },
+      {
+        type: "p",
+        text: "A limpeza doméstica é ótima para manutenção, mas não substitui a higienização profissional. Chame um especialista quando:",
+      },
+      {
+        type: "ul",
+        items: [
+          "As manchas são antigas, de gordura, sangue, urina ou vômito",
+          "Sente cheiro persistente mesmo após limpar",
+          "Alguém da casa tem rinite, asma ou alergia respiratória",
+          "O sofá tem pets deitando diariamente",
+          "Faz mais de 1 ano desde a última higienização profissional",
+        ],
+      },
+      {
+        type: "quote",
+        text: "A limpeza caseira remove a sujeira de superfície. A extração profissional retira ácaros, fungos e resíduos do fundo da espuma — onde o pano de casa nunca chega.",
+      },
+      { type: "h2", text: "Conclusão" },
+      {
+        type: "p",
+        text: "Limpar o sofá de tecido em casa uma vez por mês mantém o estofado bonito e prolonga a durabilidade. Para tirar ácaros, cheiro e manchas antigas, a higienização profissional é o caminho — e em São Luís/MA a Siqueira Higienização faz o serviço em domicílio, com equipamento de extração e produtos seguros para crianças e pets.",
+      },
+    ],
+    faq: [
+      {
+        q: "Posso limpar o sofá de tecido só com água e sabão?",
+        a: "Pode, desde que seja sabão neutro bem diluído e você use apenas a espuma. Água pura em excesso encharca a espuma e gera mofo.",
+      },
+      {
+        q: "Vinagre estraga o tecido do sofá?",
+        a: "Vinagre branco diluído é seguro para a maioria dos tecidos e ajuda a neutralizar odores. Evite em veludo, seda e couro.",
+      },
+      {
+        q: "Quanto tempo leva para o sofá secar depois da limpeza caseira?",
+        a: "Entre 4 e 8 horas com ventilação. Nunca use sol direto ou ar quente — desbota e resseca a fibra.",
+      },
+      {
+        q: "Vale mais a pena limpar em casa ou chamar um profissional?",
+        a: "A limpeza caseira serve para manutenção mensal. Para remover ácaros, manchas antigas e cheiro, o serviço profissional se paga em conforto e durabilidade do estofado.",
+      },
+    ],
+  },
+  {
+
     slug: "vale-a-pena-higienizar-colchao",
     title: "Vale a pena higienizar o colchão? Veja quando e por quê",
     description:
