@@ -589,12 +589,14 @@ function Index() {
                 >
                   <video
                     src={v.url}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover pointer-events-none"
                     autoPlay
                     muted
                     loop
                     playsInline
                     preload="metadata"
+                    disablePictureInPicture
+                    controls={false}
                   />
                   <span
                     className="absolute inset-0 flex items-center justify-center bg-black/0 group-hover:bg-black/30 transition-colors"
