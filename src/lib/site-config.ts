@@ -41,9 +41,10 @@ export const siteConfig = {
   plausibleDomain: "" as string,
 
   // SEO / Meta
-  title: "Higienização de Sofá em São Luís/MA | Lavagem de Colchão e Limpeza de Tapetes — Siqueira",
+  title: "Higienização de Sofá em São Luís/MA | Siqueira",
   description:
-    "Higienização de sofá em São Luís, lavagem de colchão e limpeza de tapetes com atendimento em domicílio na Grande São Luís/MA. Orçamento grátis no WhatsApp, secagem rápida e produtos seguros para crianças e pets.",
+    "Higienização de sofá, colchão e tapetes em São Luís/MA. Atendimento em domicílio, secagem rápida e produtos seguros. Orçamento grátis no WhatsApp!",
+
 
   // Hero
   hero: {
