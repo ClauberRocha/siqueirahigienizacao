@@ -359,8 +359,8 @@ function Index() {
 
             <div className="relative grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-5 mt-12">
               {[
-                { n: "+1.000", l: "clientes atendidos" },
-                { n: "+12.000", l: "estofados higienizados" },
+                { n: "+750", l: "clientes atendidos" },
+                { n: "+1.000", l: "estofados higienizados" },
                 { n: "98%", l: "de satisfação" },
                 { n: "+500", l: "avaliações positivas" },
                 { n: "Toda SL", l: "atendemos a Grande São Luís" },
