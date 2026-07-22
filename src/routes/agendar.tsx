@@ -175,11 +175,25 @@ function AgendarPage() {
 
   const mutation = useMutation({
     mutationFn: async () => {
-      if (!date) throw new Error("Escolha uma data.");
-      if (!slot) throw new Error("Escolha um horário.");
+      if (!date) throw new Error("Escolha uma data para o agendamento.");
+      const selectedKey = format(date, "yyyy-MM-dd");
+      const todayKey = format(new Date(), "yyyy-MM-dd");
+      if (selectedKey < todayKey) {
+        throw new Error("Não é possível agendar em datas passadas. Escolha uma data futura.");
+      }
+      if (!slot) throw new Error("Escolha um turno disponível (manhã ou tarde).");
+      if (selectedKey === todayKey) {
+        const h = new Date().getHours();
+        if (slot === "morning" && h >= 12) {
+          throw new Error("O turno da manhã já encerrou hoje. Escolha a tarde ou outra data.");
+        }
+        if (slot === "afternoon" && h >= 18) {
+          throw new Error("O turno da tarde já encerrou hoje. Escolha uma data futura.");
+        }
+      }
       return submitBooking({
         data: {
-          scheduled_date: format(date, "yyyy-MM-dd"),
+          scheduled_date: selectedKey,
           time_slot: slot,
           customer_name: name,
           customer_cpf: cpf,
