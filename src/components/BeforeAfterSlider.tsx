@@ -49,9 +49,23 @@ export function BeforeAfterSlider({ before, after, label, initial = 50 }: Props)
       ref={wrapRef}
       className="ba hover-lift"
       onPointerDown={onPointerDown}
-      style={{ cursor: dragging ? "grabbing" : "grab", userSelect: "none", touchAction: "none" }}
+      style={{
+        cursor: dragging ? "grabbing" : "grab",
+        userSelect: "none",
+        touchAction: "none",
+        position: "relative",
+        aspectRatio: "4 / 3",
+        overflow: "hidden",
+        width: "100%",
+      }}
     >
-      <img src={before} alt={label ? `Antes — ${label}` : "Antes"} loading="lazy" draggable={false} />
+      <img
+        src={before}
+        alt={label ? `Antes — ${label}` : "Antes"}
+        loading="lazy"
+        draggable={false}
+        style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
+      />
       <img
         src={after}
         alt={label ? `Depois — ${label}` : "Depois"}
@@ -59,6 +73,7 @@ export function BeforeAfterSlider({ before, after, label, initial = 50 }: Props)
         draggable={false}
         style={{ clipPath: `inset(0 0 0 ${pos}%)`, position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
       />
+
       <span className="tag tl">ANTES</span>
       <span className="tag tr">DEPOIS</span>
       {label && <span className="label">{label}</span>}
