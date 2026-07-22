@@ -262,6 +262,62 @@ function Nav() {
   );
 }
 
+/* ------------------------------ HERO CAROUSEL ------------------------------ */
+const HERO_SLIDES = [
+  { src: heroImage, alt: "Técnico Siqueira Higienização higienizando sofá com equipamento profissional" },
+  { src: heroCarousel2, alt: "Extração profissional de sujeira em sofá com máquina de sucção" },
+  { src: heroCarousel3, alt: "Higienização a vapor de colchão com equipamento profissional" },
+  { src: heroCarousel4, alt: "Limpeza detalhada de banco automotivo em couro" },
+];
+
+function HeroCarousel() {
+  const [i, setI] = useState(0);
+  const reduce = useReducedMotion();
+
+  useEffect(() => {
+    if (reduce) return;
+    const id = window.setInterval(() => {
+      setI((v) => (v + 1) % HERO_SLIDES.length);
+    }, 4500);
+    return () => window.clearInterval(id);
+  }, [reduce]);
+
+  return (
+    <div
+      className="relative rounded-[28px] overflow-hidden shadow-2xl h-[520px] lg:h-[620px]"
+      style={{ boxShadow: "0 40px 90px -20px rgba(11,46,89,.35)" }}
+    >
+      {HERO_SLIDES.map((s, idx) => (
+        <img
+          key={s.src}
+          src={s.src}
+          alt={s.alt}
+          className="absolute inset-0 w-full h-full object-cover transition-opacity duration-[1200ms] ease-in-out"
+          style={{ opacity: idx === i ? 1 : 0 }}
+          fetchPriority={idx === 0 ? "high" : "low"}
+          loading={idx === 0 ? "eager" : "lazy"}
+          decoding="async"
+        />
+      ))}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{ background: "linear-gradient(180deg,transparent 55%,rgba(11,46,89,.35))" }}
+      />
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+        {HERO_SLIDES.map((_, idx) => (
+          <button
+            key={idx}
+            type="button"
+            aria-label={`Ir para imagem ${idx + 1}`}
+            onClick={() => setI(idx)}
+            className={`h-2 rounded-full transition-all ${idx === i ? "w-8 bg-white" : "w-2 bg-white/60 hover:bg-white/80"}`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 /* --------------------------------- HERO --------------------------------- */
 function Hero() {
   const reduce = useReducedMotion();
