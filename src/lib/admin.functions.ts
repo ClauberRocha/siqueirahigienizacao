@@ -44,7 +44,7 @@ export const listAppointments = createServerFn({ method: "GET" })
     const { data, error } = await context.supabase
       .from("appointments")
       .select(
-        "id, scheduled_date, time_slot, customer_name, customer_cpf, customer_phone, customer_address, service, status, created_at",
+        "id, scheduled_date, time_slot, customer_name, customer_cpf, customer_phone, customer_address, service, status, cancellation_reason, created_at, updated_at",
       )
       .order("scheduled_date", { ascending: false })
       .limit(1000);
@@ -125,15 +125,14 @@ export const rescheduleAppointment = createServerFn({ method: "POST" })
     const leadError = validateSlotLeadTime(data.scheduled_date, data.time_slot);
     if (leadError) throw new Error(leadError);
 
-    const { data: conflict, error: cErr } = await context.supabase
+    // Busca o estado atual para retornar previous* e permitir a mensagem ao cliente.
+    const { data: current, error: curErr } = await context.supabase
       .from("appointments")
-      .select("id")
-      .eq("scheduled_date", data.scheduled_date)
-      .eq("time_slot", data.time_slot)
-      .neq("id", data.id)
+      .select("scheduled_date, time_slot, customer_name, customer_phone")
+      .eq("id", data.id)
       .maybeSingle();
-    if (cErr) throw new Error(cErr.message);
-    if (conflict) throw new Error("Este horário já foi reservado. Escolha outro.");
+    if (curErr) throw new Error(curErr.message);
+    if (!current) throw new Error("Agendamento não encontrado.");
 
     const { error } = await context.supabase
       .from("appointments")
@@ -144,25 +143,48 @@ export const rescheduleAppointment = createServerFn({ method: "POST" })
       })
       .eq("id", data.id);
     if (error) {
+      // A constraint anti double-booking (índice único parcial) barra concorrência.
       if ((error as { code?: string }).code === "23505") {
         throw new Error("Este horário já foi reservado. Escolha outro.");
       }
       throw new Error(error.message);
     }
-    return { ok: true };
+    return {
+      ok: true,
+      previous_date: current.scheduled_date as string,
+      previous_slot: (current as { time_slot: string }).time_slot,
+      customer_name: current.customer_name as string,
+      customer_phone: (current as { customer_phone: string }).customer_phone,
+    };
   });
 
-const idSchema = z.object({ id: z.string().uuid() });
+const cancelSchema = z.object({
+  id: z.string().uuid(),
+  reason: z.string().trim().max(500).optional(),
+});
 
+/**
+ * Cancelamento "soft": mantém o registro para o histórico e libera o slot
+ * (a constraint única parcial ignora status = 'cancelled').
+ */
 export const cancelAppointment = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: unknown) => idSchema.parse(data))
+  .inputValidator((data: unknown) => cancelSchema.parse(data))
   .handler(async ({ data, context }) => {
-    const { error } = await context.supabase
+    const reason = data.reason && data.reason.length > 0 ? data.reason : null;
+    const { data: updated, error } = await context.supabase
       .from("appointments")
-      .delete()
-      .eq("id", data.id);
+      .update({ status: "cancelled", cancellation_reason: reason })
+      .eq("id", data.id)
+      .select("scheduled_date, time_slot, customer_name, customer_phone")
+      .maybeSingle();
     if (error) throw new Error(error.message);
-    return { ok: true };
+    if (!updated) throw new Error("Agendamento não encontrado.");
+    return {
+      ok: true,
+      scheduled_date: updated.scheduled_date as string,
+      time_slot: (updated as { time_slot: string }).time_slot,
+      customer_name: updated.customer_name as string,
+      customer_phone: (updated as { customer_phone: string }).customer_phone,
+    };
   });
-

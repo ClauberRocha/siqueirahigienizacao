@@ -16,6 +16,7 @@ export type Database = {
     Tables: {
       appointments: {
         Row: {
+          cancellation_reason: string | null
           created_at: string
           customer_address: string
           customer_cpf: string
@@ -26,8 +27,10 @@ export type Database = {
           service: string | null
           status: string
           time_slot: string
+          updated_at: string
         }
         Insert: {
+          cancellation_reason?: string | null
           created_at?: string
           customer_address: string
           customer_cpf: string
@@ -38,8 +41,10 @@ export type Database = {
           service?: string | null
           status?: string
           time_slot?: string
+          updated_at?: string
         }
         Update: {
+          cancellation_reason?: string | null
           created_at?: string
           customer_address?: string
           customer_cpf?: string
@@ -50,6 +55,7 @@ export type Database = {
           service?: string | null
           status?: string
           time_slot?: string
+          updated_at?: string
         }
         Relationships: []
       }

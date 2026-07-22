@@ -31,6 +31,11 @@ import { siteConfig } from "@/lib/site-config";
 import { toWhatsappNumber, formatBrPhoneDisplay } from "@/lib/phone";
 import { getAdminSettings, updateOwnerWhatsapp } from "@/lib/settings.functions";
 import {
+  buildClientCancellationMessage,
+  buildClientRescheduleMessage,
+  type TimeSlot,
+} from "@/lib/booking-confirmation";
+import {
   getIsAdmin,
   listAppointments,
   updateAppointmentStatus,
@@ -38,6 +43,7 @@ import {
   rescheduleAppointment,
   cancelAppointment,
 } from "@/lib/admin.functions";
+
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
@@ -74,8 +80,21 @@ type Appointment = {
   customer_address: string;
   service: string | null;
   status: string;
+  cancellation_reason?: string | null;
   created_at: string;
+  updated_at?: string | null;
 };
+
+function openWhatsapp(phone: string, message: string) {
+  const num = (phone ?? "").replace(/\D/g, "");
+  if (!num) {
+    toast.error("Sem telefone do cliente para enviar a mensagem.");
+    return;
+  }
+  const url = `https://wa.me/${num}?text=${encodeURIComponent(message)}`;
+  window.open(url, "_blank", "noopener,noreferrer");
+}
+
 
 function digitsOnly(s: string) {
   return (s ?? "").replace(/\D/g, "");
@@ -175,6 +194,8 @@ function AdminPage() {
 
   // Confirmação de cancelamento
   const [cancelTarget, setCancelTarget] = useState<Appointment | null>(null);
+  const [cancelReason, setCancelReason] = useState("");
+
 
   const apps = (appointmentsQ.data ?? []) as Appointment[];
 
@@ -218,6 +239,41 @@ function AdminPage() {
     setPage(1);
   }, [search, slotFilter, statusFilter, dateFrom, dateTo, sortKey, sortDir]);
 
+  // Slots ocupados (não cancelados) — usado para sugerir novos horários no reagendamento.
+  const activeBusy = useMemo(() => {
+    const map = new Map<string, Set<"morning" | "afternoon">>();
+    for (const a of apps) {
+      if (a.status === "cancelled") continue;
+      const s = map.get(a.scheduled_date) ?? new Set<"morning" | "afternoon">();
+      if (a.time_slot === "morning" || a.time_slot === "afternoon") s.add(a.time_slot);
+      map.set(a.scheduled_date, s);
+    }
+    return map;
+  }, [apps]);
+
+  const rescheduleSuggestions = useMemo(() => {
+    if (!rescheduling) return [] as { date: string; slot: "morning" | "afternoon" }[];
+    const slot = rescheduleForm.time_slot;
+    const out: { date: string; slot: "morning" | "afternoon" }[] = [];
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    for (let i = 1; out.length < 6 && i <= 30; i++) {
+      const d = new Date(today);
+      d.setDate(today.getDate() + i);
+      if (d.getDay() === 0) continue;
+      const key = format(d, "yyyy-MM-dd");
+      const busy = activeBusy.get(key);
+      const conflict =
+        busy?.has(slot) &&
+        !(key === rescheduling.scheduled_date && rescheduling.time_slot === slot);
+      if (conflict) continue;
+      out.push({ date: key, slot });
+    }
+    return out;
+  }, [rescheduling, rescheduleForm.time_slot, activeBusy]);
+
+
+
   const saveMut = useMutation({
     mutationFn: () => saveWhatsapp({ data: { owner_whatsapp: phone } }),
     onSuccess: (res) => {
@@ -259,26 +315,44 @@ function AdminPage() {
   const rescheduleMut = useMutation({
     mutationFn: (v: { id: string; scheduled_date: string; time_slot: "morning" | "afternoon" }) =>
       rescheduleFn({ data: v }),
-    onSuccess: () => {
+    onSuccess: (res, vars) => {
       toast.success("Agendamento remarcado");
       qc.invalidateQueries({ queryKey: ["admin-appointments"] });
       qc.invalidateQueries({ queryKey: ["booked-slots"] });
       setRescheduling(null);
+      const msg = buildClientRescheduleMessage({
+        name: res.customer_name,
+        previousDate: res.previous_date,
+        previousSlot: res.previous_slot as TimeSlot,
+        newDate: vars.scheduled_date,
+        newSlot: vars.time_slot,
+      });
+      openWhatsapp(res.customer_phone, msg);
     },
     onError: (e: Error) => toast.error("Não foi possível remarcar", { description: e.message }),
   });
 
   const cancelMut = useMutation({
-    mutationFn: (id: string) => cancelFn({ data: { id } }),
-    onSuccess: () => {
+    mutationFn: (v: { id: string; reason?: string }) => cancelFn({ data: v }),
+    onSuccess: (res) => {
       toast.success("Agendamento cancelado", { description: "Horário liberado na agenda." });
       qc.invalidateQueries({ queryKey: ["admin-appointments"] });
       qc.invalidateQueries({ queryKey: ["booked-slots"] });
+      const reason = cancelReason.trim();
       setCancelTarget(null);
+      setCancelReason("");
       setEditing(null);
+      const msg = buildClientCancellationMessage({
+        name: res.customer_name,
+        scheduledDate: res.scheduled_date,
+        slot: res.time_slot as TimeSlot,
+        reason: reason || undefined,
+      });
+      openWhatsapp(res.customer_phone, msg);
     },
     onError: (e: Error) => toast.error("Não foi possível cancelar", { description: e.message }),
   });
+
 
   const openEdit = (a: Appointment) => {
     setEditing(a);
@@ -842,9 +916,38 @@ function AdminPage() {
                   </SelectContent>
                 </Select>
               </div>
+              {rescheduleSuggestions.length > 0 && (
+                <div>
+                  <Label className="text-xs text-muted-foreground">
+                    Próximos horários disponíveis ({SLOT_LABEL[rescheduleForm.time_slot]})
+                  </Label>
+                  <div className="mt-1 flex flex-wrap gap-1">
+                    {rescheduleSuggestions.map((s) => {
+                      const selected =
+                        rescheduleForm.scheduled_date === s.date &&
+                        rescheduleForm.time_slot === s.slot;
+                      return (
+                        <Button
+                          key={`${s.date}-${s.slot}`}
+                          type="button"
+                          size="sm"
+                          variant={selected ? "default" : "outline"}
+                          onClick={() =>
+                            setRescheduleForm({ scheduled_date: s.date, time_slot: s.slot })
+                          }
+                        >
+                          {format(new Date(s.date + "T00:00:00"), "EEE dd/MM", { locale: ptBR })}
+                        </Button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
               <p className="text-xs text-muted-foreground">
                 Domingos não são atendidos. Antecedência mínima de 2h em relação ao fim do turno.
+                Ao confirmar, abriremos o WhatsApp para avisar o cliente.
               </p>
+
               <DialogFooter>
                 <Button type="button" variant="ghost" onClick={() => setRescheduling(null)}>
                   Voltar
@@ -859,7 +962,15 @@ function AdminPage() {
       </Dialog>
 
       {/* Confirmação de cancelamento */}
-      <Dialog open={!!cancelTarget} onOpenChange={(o) => !o && setCancelTarget(null)}>
+      <Dialog
+        open={!!cancelTarget}
+        onOpenChange={(o) => {
+          if (!o) {
+            setCancelTarget(null);
+            setCancelReason("");
+          }
+        }}
+      >
         <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle>Cancelar agendamento?</DialogTitle>
@@ -868,17 +979,44 @@ function AdminPage() {
                 {cancelTarget.customer_name} ·{" "}
                 {format(new Date(cancelTarget.scheduled_date + "T00:00:00"), "dd/MM/yyyy", { locale: ptBR })}{" "}
                 · {SLOT_LABEL[cancelTarget.time_slot] ?? cancelTarget.time_slot}. O horário
-                voltará a ficar disponível imediatamente.
+                voltará a ficar disponível imediatamente e abriremos o WhatsApp para
+                avisar o cliente.
               </DialogDescription>
             )}
           </DialogHeader>
+          <div className="space-y-2">
+            <Label htmlFor="cancel-reason">Motivo (opcional)</Label>
+            <Textarea
+              id="cancel-reason"
+              rows={3}
+              value={cancelReason}
+              onChange={(e) => setCancelReason(e.target.value.slice(0, 500))}
+              placeholder="Ex.: imprevisto da equipe, cliente solicitou cancelamento…"
+            />
+            <p className="text-xs text-muted-foreground">
+              O motivo fica registrado no histórico e entra na mensagem enviada ao cliente.
+            </p>
+          </div>
           <DialogFooter>
-            <Button type="button" variant="ghost" onClick={() => setCancelTarget(null)}>
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={() => {
+                setCancelTarget(null);
+                setCancelReason("");
+              }}
+            >
               Voltar
             </Button>
             <Button
               variant="destructive"
-              onClick={() => cancelTarget && cancelMut.mutate(cancelTarget.id)}
+              onClick={() =>
+                cancelTarget &&
+                cancelMut.mutate({
+                  id: cancelTarget.id,
+                  reason: cancelReason.trim() || undefined,
+                })
+              }
               disabled={cancelMut.isPending}
             >
               {cancelMut.isPending ? "Cancelando…" : "Sim, cancelar"}
@@ -886,6 +1024,7 @@ function AdminPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
     </div>
   );
 }
