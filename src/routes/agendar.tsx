@@ -1,10 +1,11 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { toast } from "sonner";
+import { AlertCircle } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,6 +19,13 @@ import {
 } from "@/lib/appointments.functions";
 import { getPublicSettings } from "@/lib/settings.functions";
 import { formatBrPhoneDisplay } from "@/lib/phone";
+import {
+  MIN_LEAD_HOURS,
+  nowInSaoLuis,
+  pastOrTooLateSlotsForToday,
+  validateSlotLeadTime,
+  type BookingSlot,
+} from "@/lib/booking-time";
 
 export const Route = createFileRoute("/agendar")({
   head: () => ({
@@ -39,7 +47,7 @@ export const Route = createFileRoute("/agendar")({
   component: AgendarPage,
 });
 
-type TimeSlot = "morning" | "afternoon";
+type TimeSlot = BookingSlot;
 
 const SLOT_LABELS: Record<TimeSlot, string> = {
   morning: "Manhã (08h – 12h)",
@@ -81,6 +89,10 @@ function isPhoneValid(v: string): boolean {
   return d.length === 10 || d.length === 11;
 }
 
+function isCpfValid(v: string): boolean {
+  return v.replace(/\D/g, "").length === 11;
+}
+
 type Confirmation = {
   id: string;
   dateLabel: string;
@@ -92,6 +104,27 @@ type Confirmation = {
   service: string;
   notes: string;
   ownerWhatsapp: string;
+};
+
+type FieldKey =
+  | "date"
+  | "slot"
+  | "name"
+  | "cpf"
+  | "phone"
+  | "address"
+  | "service";
+
+type FieldErrors = Partial<Record<FieldKey, string>>;
+
+const FIELD_LABEL: Record<FieldKey, string> = {
+  date: "Data",
+  slot: "Horário",
+  name: "Nome completo",
+  cpf: "CPF",
+  phone: "Telefone / WhatsApp",
+  address: "Endereço",
+  service: "Serviço",
 };
 
 function buildWhatsappMessage(c: Confirmation) {
@@ -135,7 +168,6 @@ function AgendarPage() {
     queryFn: () => fetchSettings(),
   });
 
-  // Mapa de data -> set de slots ocupados.
   const bookedMap = useMemo(() => {
     const m = new Map<string, Set<TimeSlot>>();
     for (const b of booked) {
@@ -159,42 +191,65 @@ function AgendarPage() {
   const [address, setAddress] = useState("");
   const [service, setService] = useState("");
   const [notes, setNotes] = useState("");
+  const [errors, setErrors] = useState<FieldErrors>({});
   const [confirmation, setConfirmation] = useState<Confirmation | null>(null);
 
   const dateKey = date ? format(date, "yyyy-MM-dd") : "";
   const takenSlots = dateKey ? bookedMap.get(dateKey) ?? new Set() : new Set();
 
-  // Slots que já passaram no dia de hoje (manhã encerra 12h, tarde 18h).
-  const isToday = !!date && format(date, "yyyy-MM-dd") === format(new Date(), "yyyy-MM-dd");
-  const now = new Date();
-  const pastSlots = new Set<TimeSlot>();
-  if (isToday) {
-    if (now.getHours() >= 12) pastSlots.add("morning");
-    if (now.getHours() >= 18) pastSlots.add("afternoon");
-  }
+  const todayKey = nowInSaoLuis().dateKey;
+  const isToday = dateKey === todayKey;
+  const pastSlots = isToday ? pastOrTooLateSlotsForToday() : new Set<TimeSlot>();
+
+  const validate = (): FieldErrors => {
+    const e: FieldErrors = {};
+    if (!date) e.date = "Escolha uma data no calendário.";
+    if (!slot) e.slot = "Selecione o turno (manhã ou tarde).";
+    if (date && slot) {
+      const leadErr = validateSlotLeadTime(format(date, "yyyy-MM-dd"), slot);
+      if (leadErr) e.slot = leadErr;
+    }
+    if (name.trim().length < 3) e.name = "Informe seu nome completo.";
+    if (!isCpfValid(cpf)) e.cpf = "CPF deve conter 11 dígitos.";
+    if (!isPhoneValid(phone))
+      e.phone = "Telefone inválido. Use DDD + número (ex.: (98) 98866-0241).";
+    if (address.trim().length < 5) e.address = "Endereço incompleto.";
+    if (service.trim().length < 3)
+      e.service = "Descreva brevemente o serviço que precisa.";
+    return e;
+  };
 
   const mutation = useMutation({
     mutationFn: async () => {
-      if (!date) throw new Error("Escolha uma data para o agendamento.");
-      const selectedKey = format(date, "yyyy-MM-dd");
-      const todayKey = format(new Date(), "yyyy-MM-dd");
-      if (selectedKey < todayKey) {
-        throw new Error("Não é possível agendar em datas passadas. Escolha uma data futura.");
-      }
-      if (!slot) throw new Error("Escolha um turno disponível (manhã ou tarde).");
-      if (selectedKey === todayKey) {
-        const h = new Date().getHours();
-        if (slot === "morning" && h >= 12) {
-          throw new Error("O turno da manhã já encerrou hoje. Escolha a tarde ou outra data.");
+      // Revalida no cliente
+      const fieldErrors = validate();
+
+      // Re-checa disponibilidade contra o backend imediatamente antes de enviar
+      const fresh = await qc.fetchQuery({
+        queryKey: ["booked-slots"],
+        queryFn: () => fetchBooked(),
+      });
+      if (date && slot) {
+        const k = format(date, "yyyy-MM-dd");
+        const taken = fresh.some(
+          (b) => b.scheduled_date === k && b.time_slot === slot,
+        );
+        if (taken) {
+          fieldErrors.slot =
+            "Este horário acabou de ser reservado. Escolha outro turno ou data.";
         }
-        if (slot === "afternoon" && h >= 18) {
-          throw new Error("O turno da tarde já encerrou hoje. Escolha uma data futura.");
-        }
       }
+
+      if (Object.keys(fieldErrors).length > 0) {
+        setErrors(fieldErrors);
+        throw new Error("Verifique os campos destacados no formulário.");
+      }
+      setErrors({});
+
       return submitBooking({
         data: {
-          scheduled_date: selectedKey,
-          time_slot: slot,
+          scheduled_date: format(date!, "yyyy-MM-dd"),
+          time_slot: slot as TimeSlot,
           customer_name: name,
           customer_cpf: cpf,
           customer_phone: phone,
@@ -235,6 +290,7 @@ function AgendarPage() {
       setNotes("");
       setDate(undefined);
       setSlot("");
+      setErrors({});
       router.invalidate();
     },
     onError: (err: Error) => {
@@ -248,11 +304,14 @@ function AgendarPage() {
     if (d.getDay() === 0) return true;
     const key = format(d, "yyyy-MM-dd");
     const s = bookedMap.get(key);
-    const morningBlocked = (s?.has("morning") ?? false) ||
-      (key === format(new Date(), "yyyy-MM-dd") && new Date().getHours() >= 12);
-    const afternoonBlocked = (s?.has("afternoon") ?? false) ||
-      (key === format(new Date(), "yyyy-MM-dd") && new Date().getHours() >= 18);
-    return morningBlocked && afternoonBlocked;
+    let morningTaken = s?.has("morning") ?? false;
+    let afternoonTaken = s?.has("afternoon") ?? false;
+    if (key === todayKey) {
+      const past = pastOrTooLateSlotsForToday();
+      if (past.has("morning")) morningTaken = true;
+      if (past.has("afternoon")) afternoonTaken = true;
+    }
+    return morningTaken && afternoonTaken;
   };
 
   return (
@@ -286,32 +345,118 @@ function AgendarPage() {
             setDate={(d) => {
               setDate(d);
               setSlot("");
+              setErrors((prev) => ({ ...prev, date: undefined, slot: undefined }));
             }}
             isDayDisabled={isDayDisabled}
             today={today}
             maxDate={maxDate}
             slot={slot}
-            setSlot={setSlot}
+            setSlot={(s) => {
+              setSlot(s);
+              setErrors((prev) => ({ ...prev, slot: undefined }));
+            }}
             takenSlots={takenSlots as Set<TimeSlot>}
             pastSlots={pastSlots}
             name={name}
-            setName={setName}
+            setName={(v) => {
+              setName(v);
+              if (errors.name) setErrors((p) => ({ ...p, name: undefined }));
+            }}
             cpf={cpf}
-            setCpf={setCpf}
+            setCpf={(v) => {
+              setCpf(v);
+              if (errors.cpf) setErrors((p) => ({ ...p, cpf: undefined }));
+            }}
             phone={phone}
-            setPhone={setPhone}
+            setPhone={(v) => {
+              setPhone(v);
+              if (errors.phone) setErrors((p) => ({ ...p, phone: undefined }));
+            }}
             address={address}
-            setAddress={setAddress}
+            setAddress={(v) => {
+              setAddress(v);
+              if (errors.address) setErrors((p) => ({ ...p, address: undefined }));
+            }}
             service={service}
-            setService={setService}
+            setService={(v) => {
+              setService(v);
+              if (errors.service) setErrors((p) => ({ ...p, service: undefined }));
+            }}
             notes={notes}
             setNotes={setNotes}
+            errors={errors}
             onSubmit={() => mutation.mutate()}
             submitting={mutation.isPending}
           />
         )}
       </main>
     </div>
+  );
+}
+
+function ErrorSummary({
+  errors,
+  onFocusField,
+}: {
+  errors: FieldErrors;
+  onFocusField: (k: FieldKey) => void;
+}) {
+  const ref = useRef<HTMLDivElement | null>(null);
+  const entries = (Object.entries(errors) as [FieldKey, string | undefined][])
+    .filter(([, v]) => !!v) as [FieldKey, string][];
+
+  useEffect(() => {
+    if (entries.length > 0 && ref.current) {
+      ref.current.scrollIntoView({ behavior: "smooth", block: "start" });
+      // Foca o primeiro campo inválido para correção rápida
+      const first = entries[0][0];
+      onFocusField(first);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [entries.length]);
+
+  if (entries.length === 0) return null;
+
+  return (
+    <div
+      ref={ref}
+      role="alert"
+      aria-live="polite"
+      className="mb-6 rounded-lg border border-destructive/40 bg-destructive/5 p-4"
+    >
+      <div className="flex items-start gap-3">
+        <AlertCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-destructive" />
+        <div className="flex-1">
+          <p className="text-sm font-semibold text-destructive">
+            {entries.length === 1
+              ? "Corrija o campo abaixo para continuar:"
+              : `Corrija os ${entries.length} campos abaixo para continuar:`}
+          </p>
+          <ul className="mt-2 space-y-1 text-sm">
+            {entries.map(([k, msg]) => (
+              <li key={k}>
+                <button
+                  type="button"
+                  onClick={() => onFocusField(k)}
+                  className="text-left text-destructive underline-offset-2 hover:underline"
+                >
+                  <span className="font-medium">{FIELD_LABEL[k]}:</span> {msg}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function FieldError({ id, msg }: { id: string; msg?: string }) {
+  if (!msg) return null;
+  return (
+    <p id={id} className="mt-1 text-xs font-medium text-destructive">
+      {msg}
+    </p>
   );
 }
 
@@ -338,6 +483,7 @@ function BookingForm(props: {
   setService: (v: string) => void;
   notes: string;
   setNotes: (v: string) => void;
+  errors: FieldErrors;
   onSubmit: () => void;
   submitting: boolean;
 }) {
@@ -346,9 +492,32 @@ function BookingForm(props: {
     slot, setSlot, takenSlots, pastSlots,
     name, setName, cpf, setCpf, phone, setPhone,
     address, setAddress, service, setService,
-    notes, setNotes,
+    notes, setNotes, errors,
     onSubmit, submitting,
   } = props;
+
+  const refs: Record<FieldKey, React.RefObject<HTMLElement | null>> = {
+    date: useRef<HTMLDivElement>(null),
+    slot: useRef<HTMLDivElement>(null),
+    name: useRef<HTMLInputElement>(null),
+    cpf: useRef<HTMLInputElement>(null),
+    phone: useRef<HTMLInputElement>(null),
+    address: useRef<HTMLInputElement>(null),
+    service: useRef<HTMLTextAreaElement>(null),
+  };
+
+  const focusField = (k: FieldKey) => {
+    const el = refs[k]?.current as (HTMLElement & { focus?: () => void }) | null;
+    if (!el) return;
+    el.scrollIntoView({ behavior: "smooth", block: "center" });
+    if (typeof el.focus === "function") el.focus({ preventScroll: true } as FocusOptions);
+  };
+
+  const inv = (k: FieldKey) => (errors[k] ? "true" : undefined) as "true" | undefined;
+  const describedBy = (k: FieldKey) => (errors[k] ? `err-${k}` : undefined);
+  const inputErrClass = (k: FieldKey) =>
+    errors[k] ? " border-destructive focus-visible:ring-destructive" : "";
+
   return (
     <>
       <div className="mb-8">
@@ -363,10 +532,16 @@ function BookingForm(props: {
           (13h–18h). Selecione o melhor dia e horário, preencha seus dados e
           receba a confirmação automática.
         </p>
+        <p className="mt-2 text-xs text-muted-foreground">
+          Reservas requerem no mínimo <strong>{MIN_LEAD_HOURS}h de antecedência</strong>{" "}
+          em relação ao fim do turno.
+        </p>
       </div>
 
+      <ErrorSummary errors={errors} onFocusField={focusField} />
+
       <div className="grid gap-8 md:grid-cols-[auto_1fr]">
-        <Card className="p-4">
+        <Card className="p-4" ref={refs.date as React.RefObject<HTMLDivElement>} tabIndex={-1}>
           <div className="mb-3 text-sm font-semibold">Datas disponíveis</div>
           {isLoading ? (
             <div className="p-6 text-sm text-muted-foreground">Carregando agenda…</div>
@@ -382,6 +557,7 @@ function BookingForm(props: {
               className="pointer-events-auto"
             />
           )}
+          <FieldError id="err-date" msg={errors.date} />
         </Card>
 
         <Card className="p-6">
@@ -390,6 +566,7 @@ function BookingForm(props: {
               e.preventDefault();
               onSubmit();
             }}
+            noValidate
             className="space-y-4"
           >
             <div>
@@ -401,7 +578,7 @@ function BookingForm(props: {
               </div>
             </div>
 
-            <div>
+            <div ref={refs.slot as React.RefObject<HTMLDivElement>} tabIndex={-1}>
               <Label className="mb-2 block">Horário</Label>
               <div className="grid grid-cols-2 gap-2">
                 {(["morning", "afternoon"] as TimeSlot[]).map((s) => {
@@ -420,6 +597,7 @@ function BookingForm(props: {
                         (active
                           ? "border-primary bg-primary text-primary-foreground"
                           : "border-input bg-background hover:bg-muted") +
+                        (errors.slot && !active ? " border-destructive" : "") +
                         (disabled
                           ? " cursor-not-allowed opacity-50 hover:bg-background"
                           : "")
@@ -437,46 +615,60 @@ function BookingForm(props: {
                   Selecione primeiro uma data para ver os horários.
                 </p>
               )}
+              <FieldError id="err-slot" msg={errors.slot} />
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="sm:col-span-2">
                 <Label htmlFor="name">Nome completo</Label>
                 <Input id="name" required minLength={3} maxLength={120}
+                  ref={refs.name as React.RefObject<HTMLInputElement>}
+                  aria-invalid={inv("name")} aria-describedby={describedBy("name")}
+                  className={inputErrClass("name")}
                   value={name} onChange={(e) => setName(e.target.value)}
                   placeholder="Seu nome" />
+                <FieldError id="err-name" msg={errors.name} />
               </div>
               <div>
                 <Label htmlFor="cpf">CPF</Label>
                 <Input id="cpf" required inputMode="numeric" value={cpf}
+                  ref={refs.cpf as React.RefObject<HTMLInputElement>}
+                  aria-invalid={inv("cpf")} aria-describedby={describedBy("cpf")}
+                  className={inputErrClass("cpf")}
                   onChange={(e) => setCpf(maskCPF(e.target.value))}
                   placeholder="000.000.000-00" maxLength={14} />
+                <FieldError id="err-cpf" msg={errors.cpf} />
               </div>
               <div>
                 <Label htmlFor="phone">Telefone / WhatsApp</Label>
                 <Input id="phone" required inputMode="tel" value={phone}
+                  ref={refs.phone as React.RefObject<HTMLInputElement>}
+                  aria-invalid={inv("phone")} aria-describedby={describedBy("phone")}
+                  className={inputErrClass("phone")}
                   onChange={(e) => setPhone(maskPhone(e.target.value))}
-                  onBlur={() => {/* trigger revalidation on blur */}}
-                  placeholder="(98) 98866-0241" maxLength={16}
-                  aria-invalid={phone.length > 0 && !isPhoneValid(phone)} />
-                {phone.length > 0 && !isPhoneValid(phone) && (
-                  <p className="mt-1 text-xs text-destructive">
-                    Formato inválido. Use DDD + número (10 ou 11 dígitos). Ex.: (98) 98866-0241.
-                  </p>
-                )}
+                  placeholder="(98) 98866-0241" maxLength={16} />
+                <FieldError id="err-phone" msg={errors.phone} />
               </div>
               <div className="sm:col-span-2">
                 <Label htmlFor="address">Endereço completo</Label>
                 <Input id="address" required minLength={5} maxLength={300}
+                  ref={refs.address as React.RefObject<HTMLInputElement>}
+                  aria-invalid={inv("address")} aria-describedby={describedBy("address")}
+                  className={inputErrClass("address")}
                   value={address} onChange={(e) => setAddress(e.target.value)}
                   placeholder="Rua, número, bairro, cidade" />
+                <FieldError id="err-address" msg={errors.address} />
               </div>
               <div className="sm:col-span-2">
                 <Label htmlFor="service">Serviço</Label>
                 <Textarea id="service" required minLength={3} maxLength={1000}
+                  ref={refs.service as React.RefObject<HTMLTextAreaElement>}
+                  aria-invalid={inv("service")} aria-describedby={describedBy("service")}
+                  className={"resize-y" + inputErrClass("service")}
                   value={service} onChange={(e) => setService(e.target.value)}
                   placeholder="Descreva o que precisa higienizar. Ex.: Sofá 3 lugares em tecido, 2 poltronas e tapete 2x3m."
-                  rows={5} className="resize-y" />
+                  rows={5} />
+                <FieldError id="err-service" msg={errors.service} />
                 <p className="mt-1 text-xs text-muted-foreground">
                   Quanto mais detalhes, melhor preparamos o atendimento.
                 </p>
@@ -492,7 +684,7 @@ function BookingForm(props: {
 
             <Button
               type="submit"
-              disabled={!date || !slot || submitting || !isPhoneValid(phone)}
+              disabled={submitting}
               className="w-full"
               size="lg"
             >
