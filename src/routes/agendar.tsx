@@ -46,6 +46,16 @@ const SLOT_LABELS: Record<TimeSlot, string> = {
   afternoon: "Tarde (13h – 18h)",
 };
 
+const SLOT_PERIOD: Record<TimeSlot, string> = {
+  morning: "Manhã",
+  afternoon: "Tarde",
+};
+
+const SLOT_WINDOW: Record<TimeSlot, string> = {
+  morning: "08h às 12h",
+  afternoon: "13h às 18h",
+};
+
 function maskCPF(v: string) {
   const d = v.replace(/\D/g, "").slice(0, 11);
   return d
