@@ -424,7 +424,6 @@ function Hero() {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.9, ease: easeSmooth }}
           className="relative"
-          style={{ y: reduce ? undefined : imgY }}
         >
           <div
             className="relative rounded-[28px] overflow-hidden shadow-2xl"
