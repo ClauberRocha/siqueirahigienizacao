@@ -47,6 +47,7 @@ import { siteConfig, whatsappLink } from "@/lib/site-config";
 import { track } from "@/lib/analytics";
 import { BeforeAfterSlider } from "@/components/BeforeAfterSlider";
 import { BeforeAfterZoomModal } from "@/components/BeforeAfterZoomModal";
+import { useLogoConfig, cornerStyle, HeroLogoInspector } from "@/components/HeroLogoControl";
 
 import { blogPosts } from "@/lib/blog-data";
 
