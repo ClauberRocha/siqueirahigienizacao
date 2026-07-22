@@ -1,125 +1,55 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import heroImage from "@/assets/hero-higienizacao-sofa.jpg";
-import heroImageWebp from "@/assets/hero-higienizacao-sofa.webp";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  motion,
+  AnimatePresence,
+  useScroll,
+  useTransform,
+  useInView,
+  useMotionValue,
+  animate as motionAnimate,
+  useReducedMotion,
+} from "framer-motion";
+import {
+  Sparkles,
+  ShieldCheck,
+  Droplets,
+  Wind,
+  Leaf,
+  Award,
+  Star,
+  Check,
+  ArrowRight,
+  Phone,
+  MapPin,
+  Clock,
+  Instagram,
+  Menu,
+  X,
+  Calculator,
+  Sofa,
+  Bed,
+  Car,
+  Armchair,
+  Layers,
+  Users,
+  Timer,
+  Sprout,
+  Plus,
+  Minus,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
+import heroImage from "@/assets/hero-tecnico-premium.jpg";
 import logoAsset from "@/assets/logo-siqueira.png";
 import { siteConfig, whatsappLink } from "@/lib/site-config";
 import { track } from "@/lib/analytics";
-import { ContactForm } from "@/components/ContactForm";
 import { BeforeAfterSlider } from "@/components/BeforeAfterSlider";
-import video1 from "@/assets/videos/trabalho-1.mp4.asset.json";
-import video2 from "@/assets/videos/trabalho-2.mp4.asset.json";
-import video3 from "@/assets/videos/trabalho-3.mp4.asset.json";
-import video4 from "@/assets/videos/trabalho-4.mp4.asset.json";
-import video5 from "@/assets/videos/trabalho-5.mp4.asset.json";
-import video6 from "@/assets/videos/trabalho-6.mp4.asset.json";
-import video7 from "@/assets/videos/trabalho-7.mp4.asset.json";
-
-// Asset pointers use relative paths (/__l5e/...) served only by Lovable's edge.
-// When deployed to other hosts (e.g. Vercel), prefix with the Lovable CDN origin
-// so the videos still resolve.
-const ASSET_ORIGIN = "https://siqueirahigienizacao.lovable.app";
-const toAbsolute = (a: { url: string }) => ({
-  ...a,
-  url: a.url.startsWith("http") ? a.url : `${ASSET_ORIGIN}${a.url}`,
-});
-const workVideos = [video1, video2, video3, video4, video5, video6, video7].map(toAbsolute);
-
-const CSS = `
-
-  :root{
-    --bg:#ECFEFF;
-    --bg2:#CFFAFE;
-    --ink:#0F172A;
-    --muted:#475569;
-    --cyan:#06B6D4;
-    --cyan2:#0E7490;
-    --cyan-soft:rgba(6,182,212,.1);
-    --line:#CFFAFE;
-    --white:#FFFFFF;
-  }
-  *{box-sizing:border-box}html{scroll-behavior:smooth}
-  body{margin:0;background:var(--bg);color:var(--ink);font-family:"Inter",system-ui,sans-serif;overflow-x:hidden;line-height:1.6}
-  .display{font-family:"Poppins",sans-serif;font-weight:800;line-height:1.05;letter-spacing:-.02em}
-  .container{max-width:1180px;margin:0 auto;padding-left:26px;padding-right:26px}
-  .cine{position:fixed;inset:0;z-index:0;overflow:hidden;background:var(--bg);transform:translateZ(0)}
-  .cine .l{position:absolute;inset:-25%;filter:blur(72px);opacity:.55;will-change:transform}
-  .l1{background:radial-gradient(38% 38% at 22% 20%,rgba(6,182,212,.35),transparent 70%);animation:d1 26s ease-in-out infinite}
-  .l2{background:radial-gradient(42% 42% at 80% 30%,rgba(14,116,144,.25),transparent 70%);animation:d2 30s ease-in-out infinite}
-  @keyframes d1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(6%,5%) scale(1.12)}}
-  @keyframes d2{0%,100%{transform:translate(0,0) scale(1.1)}50%{transform:translate(-7%,4%) scale(1)}}
-  .wrap{position:relative;z-index:2}
-  .cyantext{color:var(--cyan2)}
-  .grad{background:linear-gradient(100deg,var(--cyan),var(--cyan2));-webkit-background-clip:text;background-clip:text;color:transparent}
-  .kicker{display:inline-flex;align-items:center;gap:9px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--cyan2);border:1px solid rgba(14,116,144,.28);background:var(--cyan-soft);padding:8px 15px;border-radius:999px}
-  .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;font-weight:700;border-radius:13px;padding:16px 28px;text-decoration:none;transition:transform .25s,box-shadow .25s;font-size:15px;cursor:pointer;border:0;min-height:48px}
-  .btn-wa{background:linear-gradient(135deg,#25D366,#128C7E);color:#fff;box-shadow:0 16px 40px rgba(37,211,102,.3)}
-  .btn-wa:hover{transform:translateY(-2px)}
-  .btn-cyan{background:linear-gradient(180deg,var(--cyan),var(--cyan2));color:#fff;box-shadow:0 16px 40px rgba(6,182,212,.35)}
-  .btn-cyan:hover{transform:translateY(-2px)}
-  .btn-ghost{border:1px solid rgba(15,23,42,.18);color:var(--ink);background:transparent}.btn-ghost:hover{background:rgba(15,23,42,.04)}
-  @media (max-width:640px){.btn{width:100%;padding:15px 22px;font-size:15px}}
-  .reveal{opacity:1}.reveal.in{animation:rin .7s cubic-bezier(.16,1,.3,1) both}@keyframes rin{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
-  .card{background:var(--white);border:1px solid var(--line);border-radius:18px;box-shadow:0 10px 34px rgba(14,116,144,.06)}
-  .hover-lift{transition:transform .3s ease-out,box-shadow .3s ease-out;will-change:transform}
-  .hover-lift:hover{transform:translateY(-8px);box-shadow:0 22px 50px rgba(14,116,144,.16)}
-  @media (max-width:640px){.hover-lift:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(14,116,144,.12)}}
-  .service-card{overflow:hidden}
-  .service-card .thumb{width:100%;height:180px;object-fit:cover;display:block}
-  .frame{border-radius:22px;overflow:hidden;position:relative;box-shadow:0 40px 90px rgba(11,60,90,.2)}
-  .navwrap{position:fixed;top:14px;left:0;right:0;z-index:40;transition:.3s}
-  .navwrap.s{top:9px}
-  .navwrap>div{background:color-mix(in srgb,var(--bg) 62%,transparent);-webkit-backdrop-filter:saturate(1.6) blur(18px);backdrop-filter:saturate(1.6) blur(18px);border:1px solid color-mix(in srgb,var(--ink) 11%,transparent);border-radius:18px;box-shadow:0 10px 30px rgba(11,60,90,.08),inset 0 1px 0 rgba(255,255,255,.55);transition:.3s}
-  .navwrap.s>div{background:color-mix(in srgb,var(--bg) 88%,transparent)}
-  .mark{width:38px;height:38px;display:flex;align-items:center;justify-content:center}
-  .mark img{width:100%;height:100%;object-fit:contain;display:block}
-  details.faq{border-bottom:1px solid var(--line)}
-  details.faq summary{list-style:none;cursor:pointer;padding:20px 4px;display:flex;justify-content:space-between;gap:16px;align-items:center;font-weight:600;font-size:17px}
-  details.faq summary::-webkit-details-marker{display:none}
-  details.faq[open] .pl{transform:rotate(45deg)} .pl{transition:.3s;color:var(--cyan);font-size:24px;font-weight:700}
-  .field{width:100%;background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px;color:var(--ink);outline:none;font-size:15px}.field:focus{border-color:var(--cyan)}
-  .wa{position:fixed;right:calc(20px + env(safe-area-inset-right,0px));bottom:calc(20px + env(safe-area-inset-bottom,0px));z-index:45;display:flex;align-items:center;gap:10px;padding:13px 18px 13px 14px;border-radius:999px;background:linear-gradient(135deg,#25D366,#128C7E);color:#fff;font-weight:700;font-size:14px;text-decoration:none;box-shadow:0 16px 40px rgba(37,211,102,.45);min-height:52px}
-  .wa-float{position:fixed;right:calc(16px + env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:45;display:flex;align-items:center;gap:10px}
-  .wa-float .wa{position:static}
-  .wa-bubble{background:#fff;color:var(--ink);font-size:13px;font-weight:600;padding:10px 14px;border-radius:14px;box-shadow:0 10px 30px rgba(11,60,90,.15);border:1px solid var(--line);position:relative;animation:waBub 3s ease-in-out infinite;max-width:220px}
-  .wa-bubble::after{content:"";position:absolute;right:-6px;top:50%;transform:translateY(-50%) rotate(45deg);width:12px;height:12px;background:#fff;border-right:1px solid var(--line);border-top:1px solid var(--line)}
-  @keyframes waBub{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
-  @media (max-width:640px){.wa-bubble{display:none}.wa-float{right:calc(14px + env(safe-area-inset-right,0px));bottom:calc(14px + env(safe-area-inset-bottom,0px))}.wa{padding:12px 16px 12px 14px;font-size:13px}}
-  .totop{position:fixed;right:calc(20px + env(safe-area-inset-right,0px));bottom:calc(88px + env(safe-area-inset-bottom,0px));z-index:45;width:48px;height:48px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--cyan2);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;cursor:pointer;box-shadow:0 10px 30px rgba(11,60,90,.18);opacity:0;transform:translateY(12px);pointer-events:none;transition:opacity .3s,transform .3s,background .2s}
-  .totop.show{opacity:1;transform:translateY(0);pointer-events:auto}
-  .totop:hover{background:var(--cyan);color:#fff}
-  @media (max-width:640px){.totop{right:calc(14px + env(safe-area-inset-right,0px));bottom:calc(78px + env(safe-area-inset-bottom,0px));width:44px;height:44px;font-size:20px}}
-  .ba{position:relative;border-radius:16px;overflow:hidden;aspect-ratio:4/3;background:#000}
-  .ba img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-  .ba .after{clip-path:inset(0 0 0 50%)}
-  .ba .divider{position:absolute;top:0;bottom:0;left:50%;width:2px;background:#fff;box-shadow:0 0 12px rgba(0,0,0,.4)}
-  .ba .tag{position:absolute;top:12px;padding:4px 10px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:.1em;color:#fff;background:rgba(0,0,0,.55);backdrop-filter:blur(6px)}
-  .ba .tag.tl{left:12px}
-  .ba .tag.tr{right:12px}
-  .ba .label{position:absolute;left:12px;bottom:12px;padding:6px 12px;border-radius:999px;font-size:12px;font-weight:600;background:rgba(255,255,255,.9);color:var(--ink)}
-  .pain-grid{gap:1.25rem}
-  .pain-grid > .reveal{opacity:0}
-  .pain-grid > .reveal.in{animation:painIn .7s cubic-bezier(.16,1,.3,1) both}
-  @keyframes painIn{from{opacity:0;transform:translateY(28px) scale(.98)}to{opacity:1;transform:none}}
-  .pain-grid > .reveal.in:nth-child(1){animation-delay:.05s}
-  .pain-grid > .reveal.in:nth-child(2){animation-delay:.15s}
-  .pain-grid > .reveal.in:nth-child(3){animation-delay:.25s}
-  .pain-grid > .reveal.in:nth-child(4){animation-delay:.35s}
-  .pain-grid > .reveal.in:nth-child(5){animation-delay:.45s}
-  .pain-grid > .reveal.in:nth-child(6){animation-delay:.55s}
-  @media (max-width:640px){.pain-grid{gap:1rem}}
-  @media (prefers-reduced-motion:reduce){
-    .l1,.l2{animation:none}
-    .reveal.in,.pain-grid > .reveal.in{animation:none;opacity:1}
-    .hover-lift{transition:none}
-    .hover-lift:hover{transform:none;box-shadow:0 10px 34px rgba(14,116,144,.06)}
-    .btn-wa:hover,.btn-cyan:hover{transform:none}
-  }
-
-`;
+import { blogPosts } from "@/lib/blog-data";
 
 const SITE_URL = "https://siqueirahigienizacao.lovable.app";
 
+/* --------------------------------- HEAD --------------------------------- */
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
@@ -130,10 +60,11 @@ export const Route = createFileRoute("/")({
       { property: "og:type", content: "website" },
       { property: "og:url", content: `${SITE_URL}/` },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "theme-color", content: "#0B2E59" },
     ],
     links: [
       { rel: "canonical", href: `${SITE_URL}/` },
-      { rel: "preload", as: "image", href: heroImageWebp, type: "image/webp", fetchpriority: "high" },
+      { rel: "preload", as: "image", href: heroImage, fetchpriority: "high" },
     ],
     scripts: [
       {
@@ -145,7 +76,6 @@ export const Route = createFileRoute("/")({
               "@type": "LocalBusiness",
               "@id": `${SITE_URL}/#business`,
               name: siteConfig.brandName,
-              image: `${SITE_URL}/og-image.jpg`,
               url: SITE_URL,
               telephone: `+${siteConfig.whatsappNumber}`,
               email: siteConfig.email,
@@ -158,38 +88,7 @@ export const Route = createFileRoute("/")({
               areaServed: siteConfig.region,
               openingHours: "Mo-Sa 08:00-18:00",
               sameAs: [siteConfig.instagramUrl].filter(Boolean),
-              aggregateRating: {
-                "@type": "AggregateRating",
-                ratingValue: "4.9",
-                reviewCount: "200",
-              },
-            },
-            {
-              "@type": "Service",
-              name: "Higienização de sofá em São Luís",
-              serviceType: "Higienização de sofá em domicílio",
-              provider: { "@id": `${SITE_URL}/#business` },
-              areaServed: { "@type": "City", name: `${siteConfig.city}, ${siteConfig.state}` },
-              description:
-                "Higienização de sofá em São Luís/MA com extração profunda de manchas, ácaros e odores. Atendimento em domicílio na Grande São Luís.",
-            },
-            {
-              "@type": "Service",
-              name: "Lavagem de colchão em São Luís",
-              serviceType: "Lavagem e higienização de colchão",
-              provider: { "@id": `${SITE_URL}/#business` },
-              areaServed: { "@type": "City", name: `${siteConfig.city}, ${siteConfig.state}` },
-              description:
-                "Lavagem de colchão em São Luís/MA — casal, queen, king e solteiro. Elimina ácaros, suor e odores com secagem rápida.",
-            },
-            {
-              "@type": "Service",
-              name: "Limpeza de tapetes em São Luís",
-              serviceType: "Limpeza e higienização de tapetes",
-              provider: { "@id": `${SITE_URL}/#business` },
-              areaServed: { "@type": "City", name: `${siteConfig.city}, ${siteConfig.state}` },
-              description:
-                "Limpeza de tapetes em São Luís/MA para todos os tamanhos e materiais, em domicílio ou no nosso espaço.",
+              aggregateRating: { "@type": "AggregateRating", ratingValue: "4.9", reviewCount: "200" },
             },
             {
               "@type": "FAQPage",
@@ -204,600 +103,1301 @@ export const Route = createFileRoute("/")({
       },
     ],
   }),
-  component: Index,
+  component: LandingPage,
 });
 
-function Index() {
-  const [activeVideo, setActiveVideo] = useState<string | null>(null);
+/* ------------------------------- HELPERS ------------------------------- */
+const easeSmooth = [0.16, 1, 0.3, 1] as const;
 
+function useAnim() {
+  const reduce = useReducedMotion();
+  return {
+    fadeUp: {
+      initial: { opacity: 0, y: reduce ? 0 : 32 },
+      whileInView: { opacity: 1, y: 0 },
+      viewport: { once: true, margin: "-80px" },
+      transition: { duration: 0.7, ease: easeSmooth },
+    },
+    stagger: (i: number) => ({
+      initial: { opacity: 0, y: reduce ? 0 : 24 },
+      whileInView: { opacity: 1, y: 0 },
+      viewport: { once: true, margin: "-60px" },
+      transition: { duration: 0.55, delay: reduce ? 0 : i * 0.08, ease: easeSmooth },
+    }),
+    reduce,
+  };
+}
+
+/* --------------------------------- NAV --------------------------------- */
+function Nav() {
+  const [scrolled, setScrolled] = useState(false);
+  const [openMenu, setOpenMenu] = useState(false);
   useEffect(() => {
-    document.body.style.overflow = activeVideo ? "hidden" : "";
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setActiveVideo(null);
-    };
-    window.addEventListener("keydown", onKey);
-    return () => {
-      window.removeEventListener("keydown", onKey);
-      document.body.style.overflow = "";
-    };
-  }, [activeVideo]);
-
-  useEffect(() => {
-    const forceExternalBlank = (event: MouseEvent) => {
-      const target = event.target instanceof Element
-        ? event.target.closest<HTMLAnchorElement>('a[target="_blank"][href^="http"]')
-        : null;
-
-      if (!target) return;
-
-      event.preventDefault();
-      window.open(target.href, "_blank", "noopener,noreferrer");
-    };
-
-    const io = new IntersectionObserver(
-      (es) =>
-        es.forEach((e) => {
-          if (e.isIntersecting) {
-            e.target.classList.add("in");
-            io.unobserve(e.target);
-          }
-        }),
-      { threshold: 0.12 },
-    );
-    document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
-    const onScroll = () => {
-      const n = document.getElementById("nav");
-      if (n) n.classList.toggle("s", window.scrollY > 20);
-    };
-    document.addEventListener("click", forceExternalBlank);
-    addEventListener("scroll", onScroll, { passive: true });
-    return () => {
-      io.disconnect();
-      document.removeEventListener("click", forceExternalBlank);
-      removeEventListener("scroll", onScroll);
-    };
+    const on = () => setScrolled(window.scrollY > 24);
+    on();
+    window.addEventListener("scroll", on, { passive: true });
+    return () => window.removeEventListener("scroll", on);
   }, []);
 
-  const waAgendar = `https://wa.me/${siteConfig.whatsappNumber}?text=${encodeURIComponent(
-    "Olá! Quero agendar um atendimento de higienização.",
-  )}`;
+  const items = [
+    { href: "#inicio", label: "Início" },
+    { href: "#servicos", label: "Serviços" },
+    { href: "#antes-depois", label: "Antes e Depois" },
+    { href: "#depoimentos", label: "Depoimentos" },
+    { href: "#faq", label: "FAQ" },
+    { href: "#contato", label: "Contato" },
+  ];
 
   return (
     <>
-      <style dangerouslySetInnerHTML={{ __html: CSS }} />
-      <div className="cine">
-        <div className="l l1" />
-        <div className="l l2" />
+      <motion.header
+        initial={{ y: -80, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.6, ease: easeSmooth }}
+        className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
+          scrolled
+            ? "bg-white/85 backdrop-blur-xl border-b border-slate-200/70 shadow-[0_8px_28px_rgba(11,46,89,.08)]"
+            : "bg-transparent"
+        }`}
+      >
+        <div className="container-page flex items-center justify-between h-16 md:h-20">
+          <a href="#inicio" className="flex items-center gap-3 min-w-0">
+            <img src={logoAsset} alt={siteConfig.brandName} className="w-10 h-10 md:w-11 md:h-11 object-contain" />
+            <div className="flex flex-col leading-none min-w-0">
+              <span
+                className={`font-display font-extrabold text-[15px] md:text-[17px] truncate transition-colors ${
+                  scrolled ? "text-[#0B2E59]" : "text-[#0B2E59]"
+                }`}
+              >
+                {siteConfig.brandName}
+              </span>
+              <span className="text-[10px] tracking-[0.15em] text-[#1D74D6] font-semibold uppercase truncate">
+                Premium Cleaning
+              </span>
+            </div>
+          </a>
+
+          <nav className="hidden lg:flex items-center gap-8 text-sm font-medium text-slate-700">
+            {items.map((i) => (
+              <a key={i.href} href={i.href} className="hover:text-[#1D74D6] transition-colors relative group">
+                {i.label}
+                <span className="absolute left-0 -bottom-1 h-[2px] w-0 bg-[#35A8FF] transition-all group-hover:w-full" />
+              </a>
+            ))}
+          </nav>
+
+          <div className="flex items-center gap-2">
+            <Link
+              to="/agendar"
+              onClick={() => track("agendar_click", { location: "nav" })}
+              className="hidden md:inline-flex items-center gap-2 px-5 h-11 rounded-xl font-semibold text-sm text-white transition-all shadow-lg shadow-[#0B2E59]/25 hover:shadow-xl hover:-translate-y-0.5"
+              style={{ background: "linear-gradient(135deg,#0B2E59,#1D74D6)" }}
+            >
+              Agendar Higienização <ArrowRight className="w-4 h-4" />
+            </Link>
+            <button
+              onClick={() => setOpenMenu(true)}
+              className="lg:hidden w-11 h-11 rounded-xl border border-slate-200 bg-white/80 backdrop-blur flex items-center justify-center text-slate-700"
+              aria-label="Abrir menu"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+      </motion.header>
+
+      {/* Mobile menu */}
+      <AnimatePresence>
+        {openMenu && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[60] lg:hidden"
+          >
+            <div className="absolute inset-0 bg-slate-900/60" onClick={() => setOpenMenu(false)} />
+            <motion.aside
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ duration: 0.35, ease: easeSmooth }}
+              className="absolute right-0 top-0 bottom-0 w-[85%] max-w-sm bg-white p-6 flex flex-col"
+            >
+              <div className="flex items-center justify-between mb-8">
+                <img src={logoAsset} alt="" className="w-10 h-10" />
+                <button
+                  onClick={() => setOpenMenu(false)}
+                  className="w-10 h-10 rounded-xl border border-slate-200 flex items-center justify-center"
+                  aria-label="Fechar"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              <nav className="flex flex-col gap-1">
+                {items.map((i) => (
+                  <a
+                    key={i.href}
+                    href={i.href}
+                    onClick={() => setOpenMenu(false)}
+                    className="py-3 text-lg font-medium text-slate-800 border-b border-slate-100 hover:text-[#1D74D6]"
+                  >
+                    {i.label}
+                  </a>
+                ))}
+              </nav>
+              <Link
+                to="/agendar"
+                onClick={() => setOpenMenu(false)}
+                className="mt-6 inline-flex items-center justify-center gap-2 h-12 rounded-xl font-semibold text-white shadow-lg"
+                style={{ background: "linear-gradient(135deg,#0B2E59,#1D74D6)" }}
+              >
+                Agendar Higienização <ArrowRight className="w-4 h-4" />
+              </Link>
+            </motion.aside>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
+  );
+}
+
+/* --------------------------------- HERO --------------------------------- */
+function Hero() {
+  const { scrollY } = useScroll();
+  const imgY = useTransform(scrollY, [0, 600], [0, 80]);
+  const reduce = useReducedMotion();
+
+  return (
+    <section
+      id="inicio"
+      className="relative min-h-[100vh] flex items-center overflow-hidden pt-24 md:pt-28 pb-16"
+    >
+      {/* Background gradient + blobs */}
+      <div className="absolute inset-0 -z-10">
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(1200px 600px at 85% -10%, rgba(53,168,255,.22), transparent 60%), radial-gradient(900px 500px at -10% 110%, rgba(29,116,214,.18), transparent 60%), linear-gradient(180deg,#F8FAFC 0%,#EEF4FB 100%)",
+          }}
+        />
+        {!reduce && (
+          <>
+            <motion.div
+              animate={{ x: [0, 30, 0], y: [0, -20, 0] }}
+              transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute top-20 -left-24 w-[420px] h-[420px] rounded-full blur-3xl opacity-30"
+              style={{ background: "radial-gradient(circle,#35A8FF 0%,transparent 70%)" }}
+            />
+            <motion.div
+              animate={{ x: [0, -25, 0], y: [0, 30, 0] }}
+              transition={{ duration: 22, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute bottom-10 right-0 w-[520px] h-[520px] rounded-full blur-3xl opacity-25"
+              style={{ background: "radial-gradient(circle,#0B2E59 0%,transparent 70%)" }}
+            />
+          </>
+        )}
       </div>
 
-      <div className="wrap">
-        {/* NAV */}
-        <nav className="navwrap" id="nav">
-          <div className="container grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 sm:gap-4 h-[64px] px-4 sm:px-5">
-            <a href="#topo" className="flex min-w-0 items-center gap-2.5 sm:gap-3">
-              <span className="mark shrink-0"><img src={logoAsset} alt={`Logo ${siteConfig.brandName}`} /></span>
-              <span className="flex min-w-0 flex-col justify-center leading-none gap-1">
-                <span className="display text-[15px] sm:text-[17px] tracking-tight truncate">{siteConfig.brandName}</span>
-                <span className="text-[9px] sm:text-[10px] tracking-[0.08em] text-[color:var(--cyan2)] font-semibold uppercase truncate">Só não limpamos o nome</span>
-              </span>
-            </a>
-            <div className="hidden md:flex items-center gap-7 text-sm text-[color:var(--muted)]">
-              <a href="#servicos" className="hover:text-[color:var(--ink)] transition">Serviços</a>
-              <a href="#porque" className="hover:text-[color:var(--ink)] transition">Sobre</a>
-              <a href="#galeria" className="hover:text-[color:var(--ink)] transition">Antes / Depois</a>
-              <a href="#avaliacoes" className="hover:text-[color:var(--ink)] transition">Avaliações</a>
-              <a href="#faq" className="hover:text-[color:var(--ink)] transition">FAQ</a>
-              <a href="#contato" className="hover:text-[color:var(--ink)] transition">Contato</a>
-            </div>
-            <a href={whatsappLink} onClick={() => track("whatsapp_click", { location: "nav" })} target="_blank" rel="noopener noreferrer" className="btn btn-wa shrink-0 !py-2 !px-3.5 !text-xs sm:!py-2.5 sm:!px-5 sm:!text-sm whitespace-nowrap">Orçamento<span className="hidden sm:inline"> grátis</span></a>
-          </div>
-        </nav>
+      <div className="container-page grid lg:grid-cols-[1.05fr_.95fr] gap-12 lg:gap-16 items-center relative">
+        {/* Left column */}
+        <div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: easeSmooth }}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/70 backdrop-blur border border-[#35A8FF]/25 text-[12px] font-semibold tracking-wider uppercase text-[#0B2E59]"
+          >
+            <Sparkles className="w-4 h-4 text-[#1D74D6]" /> Higienização premium em São Luís
+          </motion.div>
 
-        {/* HERO */}
-        <header id="topo" className="container pt-36 pb-20 md:pt-44 md:pb-28 grid lg:grid-cols-[1.05fr_.95fr] gap-14 items-center">
-          <div>
-            <div className="reveal kicker">{siteConfig.hero.kicker}</div>
-            <h1 className="reveal display text-5xl md:text-7xl mt-7">
-              {siteConfig.hero.title}
-              <br />
-              <span className="grad">{siteConfig.hero.titleHighlight}</span>.
-            </h1>
-            <p className="reveal text-lg md:text-xl text-[color:var(--muted)] max-w-xl mt-7 leading-relaxed">
-              {siteConfig.hero.subtitle}
-            </p>
-            <div className="reveal flex flex-col sm:flex-row gap-4 mt-10">
-              <a href={whatsappLink} onClick={() => track("whatsapp_click", { location: "hero", cta: "orcamento" })} className="btn btn-wa" target="_blank" rel="noopener noreferrer">{siteConfig.hero.ctaPrimary}</a>
-              <a href="/agendar" onClick={() => track("agendar_click", { location: "hero" })} className="btn btn-cyan">Agendar online →</a>
-            </div>
-            <div className="reveal mt-5 flex flex-wrap gap-2 text-xs font-semibold">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-orange-50 text-orange-700 border border-orange-200">⚠️ Agenda da semana com apenas 3 vagas disponíveis</span>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">✅ Orçamento grátis válido por 48h</span>
-            </div>
-            <div className="reveal flex items-center gap-4 mt-10">
-              <div className="flex -space-x-3">
-                <img src="https://i.pravatar.cc/80?img=12" className="w-10 h-10 rounded-full border-2 object-cover" style={{ borderColor: "var(--bg)" }} alt="" />
-                <img src="https://i.pravatar.cc/80?img=33" className="w-10 h-10 rounded-full border-2 object-cover" style={{ borderColor: "var(--bg)" }} alt="" />
-                <img src="https://i.pravatar.cc/80?img=8" className="w-10 h-10 rounded-full border-2 object-cover" style={{ borderColor: "var(--bg)" }} alt="" />
+          <motion.h1
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.75, delay: 0.1, ease: easeSmooth }}
+            className="font-display font-extrabold text-[2.7rem] leading-[1.05] sm:text-6xl lg:text-[4.25rem] mt-6 text-[#0B2E59]"
+          >
+            Higienização profissional que{" "}
+            <span className="text-gradient-brand">devolve vida</span> ao seu sofá.
+          </motion.h1>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.2, ease: easeSmooth }}
+            className="mt-6 text-lg lg:text-xl text-slate-600 max-w-xl leading-relaxed"
+          >
+            Atendimento em domicílio em <strong className="text-[#0B2E59]">São Luís e região</strong>, com
+            equipamentos profissionais, produtos certificados e secagem rápida em poucas horas.
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.3, ease: easeSmooth }}
+            className="mt-8 flex flex-col sm:flex-row gap-3"
+          >
+            <Link
+              to="/agendar"
+              onClick={() => track("agendar_click", { location: "hero" })}
+              className="group inline-flex items-center justify-center gap-2 h-14 px-7 rounded-2xl font-bold text-white shadow-xl shadow-[#0B2E59]/25 hover:shadow-2xl hover:-translate-y-0.5 transition-all"
+              style={{ background: "linear-gradient(135deg,#0B2E59 0%,#1D74D6 100%)" }}
+            >
+              Solicitar Orçamento
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition" />
+            </Link>
+            <a
+              href={whatsappLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => track("whatsapp_click", { location: "hero" })}
+              className="inline-flex items-center justify-center gap-2 h-14 px-7 rounded-2xl font-bold text-white shadow-xl shadow-emerald-500/30 hover:shadow-2xl hover:-translate-y-0.5 transition-all"
+              style={{ background: "linear-gradient(135deg,#25D366,#128C7E)" }}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+                <path d="M20.52 3.48A11.86 11.86 0 0 0 12.05 0C5.5 0 .18 5.32.18 11.86c0 2.09.55 4.13 1.6 5.93L0 24l6.35-1.66a11.85 11.85 0 0 0 5.7 1.45h.01c6.55 0 11.87-5.32 11.87-11.86 0-3.17-1.24-6.15-3.41-8.45zM12.06 21.8h-.01a9.9 9.9 0 0 1-5.04-1.38l-.36-.22-3.77.99 1-3.67-.23-.38a9.86 9.86 0 0 1-1.52-5.27c0-5.44 4.43-9.86 9.87-9.86 2.64 0 5.12 1.03 6.99 2.9a9.82 9.82 0 0 1 2.89 6.98c0 5.44-4.43 9.87-9.82 9.87z" />
+              </svg>
+              Falar no WhatsApp
+            </a>
+          </motion.div>
+
+          {/* Social proof */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.7, delay: 0.5 }}
+            className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3"
+          >
+            <div className="flex items-center gap-3">
+              <div className="flex -space-x-2">
+                {[12, 33, 8, 49].map((n) => (
+                  <img
+                    key={n}
+                    src={`https://i.pravatar.cc/60?img=${n}`}
+                    className="w-9 h-9 rounded-full border-2 border-white object-cover"
+                    alt=""
+                  />
+                ))}
               </div>
               <div>
-                <div className="cyantext text-sm">★★★★★</div>
-                <div className="text-xs text-[color:var(--muted)]">
-                  {siteConfig.stats.atendimentos} atendimentos · nota {siteConfig.stats.nota.replace(" ⭐", "")}
+                <div className="flex items-center gap-1 text-amber-500">
+                  {[0, 1, 2, 3, 4].map((i) => (
+                    <Star key={i} className="w-4 h-4 fill-current" />
+                  ))}
+                </div>
+                <div className="text-xs text-slate-600 font-medium">
+                  <strong className="text-[#0B2E59]">500+</strong> clientes atendidos
                 </div>
               </div>
             </div>
-          </div>
-          <div className="reveal frame">
-            <picture>
-              <source srcSet={heroImageWebp} type="image/webp" />
-              <img
-                src={heroImage}
-                alt="Técnico higienizando sofá de tecido cinza com equipamento de extração"
-                className="w-full h-[540px] object-cover"
-                width={900}
-                height={1117}
-                fetchPriority="high"
-                decoding="async"
-              />
-            </picture>
-          </div>
-        </header>
+          </motion.div>
 
-
-        {/* SELO DE GARANTIA */}
-        <section className="container pt-10">
-          <div className="reveal card p-6 md:p-8 flex flex-col md:flex-row items-center gap-5 md:gap-8"
-               style={{ background: "linear-gradient(135deg, #ECFEFF 0%, #FFFFFF 100%)", borderColor: "var(--cyan)" }}>
-            <div className="shrink-0 w-20 h-20 rounded-full flex items-center justify-center text-4xl"
-                 style={{ background: "linear-gradient(135deg,var(--cyan),var(--cyan2))", color: "#fff", boxShadow: "0 12px 30px rgba(6,182,212,.35)" }}>
-              🛡️
-            </div>
-            <div className="text-center md:text-left flex-1">
-              <div className="display text-xl md:text-2xl">Garantia de Satisfação</div>
-              <p className="text-[color:var(--muted)] mt-1.5 leading-relaxed">
-                Se não ficar impecável, <strong className="text-[color:var(--ink)]">refazemos o serviço sem custo adicional</strong>. Você não corre risco nenhum.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* PROVA SOCIAL GIGANTE */}
-        <section id="prova-social" className="container pt-16">
-          <div className="reveal card p-8 md:p-14 overflow-hidden relative"
-               style={{ background: "linear-gradient(135deg,#0E7490 0%,#06B6D4 60%,#22D3EE 100%)", borderColor: "transparent", color: "#fff" }}>
-            <div className="absolute inset-0 opacity-20 pointer-events-none"
-                 style={{ background: "radial-gradient(60% 60% at 20% 10%, rgba(255,255,255,.5), transparent 60%), radial-gradient(50% 50% at 90% 100%, rgba(255,255,255,.35), transparent 60%)" }} />
-            <div className="relative text-center max-w-3xl mx-auto">
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold tracking-[.2em] uppercase"
-                   style={{ background: "rgba(255,255,255,.18)", border: "1px solid rgba(255,255,255,.35)" }}>
-                <span aria-hidden>💎</span> A referência em São Luís
-              </div>
-              <div className="text-3xl md:text-4xl tracking-widest mt-6" aria-label="5 estrelas">⭐⭐⭐⭐⭐</div>
-              <h2 className="display text-4xl md:text-6xl mt-4 leading-[1.05]">
-                Milhares de famílias já confiam na Siqueira.
-              </h2>
-              <p className="text-white/90 text-lg mt-5 leading-relaxed">
-                Números reais de quem trabalha há mais de 7 anos com higienização profissional em São Luís e região.
-              </p>
-            </div>
-
-            <div className="relative grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-5 mt-12">
-              {[
-                { n: "+750", l: "clientes atendidos" },
-                { n: "+1.000", l: "estofados higienizados" },
-                { n: "98%", l: "de satisfação" },
-                { n: "+500", l: "avaliações positivas" },
-                { n: "Toda SL", l: "atendemos a Grande São Luís" },
-              ].map((s, i) => (
-                <div key={i} className="p-4 md:p-5 rounded-2xl text-center backdrop-blur flex flex-col items-center justify-center min-h-[7rem] md:min-h-[8.5rem]"
-                     style={{ background: "rgba(255,255,255,.14)", border: "1px solid rgba(255,255,255,.28)" }}>
-                  <div className="display text-2xl sm:text-3xl md:text-[2rem] lg:text-4xl leading-none text-white drop-shadow-sm break-words max-w-full">{s.n}</div>
-                  <div className="text-white/90 text-[11px] md:text-xs mt-2 leading-snug font-medium">{s.l}</div>
-                </div>
-              ))}
-            </div>
-
-            <div className="relative mt-12 flex flex-col items-center gap-4">
-              <p className="text-white/95 text-lg md:text-xl font-semibold text-center">
-                Veja o antes e depois de verdade no nosso Instagram 👇
-              </p>
-              <a
-                href={siteConfig.instagramUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => track("instagram_click", { location: "prova_social" })}
-                className="group inline-flex items-center gap-4 px-8 md:px-12 py-5 md:py-6 rounded-2xl font-extrabold text-lg md:text-2xl text-white shadow-2xl transition-transform hover:-translate-y-1"
-                style={{ background: "linear-gradient(135deg,#F58529 0%,#DD2A7B 45%,#8134AF 80%,#515BD4 100%)", boxShadow: "0 20px 50px rgba(221,42,123,.45)" }}
-                aria-label="Seguir Siqueira Higienização no Instagram"
-              >
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-                  <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-                </svg>
-                <span>Siga nosso Instagram</span>
-                <span className="transition-transform group-hover:translate-x-1" aria-hidden>→</span>
-              </a>
-              <div className="text-white/85 text-sm">@{siteConfig.instagram}</div>
-            </div>
-          </div>
-        </section>
-
-
-        {/* DORES */}
-        <section className="container py-24">
-          <div className="reveal max-w-2xl">
-            <div className="kicker mb-6">Reconhece?</div>
-            <h2 className="display text-5xl md:text-6xl">Sujeira que você não vê. Ácaros que você respira.</h2>
-          </div>
-          <div className="pain-grid grid md:grid-cols-3 mt-14">
-            {siteConfig.painPoints.map((p, i) => (
-              <div className="reveal card p-8 hover-lift" key={i}>
-                <div className="text-3xl mb-3">{p.icon}</div>
-                <h3 className="text-xl font-bold">{p.title}</h3>
-                <p className="text-[color:var(--muted)] mt-3 leading-relaxed">{p.text}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* PERIGOS / ALERTA DE SAÚDE */}
-        <section id="perigos" className="container py-24">
-          <div className="reveal max-w-3xl">
-            <div className="kicker mb-6" style={{ color: "#B45309", background: "rgba(245,158,11,.12)", borderColor: "rgba(180,83,9,.35)" }}>
-              <span aria-hidden>⚠️</span> Alerta de saúde
-            </div>
-            <h2 className="display text-5xl md:text-6xl">O que mora no seu sofá e colchão sem você ver.</h2>
-            <p className="text-[color:var(--muted)] text-lg mt-6 leading-relaxed">
-              Estofados acumulam suor, células mortas, poeira e umidade — o ambiente perfeito para micro-organismos que afetam a saúde da sua família todos os dias.
-            </p>
-          </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 mt-14">
+          {/* Selos */}
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.6 }}
+            className="mt-7 grid grid-cols-2 sm:grid-cols-4 gap-2 max-w-xl"
+          >
             {[
-              { icon: "🦠", title: "Seu colchão pode ter mais ácaros que a poeira do chão", text: "Milhões de ácaros vivem dentro da espuma — principal gatilho de rinite, asma e coceira nos olhos, sobretudo em crianças." },
-              { icon: "🤧", title: "Sofá sujo = rinite, asma e alergia sem fim em casa", text: "Poeira, pelos e esporos ficam presos no tecido e voltam ao ar a cada vez que alguém senta, alimentando crises respiratórias." },
-              { icon: "😴", title: "1/3 da sua vida em cima de bactérias invisíveis", text: "Suor e células mortas alimentam bactérias como E. coli e fungos que se multiplicam a poucos centímetros do seu rosto durante o sono." },
-              { icon: "🍄", title: "Cheiro de mofo no estofado? Fungos já estão no ar que você respira", text: "Umidade de bebidas, suor e limpezas caseiras mal feitas criam mofo interno — risco de infecções de pele e problemas respiratórios." },
-              { icon: "🧒", title: "Crianças e pets no sofá: contato direto com germes e resíduos", text: "Restos de comida, saliva e sujeira acumulados viram abrigo de pulgas, percevejos e bactérias que atingem quem tem menos defesa." },
-            ].map((p, i) => (
-              <div className="reveal card p-8 hover-lift" key={i}>
-                <div className="text-3xl mb-3">{p.icon}</div>
-                <h3 className="text-lg font-bold leading-snug">{p.title}</h3>
-                <p className="text-[color:var(--muted)] mt-3 leading-relaxed text-sm">{p.text}</p>
+              { icon: MapPin, label: "Em domicílio" },
+              { icon: Leaf, label: "Biodegradável" },
+              { icon: ShieldCheck, label: "Garantia" },
+              { icon: Timer, label: "Secagem rápida" },
+            ].map((s, i) => (
+              <div
+                key={i}
+                className="flex items-center gap-2 text-[13px] font-semibold text-[#0B2E59] bg-white/70 backdrop-blur border border-slate-200/70 rounded-xl px-3 py-2"
+              >
+                <s.icon className="w-4 h-4 text-[#1D74D6] shrink-0" />
+                <span className="truncate">{s.label}</span>
               </div>
             ))}
+          </motion.div>
+        </div>
+
+        {/* Right column — image + floating cards */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.9, ease: easeSmooth }}
+          className="relative"
+          style={{ y: reduce ? undefined : imgY }}
+        >
+          <div
+            className="relative rounded-[28px] overflow-hidden shadow-2xl"
+            style={{ boxShadow: "0 40px 90px -20px rgba(11,46,89,.35)" }}
+          >
+            <img
+              src={heroImage}
+              alt="Técnico Siqueira Higienização higienizando sofá com equipamento profissional"
+              className="w-full h-[520px] lg:h-[620px] object-cover"
+              fetchPriority="high"
+              decoding="async"
+            />
+            <div
+              className="absolute inset-0 pointer-events-none"
+              style={{ background: "linear-gradient(180deg,transparent 55%,rgba(11,46,89,.35))" }}
+            />
           </div>
-          <div className="reveal card hover-lift mt-10 p-8 md:p-10 flex flex-col md:flex-row items-start md:items-center gap-6 justify-between"
-               style={{ background: "linear-gradient(135deg,#FFFBEB 0%,#FFFFFF 100%)", borderColor: "rgba(245,158,11,.35)" }}>
-            <div>
-              <h3 className="display text-2xl md:text-3xl">Proteja quem você ama.</h3>
-              <p className="text-[color:var(--muted)] mt-2 leading-relaxed">Recomendamos higienização profissional a cada 6 meses — ou a cada 3 meses em casas com crianças, pets ou alérgicos.</p>
+
+          {/* Floating cards */}
+          <motion.div
+            initial={{ opacity: 0, x: -20, y: 10 }}
+            animate={{ opacity: 1, x: 0, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.7, ease: easeSmooth }}
+            className="hidden sm:flex absolute -left-4 top-8 items-center gap-3 bg-white rounded-2xl p-4 shadow-xl border border-slate-100"
+          >
+            <div className="w-11 h-11 rounded-xl bg-amber-100 grid place-items-center">
+              <Star className="w-6 h-6 text-amber-500 fill-current" />
             </div>
-            <a href={whatsappLink} onClick={() => track("whatsapp_click", { location: "perigos" })} className="btn btn-wa shrink-0" target="_blank" rel="noopener noreferrer">Agendar higienização</a>
-          </div>
-        </section>
+            <div>
+              <div className="font-display font-bold text-[#0B2E59] leading-none">5.0</div>
+              <div className="text-[11px] text-slate-500 mt-1">Avaliação Google</div>
+            </div>
+          </motion.div>
 
+          <motion.div
+            initial={{ opacity: 0, x: 20, y: -10 }}
+            animate={{ opacity: 1, x: 0, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.85, ease: easeSmooth }}
+            className="absolute right-2 sm:-right-4 bottom-20 flex items-center gap-3 bg-white rounded-2xl p-4 shadow-xl border border-slate-100"
+          >
+            <div className="w-11 h-11 rounded-xl bg-emerald-100 grid place-items-center">
+              <ShieldCheck className="w-6 h-6 text-emerald-600" />
+            </div>
+            <div>
+              <div className="font-display font-bold text-[#0B2E59] leading-none">99%</div>
+              <div className="text-[11px] text-slate-500 mt-1">Remoção de ácaros</div>
+            </div>
+          </motion.div>
 
-        {/* SERVIÇOS */}
-        <section id="servicos" className="container py-24">
-          <div className="reveal max-w-2xl">
-            <div className="kicker mb-6">O que fazemos</div>
-            <h2 className="display text-5xl md:text-6xl">Higienização completa.</h2>
-            <p className="text-[color:var(--muted)] text-lg mt-5 leading-relaxed">
-              Da sala do seu apartamento ao carro da família — a gente cuida de cada peça com o equipamento e o produto certo.
-            </p>
-          </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mt-14">
-            {siteConfig.services.map((s, i) => (
-              <div className="reveal card service-card flex flex-col hover-lift" key={i}>
-                <img src={s.image} alt={s.alt ?? `Higienização de ${s.title}`} className="thumb" loading="lazy" />
-                <div className="p-6 flex flex-col flex-1">
-                  <div className="flex items-center gap-2">
-                    <span className="text-2xl">{s.icon}</span>
-                    <h3 className="text-xl font-bold">{s.title}</h3>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 1, ease: easeSmooth }}
+            className="hidden md:flex absolute left-6 -bottom-6 items-center gap-3 bg-white rounded-2xl p-4 shadow-xl border border-slate-100"
+          >
+            <div className="w-11 h-11 rounded-xl bg-sky-100 grid place-items-center">
+              <MapPin className="w-6 h-6 text-[#1D74D6]" />
+            </div>
+            <div>
+              <div className="font-display font-bold text-[#0B2E59] leading-none text-sm">Em domicílio</div>
+              <div className="text-[11px] text-slate-500 mt-1">São Luís e região</div>
+            </div>
+          </motion.div>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
+/* -------------------------------- SERVICES -------------------------------- */
+function serviceIconFor(title: string) {
+  const t = title.toLowerCase();
+  if (t.includes("sof")) return Sofa;
+  if (t.includes("colc")) return Bed;
+  if (t.includes("tape")) return Layers;
+  if (t.includes("banco") || t.includes("carro") || t.includes("ve")) return Car;
+  if (t.includes("cadeir") || t.includes("poltrona")) return Armchair;
+  return Droplets;
+}
+
+function Services() {
+  const anim = useAnim();
+  return (
+    <section id="servicos" className="py-24 md:py-32 relative">
+      <div className="container-page">
+        <motion.div {...anim.fadeUp} className="max-w-2xl">
+          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#0B2E59]/5 border border-[#0B2E59]/10 text-[12px] font-semibold tracking-wider uppercase text-[#0B2E59]">
+            Nossos Serviços
+          </span>
+          <h2 className="font-display font-extrabold text-4xl md:text-5xl lg:text-6xl mt-5 text-[#0B2E59] leading-tight">
+            Higienização premium para cada peça da sua casa.
+          </h2>
+          <p className="mt-5 text-lg text-slate-600 leading-relaxed">
+            Do sofá da sala aos bancos automotivos — cada serviço é feito com o equipamento certo e produtos
+            biodegradáveis, seguros para crianças e pets.
+          </p>
+        </motion.div>
+
+        <div className="mt-14 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {siteConfig.services.slice(0, 6).map((s, i) => {
+            const Icon = serviceIconFor(s.title);
+            return (
+              <motion.article
+                key={s.title}
+                {...anim.stagger(i)}
+                whileHover={{ y: -6 }}
+                transition={{ ...anim.stagger(i).transition, y: { duration: 0.3 } }}
+                className="group relative bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-[0_10px_40px_rgba(11,46,89,.06)] hover:shadow-[0_28px_60px_rgba(11,46,89,.14)] transition-shadow"
+              >
+                <div className="relative h-52 overflow-hidden">
+                  <img
+                    src={s.image}
+                    alt={s.alt ?? s.title}
+                    loading="lazy"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                  />
+                  <div
+                    className="absolute inset-0"
+                    style={{ background: "linear-gradient(180deg,transparent 45%,rgba(11,46,89,.55))" }}
+                  />
+                  <div className="absolute top-4 left-4 w-11 h-11 rounded-xl bg-white/95 backdrop-blur grid place-items-center shadow-lg">
+                    <Icon className="w-5 h-5 text-[#1D74D6]" />
                   </div>
-                  <p className="text-[color:var(--muted)] mt-3 leading-relaxed text-sm">{s.text}</p>
-                  <ul className="mt-4 space-y-1.5 text-sm">
-                    {s.benefits.map((b, j) => (
-                      <li key={j} className="flex gap-2">
-                        <span className="cyantext">✓</span>
+                  <h3 className="absolute bottom-4 left-4 right-4 font-display font-bold text-white text-2xl">
+                    {s.title}
+                  </h3>
+                </div>
+                <div className="p-6 flex flex-col">
+                  <p className="text-slate-600 text-sm leading-relaxed">{s.text}</p>
+                  <ul className="mt-4 space-y-2">
+                    {s.benefits.map((b) => (
+                      <li key={b} className="flex items-center gap-2 text-sm text-slate-700">
+                        <Check className="w-4 h-4 text-[#22C55E] shrink-0" />
                         <span>{b}</span>
                       </li>
                     ))}
                   </ul>
                   <a
-                    href={`https://wa.me/${siteConfig.whatsappNumber}?text=${encodeURIComponent(
-                      `Olá! Quero agendar higienização de ${s.title}.`,
-                    )}`}
-                    onClick={() => track("whatsapp_click", { location: "service_card", service: s.title })}
+                    href={whatsappLink}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="btn btn-cyan mt-6 !py-3 !text-sm w-full"
+                    onClick={() => track("whatsapp_click", { location: "service_card", service: s.title })}
+                    className="mt-5 inline-flex items-center justify-between gap-2 h-11 px-4 rounded-xl font-semibold text-sm text-[#0B2E59] bg-slate-50 hover:bg-[#0B2E59] hover:text-white border border-slate-200 hover:border-[#0B2E59] transition-all"
                   >
-                    Agendar →
+                    Solicitar orçamento
+                    <ArrowRight className="w-4 h-4" />
                   </a>
                 </div>
-              </div>
-            ))}
-          </div>
-        </section>
+              </motion.article>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
 
-        {/* SOBRE / DIFERENCIAIS */}
-        <section id="porque" className="container py-24 grid lg:grid-cols-2 gap-16 items-center">
-          <div className="reveal frame">
-            <img
-              src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=900&q=80"
-              alt="Equipe profissional de higienização"
-              className="w-full h-[520px] object-cover"
-              loading="lazy"
-            />
-          </div>
-          <div className="reveal">
-            <div className="kicker mb-6">Por que a Siqueira</div>
-            <h2 className="display text-5xl md:text-6xl">
-              Higiene séria,
-              <br />
-              resultado visível.
-            </h2>
-            <p className="text-[color:var(--muted)] text-lg mt-6 leading-relaxed">{siteConfig.aboutText}</p>
-            <div className="grid sm:grid-cols-2 gap-3 mt-8">
-              {siteConfig.differentials.map((d, i) => (
-                <div className="flex gap-3" key={i}>
-                  <span className="cyantext text-xl">✓</span>
-                  <span className="font-medium text-sm leading-snug">{d}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
+/* ------------------------------- CALCULATOR ------------------------------ */
+const CALC_STEPS = [
+  { id: "servico", label: "Qual serviço?", options: ["Sofá", "Colchão", "Tapete", "Poltrona", "Bancos Automotivos", "Impermeabilização"] },
+  { id: "qtd", label: "Quantidade / tamanho", options: ["1 peça", "2 peças", "3 peças", "4+ peças"] },
+  { id: "cidade", label: "Cidade / bairro", options: ["São Luís", "São José de Ribamar", "Paço do Lumiar", "Raposa", "Outro"] },
+  { id: "tecido", label: "Tipo de tecido", options: ["Tecido comum", "Suede", "Couro", "Couro sintético", "Não sei"] },
+];
 
-        {/* COMO FUNCIONA */}
-        <section id="como" className="container py-24">
-          <div className="reveal max-w-2xl mx-auto text-center">
-            <div className="kicker mb-6">Sem complicação</div>
-            <h2 className="display text-5xl md:text-6xl">Resolvido em 3 passos.</h2>
-          </div>
-          <div className="grid md:grid-cols-3 gap-5 mt-14">
-            {siteConfig.steps.map((s, i) => (
-              <div className="reveal card p-8 hover-lift" key={i}>
-                <div className="display grad text-5xl">{s.number}</div>
-                <h3 className="text-2xl font-bold mt-3">{s.title}</h3>
-                <p className="text-[color:var(--muted)] mt-2 leading-relaxed">{s.text}</p>
-              </div>
-            ))}
-          </div>
-        </section>
+function CalculatorSection() {
+  const anim = useAnim();
+  const [step, setStep] = useState(0);
+  const [answers, setAnswers] = useState<Record<string, string>>({});
 
-        {/* GALERIA ANTES/DEPOIS */}
-        <section id="galeria" className="container py-24">
-          <div className="reveal max-w-2xl">
-            <div className="kicker mb-6">Antes / Depois</div>
-            <h2 className="display text-5xl md:text-6xl">A diferença que dá pra ver.</h2>
-          </div>
-          <div className="grid md:grid-cols-3 gap-5 mt-14">
-            {siteConfig.gallery.map((g, i) => (
-              <div className="reveal" key={i}>
-                <BeforeAfterSlider before={g.before} after={g.after} label={g.label} />
-              </div>
-            ))}
-          </div>
-          <p className="text-center text-sm text-[color:var(--muted)] mt-6">
-            👆 Arraste a barra para revelar a transformação
-          </p>
+  const done = step === CALC_STEPS.length;
+  const current = CALC_STEPS[step];
 
-        </section>
+  const submit = () => {
+    const summary = CALC_STEPS.map((s) => `• ${s.label}: ${answers[s.id] ?? "-"}`).join("\n");
+    const text = `Olá! Fiz uma simulação no site e quero orçamento:\n\n${summary}`;
+    const url = `https://wa.me/${siteConfig.whatsappNumber}?text=${encodeURIComponent(text)}`;
+    track("calculator_submit", answers);
+    window.open(url, "_blank", "noopener,noreferrer");
+  };
 
-        {/* VÍDEOS DE TRABALHOS REAIS — full width */}
-        <section className="py-20" style={{ background: "linear-gradient(180deg,#ECFEFF 0%,#FFFFFF 100%)" }}>
-          <div className="container">
-            <div className="reveal text-center max-w-2xl mx-auto mb-10">
-              <div className="kicker mb-4">Trabalhos reais</div>
-              <h3 className="display text-4xl md:text-5xl">Veja a higienização acontecendo.</h3>
-              <p className="text-[color:var(--muted)] mt-3 text-sm md:text-base">
-                Vídeos gravados em atendimentos reais em São Luís. Clique para ampliar.
+  return (
+    <section id="calculadora" className="py-24 md:py-28 relative">
+      <div className="container-page">
+        <div
+          className="rounded-[32px] overflow-hidden relative"
+          style={{
+            background:
+              "linear-gradient(135deg,#0B2E59 0%,#0F3F73 45%,#1D74D6 100%)",
+          }}
+        >
+          <div className="absolute inset-0 opacity-30 pointer-events-none">
+            <div className="absolute -top-20 -left-20 w-96 h-96 rounded-full blur-3xl" style={{ background: "#35A8FF" }} />
+            <div className="absolute -bottom-24 right-0 w-[500px] h-[500px] rounded-full blur-3xl" style={{ background: "#0B2E59" }} />
+          </div>
+
+          <div className="relative grid lg:grid-cols-[.9fr_1.1fr] gap-10 lg:gap-14 p-8 md:p-14">
+            <motion.div {...anim.fadeUp} className="text-white">
+              <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/15 border border-white/25 text-[12px] font-semibold tracking-wider uppercase">
+                <Calculator className="w-3.5 h-3.5" /> Calculadora de orçamento
+              </span>
+              <h2 className="font-display font-extrabold text-4xl md:text-5xl mt-5 leading-tight">
+                Simule seu orçamento em <span className="text-[#35A8FF]">30 segundos</span>.
+              </h2>
+              <p className="mt-5 text-white/80 text-lg leading-relaxed">
+                4 perguntas simples e enviamos o valor estimado direto no seu WhatsApp — sem compromisso.
               </p>
-            </div>
+              <ul className="mt-6 space-y-2 text-sm text-white/90">
+                {["100% grátis", "Sem cadastro", "Resposta em minutos"].map((t) => (
+                  <li key={t} className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-[#35A8FF]" /> {t}
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
+
+            <motion.div
+              {...anim.fadeUp}
+              className="bg-white rounded-3xl p-6 md:p-8 shadow-2xl"
+            >
+              {/* progress */}
+              <div className="flex items-center gap-2 mb-6">
+                {CALC_STEPS.map((_, i) => (
+                  <div
+                    key={i}
+                    className={`h-1.5 flex-1 rounded-full transition-all ${
+                      i <= step ? "bg-[#1D74D6]" : "bg-slate-200"
+                    }`}
+                  />
+                ))}
+                <span className="text-xs font-semibold text-slate-500 ml-2 whitespace-nowrap">
+                  {Math.min(step + 1, CALC_STEPS.length)}/{CALC_STEPS.length}
+                </span>
+              </div>
+
+              <AnimatePresence mode="wait">
+                {!done ? (
+                  <motion.div
+                    key={current.id}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <h3 className="font-display font-bold text-2xl text-[#0B2E59]">{current.label}</h3>
+                    <div className="mt-5 grid grid-cols-2 gap-2.5">
+                      {current.options.map((opt) => {
+                        const active = answers[current.id] === opt;
+                        return (
+                          <button
+                            key={opt}
+                            onClick={() => setAnswers((a) => ({ ...a, [current.id]: opt }))}
+                            className={`px-4 h-14 rounded-xl border text-sm font-semibold transition-all text-left ${
+                              active
+                                ? "border-[#1D74D6] bg-[#1D74D6]/10 text-[#0B2E59] shadow-inner"
+                                : "border-slate-200 hover:border-[#1D74D6]/40 text-slate-700"
+                            }`}
+                          >
+                            {opt}
+                          </button>
+                        );
+                      })}
+                    </div>
+                    <div className="mt-6 flex items-center justify-between gap-3">
+                      <button
+                        onClick={() => setStep((s) => Math.max(0, s - 1))}
+                        disabled={step === 0}
+                        className="h-11 px-4 rounded-xl border border-slate-200 text-sm font-semibold text-slate-600 disabled:opacity-40"
+                      >
+                        Voltar
+                      </button>
+                      <button
+                        onClick={() => setStep((s) => s + 1)}
+                        disabled={!answers[current.id]}
+                        className="h-11 px-6 rounded-xl font-semibold text-white shadow-lg shadow-[#0B2E59]/25 disabled:opacity-40 disabled:shadow-none inline-flex items-center gap-2"
+                        style={{ background: "linear-gradient(135deg,#0B2E59,#1D74D6)" }}
+                      >
+                        Próximo <ArrowRight className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="done"
+                    initial={{ opacity: 0, scale: 0.96 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.35 }}
+                  >
+                    <h3 className="font-display font-bold text-2xl text-[#0B2E59]">Sua estimativa está pronta ✨</h3>
+                    <p className="text-slate-600 mt-2 text-sm">
+                      Confirmamos o valor exato no WhatsApp após uma foto rápida do estofado.
+                    </p>
+                    <div className="mt-5 rounded-2xl border border-slate-200 bg-slate-50 p-4 space-y-1.5 text-sm">
+                      {CALC_STEPS.map((s) => (
+                        <div key={s.id} className="flex justify-between gap-4">
+                          <span className="text-slate-500">{s.label}</span>
+                          <span className="font-semibold text-[#0B2E59] text-right">{answers[s.id]}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="mt-6 flex flex-col sm:flex-row gap-3">
+                      <button
+                        onClick={() => {
+                          setStep(0);
+                          setAnswers({});
+                        }}
+                        className="h-12 px-5 rounded-xl border border-slate-200 text-sm font-semibold text-slate-700"
+                      >
+                        Refazer
+                      </button>
+                      <button
+                        onClick={submit}
+                        className="flex-1 h-12 rounded-xl font-bold text-white shadow-xl inline-flex items-center justify-center gap-2"
+                        style={{ background: "linear-gradient(135deg,#25D366,#128C7E)" }}
+                      >
+                        Receber orçamento no WhatsApp <ArrowRight className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
           </div>
-          <div className="w-full px-3 md:px-6">
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 gap-3 md:gap-4">
-              {workVideos.map((v, i) => (
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------ BEFORE / AFTER ------------------------------ */
+function categoryOf(label: string): string {
+  const l = label.toLowerCase();
+  if (l.includes("sof")) return "Sofás";
+  if (l.includes("colch")) return "Colchões";
+  if (l.includes("tape")) return "Tapetes";
+  if (l.includes("banco") || l.includes("carr") || l.includes("auto")) return "Automóveis";
+  return "Outros";
+}
+
+function BeforeAfter() {
+  const anim = useAnim();
+  const cats = ["Todos", "Sofás", "Colchões", "Tapetes", "Automóveis"];
+  const [filter, setFilter] = useState("Todos");
+  const [lightbox, setLightbox] = useState<{ before: string; after: string; label: string } | null>(null);
+
+  const items = useMemo(
+    () =>
+      siteConfig.gallery.filter((g) => filter === "Todos" || categoryOf(g.label) === filter),
+    [filter],
+  );
+
+  return (
+    <section id="antes-depois" className="py-24 md:py-32 bg-[#F0F5FB]/50">
+      <div className="container-page">
+        <motion.div {...anim.fadeUp} className="max-w-2xl">
+          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#0B2E59]/5 border border-[#0B2E59]/10 text-[12px] font-semibold tracking-wider uppercase text-[#0B2E59]">
+            Antes e Depois
+          </span>
+          <h2 className="font-display font-extrabold text-4xl md:text-5xl lg:text-6xl mt-5 text-[#0B2E59] leading-tight">
+            Resultados reais que falam por si.
+          </h2>
+          <p className="mt-5 text-lg text-slate-600 leading-relaxed">
+            Deslize as fotos abaixo e veja a diferença. Cada peça é registrada antes e depois do atendimento.
+          </p>
+        </motion.div>
+
+        <motion.div {...anim.fadeUp} className="mt-8 flex flex-wrap gap-2">
+          {cats.map((c) => (
+            <button
+              key={c}
+              onClick={() => setFilter(c)}
+              className={`px-4 h-10 rounded-full text-sm font-semibold border transition-all ${
+                filter === c
+                  ? "bg-[#0B2E59] text-white border-[#0B2E59] shadow-lg shadow-[#0B2E59]/20"
+                  : "bg-white text-slate-700 border-slate-200 hover:border-[#1D74D6]"
+              }`}
+            >
+              {c}
+            </button>
+          ))}
+        </motion.div>
+
+        <div className="mt-10 grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {items.map((g, i) => (
+            <motion.div
+              key={g.label + i}
+              {...anim.stagger(i)}
+              whileHover={{ y: -4 }}
+              className="rounded-3xl overflow-hidden bg-white border border-slate-100 shadow-[0_10px_40px_rgba(11,46,89,.08)]"
+            >
+              <BeforeAfterSlider before={g.before} after={g.after} label={g.label} />
+              <div className="p-4 flex items-center justify-between">
+                <span className="text-sm font-semibold text-[#0B2E59]">{g.label}</span>
+                <button
+                  onClick={() => setLightbox(g)}
+                  className="text-xs font-semibold text-[#1D74D6] hover:underline"
+                >
+                  Ver ampliado →
+                </button>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+
+      <AnimatePresence>
+        {lightbox && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[80] bg-slate-900/85 backdrop-blur-sm flex items-center justify-center p-4"
+            onClick={() => setLightbox(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="relative bg-white rounded-3xl overflow-hidden max-w-4xl w-full"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                onClick={() => setLightbox(null)}
+                className="absolute top-3 right-3 z-10 w-10 h-10 rounded-full bg-white/90 grid place-items-center shadow-lg"
+              >
+                <X className="w-5 h-5" />
+              </button>
+              <BeforeAfterSlider before={lightbox.before} after={lightbox.after} label={lightbox.label} />
+              <div className="p-4 text-center font-semibold text-[#0B2E59]">{lightbox.label}</div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </section>
+  );
+}
+
+/* --------------------------------- PROCESS --------------------------------- */
+function Process() {
+  const anim = useAnim();
+  const steps = [
+    { icon: Phone, title: "Agendamento", text: "Chama no WhatsApp e escolhe o melhor dia." },
+    { icon: Calculator, title: "Avaliação", text: "Analisamos tecido, estado e passamos o orçamento." },
+    { icon: Droplets, title: "Higienização", text: "Extração profunda com equipamento profissional." },
+    { icon: Wind, title: "Secagem", text: "Secagem rápida em algumas horas — pronto pra usar." },
+    { icon: Sprout, title: "Entrega", text: "Peça revitalizada, saudável e sem odor." },
+  ];
+  return (
+    <section id="processo" className="py-24 md:py-32">
+      <div className="container-page">
+        <motion.div {...anim.fadeUp} className="max-w-2xl text-center mx-auto">
+          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#0B2E59]/5 border border-[#0B2E59]/10 text-[12px] font-semibold tracking-wider uppercase text-[#0B2E59]">
+            Como funciona
+          </span>
+          <h2 className="font-display font-extrabold text-4xl md:text-5xl lg:text-6xl mt-5 text-[#0B2E59] leading-tight">
+            5 passos simples para o seu estofado novo.
+          </h2>
+        </motion.div>
+
+        <div className="mt-16 relative">
+          <div className="hidden lg:block absolute top-8 left-[10%] right-[10%] h-[2px]"
+               style={{ background: "linear-gradient(90deg,#35A8FF,#1D74D6,#0B2E59)" }} />
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 lg:gap-4">
+            {steps.map((s, i) => (
+              <motion.div
+                key={s.title}
+                {...anim.stagger(i)}
+                className="relative flex flex-col items-center text-center"
+              >
+                <motion.div
+                  whileHover={{ scale: 1.08, rotate: -3 }}
+                  transition={{ type: "spring", stiffness: 260 }}
+                  className="w-16 h-16 rounded-2xl grid place-items-center text-white shadow-xl shadow-[#0B2E59]/25 relative z-10"
+                  style={{ background: "linear-gradient(135deg,#0B2E59,#1D74D6)" }}
+                >
+                  <s.icon className="w-7 h-7" />
+                  <span className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-[#35A8FF] text-white text-xs font-bold grid place-items-center border-2 border-white">
+                    {i + 1}
+                  </span>
+                </motion.div>
+                <h3 className="mt-5 font-display font-bold text-lg text-[#0B2E59]">{s.title}</h3>
+                <p className="mt-2 text-sm text-slate-600 leading-relaxed max-w-[16rem]">{s.text}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* -------------------------------- FEATURES -------------------------------- */
+function Features() {
+  const anim = useAnim();
+  const items = [
+    { icon: MapPin, title: "Atendimento Domiciliar", text: "Vamos até sua casa em São Luís e região. Sem transtorno." },
+    { icon: Leaf, title: "Produtos Certificados", text: "Biodegradáveis, hipoalergênicos, seguros para crianças e pets." },
+    { icon: Droplets, title: "Equipamentos Profissionais", text: "Extração de alta performance que remove sujeira profunda." },
+    { icon: Users, title: "Equipe Especializada", text: "Técnicos treinados, uniformizados e educados." },
+    { icon: ShieldCheck, title: "Eliminação de Ácaros", text: "Até 99% dos ácaros e bactérias removidos por peça." },
+    { icon: Award, title: "Garantia de Qualidade", text: "Se não ficar impecável, refazemos sem custo adicional." },
+  ];
+  return (
+    <section id="diferenciais" className="py-24 md:py-32 bg-[#F0F5FB]/50">
+      <div className="container-page">
+        <motion.div {...anim.fadeUp} className="max-w-2xl">
+          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#0B2E59]/5 border border-[#0B2E59]/10 text-[12px] font-semibold tracking-wider uppercase text-[#0B2E59]">
+            Por que a Siqueira
+          </span>
+          <h2 className="font-display font-extrabold text-4xl md:text-5xl lg:text-6xl mt-5 text-[#0B2E59] leading-tight">
+            Diferenciais que fazem a diferença.
+          </h2>
+        </motion.div>
+        <div className="mt-14 grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {items.map((f, i) => (
+            <motion.div
+              key={f.title}
+              {...anim.stagger(i)}
+              whileHover={{ y: -6 }}
+              className="group bg-white rounded-2xl p-7 border border-slate-100 shadow-[0_6px_24px_rgba(11,46,89,.05)] hover:shadow-[0_20px_50px_rgba(11,46,89,.12)] transition-shadow"
+            >
+              <div
+                className="w-14 h-14 rounded-2xl grid place-items-center text-white shadow-lg shadow-[#0B2E59]/20 group-hover:scale-110 transition-transform"
+                style={{ background: "linear-gradient(135deg,#1D74D6,#35A8FF)" }}
+              >
+                <f.icon className="w-6 h-6" />
+              </div>
+              <h3 className="mt-5 font-display font-bold text-xl text-[#0B2E59]">{f.title}</h3>
+              <p className="mt-2 text-slate-600 leading-relaxed">{f.text}</p>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ---------------------------------- STATS ---------------------------------- */
+function Counter({ to, prefix = "", suffix = "" }: { to: number; prefix?: string; suffix?: string }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const inView = useInView(ref, { once: true, margin: "-40px" });
+  const mv = useMotionValue(0);
+  const [display, setDisplay] = useState("0");
+  useEffect(() => {
+    if (!inView) return;
+    const controls = motionAnimate(mv, to, {
+      duration: 2,
+      ease: easeSmooth,
+      onUpdate: (v) => setDisplay(Math.round(v).toLocaleString("pt-BR")),
+    });
+    return () => controls.stop();
+  }, [inView, to, mv]);
+  return (
+    <span ref={ref}>
+      {prefix}
+      {display}
+      {suffix}
+    </span>
+  );
+}
+
+function Stats() {
+  const anim = useAnim();
+  const items = [
+    { value: 750, prefix: "+", suffix: "", label: "Clientes atendidos" },
+    { value: 1200, prefix: "+", suffix: "", label: "Estofados higienizados" },
+    { value: 49, prefix: "", suffix: "★", label: "Nota média 4.9" },
+    { value: 99, prefix: "", suffix: "%", label: "Eliminação de ácaros" },
+  ];
+  return (
+    <section
+      className="py-20 md:py-24 text-white relative overflow-hidden"
+      style={{ background: "linear-gradient(135deg,#0B2E59 0%,#0F3F73 50%,#1D74D6 100%)" }}
+    >
+      <div className="absolute inset-0 opacity-20 pointer-events-none">
+        <div className="absolute -top-40 -left-40 w-[500px] h-[500px] rounded-full blur-3xl" style={{ background: "#35A8FF" }} />
+      </div>
+      <div className="container-page relative">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          {items.map((s, i) => (
+            <motion.div key={i} {...anim.stagger(i)} className="text-center">
+              <div className="font-display font-extrabold text-4xl md:text-6xl leading-none">
+                {s.label.includes("Nota") ? (
+                  <>4,9<span className="text-[#35A8FF] ml-1">★</span></>
+                ) : (
+                  <Counter to={s.value} prefix={s.prefix} suffix={s.suffix} />
+                )}
+              </div>
+              <div className="mt-3 text-white/80 text-sm md:text-base font-medium">{s.label}</div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------- TESTIMONIALS ------------------------------ */
+function Testimonials() {
+  const anim = useAnim();
+  const items = siteConfig.testimonials;
+  const [idx, setIdx] = useState(0);
+  useEffect(() => {
+    const t = setInterval(() => setIdx((i) => (i + 1) % items.length), 6500);
+    return () => clearInterval(t);
+  }, [items.length]);
+
+  return (
+    <section id="depoimentos" className="py-24 md:py-32">
+      <div className="container-page">
+        <motion.div {...anim.fadeUp} className="max-w-2xl text-center mx-auto">
+          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#0B2E59]/5 border border-[#0B2E59]/10 text-[12px] font-semibold tracking-wider uppercase text-[#0B2E59]">
+            Depoimentos
+          </span>
+          <h2 className="font-display font-extrabold text-4xl md:text-5xl lg:text-6xl mt-5 text-[#0B2E59] leading-tight">
+            Histórias de clientes felizes.
+          </h2>
+        </motion.div>
+
+        <div className="mt-14 max-w-3xl mx-auto relative">
+          <AnimatePresence mode="wait">
+            <motion.blockquote
+              key={idx}
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -16 }}
+              transition={{ duration: 0.4 }}
+              className="bg-white rounded-3xl p-8 md:p-12 border border-slate-100 shadow-[0_20px_50px_rgba(11,46,89,.08)] text-center"
+            >
+              <div className="flex justify-center gap-1 text-amber-500 mb-5">
+                {[0, 1, 2, 3, 4].map((i) => (
+                  <Star key={i} className="w-5 h-5 fill-current" />
+                ))}
+              </div>
+              <p className="text-lg md:text-xl text-slate-700 leading-relaxed italic">
+                "{items[idx].text}"
+              </p>
+              <footer className="mt-8 flex items-center justify-center gap-4">
+                <img src={items[idx].avatar} alt="" className="w-14 h-14 rounded-full object-cover" />
+                <div className="text-left">
+                  <div className="font-display font-bold text-[#0B2E59]">{items[idx].name}</div>
+                  <div className="text-sm text-slate-500">{items[idx].role}</div>
+                </div>
+              </footer>
+            </motion.blockquote>
+          </AnimatePresence>
+
+          <div className="mt-6 flex items-center justify-center gap-4">
+            <button
+              onClick={() => setIdx((i) => (i - 1 + items.length) % items.length)}
+              className="w-11 h-11 rounded-full border border-slate-200 grid place-items-center hover:border-[#1D74D6] hover:text-[#1D74D6] transition-colors"
+              aria-label="Anterior"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            <div className="flex gap-2">
+              {items.map((_, i) => (
                 <button
                   key={i}
-                  type="button"
-                  onClick={() => {
-                    setActiveVideo(v.url);
-                    track("video_open", { location: "trabalhos_reais", index: i });
-                  }}
-                  className="reveal group relative overflow-hidden rounded-2xl bg-black aspect-[9/16] border border-[color:var(--line)] shadow-sm hover:shadow-2xl transition-all hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-[color:var(--cyan)]"
-                  aria-label={`Ampliar vídeo ${i + 1}`}
-                >
-                  <video
-                    src={v.url}
-                    className="w-full h-full object-cover pointer-events-none"
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                    preload="metadata"
-                    disablePictureInPicture
-                    controls={false}
-                  />
-                  <span
-                    className="absolute inset-0 flex items-center justify-center bg-black/20 md:bg-black/0 md:group-hover:bg-black/30 transition-colors pointer-events-none"
-                    aria-hidden
-                  >
-                    <span className="opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity w-14 h-14 rounded-full bg-white/95 flex items-center justify-center shadow-xl">
-                      <svg viewBox="0 0 24 24" className="w-6 h-6 text-[color:var(--cyan2)] ml-0.5" fill="currentColor">
-                        <path d="M8 5v14l11-7z" />
-                      </svg>
-                    </span>
-                  </span>
-                </button>
+                  onClick={() => setIdx(i)}
+                  aria-label={`Depoimento ${i + 1}`}
+                  className={`h-2 rounded-full transition-all ${
+                    i === idx ? "w-8 bg-[#1D74D6]" : "w-2 bg-slate-300"
+                  }`}
+                />
               ))}
             </div>
-          </div>
-        </section>
-
-
-
-        {/* AVALIAÇÕES */}
-        <section id="avaliacoes" className="container py-24">
-          <div className="reveal max-w-2xl">
-            <div className="kicker mb-6">Clientes satisfeitos</div>
-            <h2 className="display text-5xl md:text-6xl">Quem contrata, indica.</h2>
-          </div>
-          <div className="grid md:grid-cols-3 gap-5 mt-14">
-            {siteConfig.testimonials.map((t, i) => (
-              <div className="reveal card p-7 hover-lift" key={i}>
-                <div className="cyantext text-sm mb-3">★★★★★</div>
-                <p className="leading-relaxed">“{t.text}”</p>
-                <div className="flex items-center gap-3 mt-6">
-                  <img src={t.avatar} alt={t.name} className="w-11 h-11 rounded-full object-cover" loading="lazy" />
-                  <div>
-                    <div className="font-semibold">{t.name}</div>
-                    <div className="text-xs text-[color:var(--muted)]">{t.role}</div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* CONTATO + FORMULÁRIO */}
-        <section id="contato" className="container py-24">
-          <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_.9fr] gap-10 items-start">
-            <div className="reveal">
-              <div className="kicker mb-6">Fale com a gente</div>
-              <h2 className="display text-5xl md:text-6xl">
-                Orçamento <span className="grad">grátis</span> e sem compromisso.
-              </h2>
-              <p className="text-[color:var(--muted)] mt-5 max-w-lg leading-relaxed text-lg">
-                Preencha o formulário ao lado e nós já abrimos o WhatsApp com seus dados prontos.
-                Se preferir, chame direto:
-              </p>
-              <div className="flex flex-col sm:flex-row gap-3 mt-8">
-                <a href={whatsappLink} onClick={() => track("whatsapp_click", { location: "cta_section", cta: "orcamento" })} className="btn btn-wa" target="_blank" rel="noopener noreferrer">Pedir orçamento →</a>
-                <a href="/agendar" onClick={() => track("agendar_click", { location: "cta_section" })} className="btn btn-cyan">Agendar online</a>
-              </div>
-              <ul className="mt-10 space-y-3 text-sm">
-                <li className="flex gap-3"><span className="cyantext">📱</span> {siteConfig.phoneDisplay}</li>
-                <li className="flex gap-3"><span className="cyantext">✉️</span> {siteConfig.email}</li>
-                <li className="flex gap-3"><span className="cyantext">📍</span> {siteConfig.city}/{siteConfig.state} · {siteConfig.businessHours}</li>
-              </ul>
-            </div>
-            <div className="reveal card hover-lift p-7 md:p-9">
-              <ContactForm />
-            </div>
-          </div>
-        </section>
-
-        {/* FAQ */}
-        <section id="faq" className="container py-24 max-w-3xl">
-          <h2 className="reveal display text-5xl md:text-6xl mb-10 text-center">Perguntas frequentes</h2>
-          <div className="reveal">
-            {siteConfig.faq.map((f, i) => (
-              <details className="faq" key={i}>
-                <summary>
-                  {f.question} <span className="pl">+</span>
-                </summary>
-                <p className="pb-5 text-[color:var(--muted)] leading-relaxed">{f.answer}</p>
-              </details>
-            ))}
-          </div>
-        </section>
-
-        {/* FOOTER */}
-        <footer className="border-t border-[color:var(--line)] mt-10" style={{ background: "#fff" }}>
-          <div className="container py-16 grid md:grid-cols-4 gap-10">
-            <div className="md:col-span-2">
-              <div className="flex items-center gap-3">
-                <span className="mark"><img src={logoAsset} alt={`Logo ${siteConfig.brandName}`} /></span>
-                <span className="display text-xl">{siteConfig.brandName}</span>
-              </div>
-              <p className="text-[color:var(--muted)] mt-4 max-w-sm leading-relaxed text-sm">
-                Higienização profissional de sofás, colchões, tapetes, cadeiras, poltronas e veículos em {siteConfig.city}/{siteConfig.state}.
-              </p>
-              <div className="flex gap-3 mt-5">
-                <a href={whatsappLink} onClick={() => track("whatsapp_click", { location: "footer" })} className="btn btn-wa !py-2.5 !px-4 !text-sm" target="_blank" rel="noopener noreferrer">WhatsApp</a>
-                <a
-                  href={siteConfig.instagramUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center rounded-lg font-semibold text-white !py-2.5 !px-4 !text-sm transition-transform hover:-translate-y-0.5"
-                  style={{ background: "linear-gradient(135deg,#F58529 0%,#DD2A7B 45%,#8134AF 80%,#515BD4 100%)", boxShadow: "0 8px 20px rgba(221,42,123,.35)" }}
-                >
-                  Instagram
-                </a>
-              </div>
-            </div>
-
-            <div>
-              <h4 className="font-bold text-sm uppercase tracking-wider text-[color:var(--muted)]">Contato</h4>
-              <ul className="mt-4 space-y-2 text-sm">
-                <li>
-                  <a href={whatsappLink} className="hover:cyantext" target="_blank" rel="noopener noreferrer">📱 {siteConfig.phoneDisplay}</a>
-                </li>
-                <li>
-                  <a href={`mailto:${siteConfig.email}`} className="break-all">✉️ {siteConfig.email}</a>
-                </li>
-                <li>
-                  <a
-                    href={siteConfig.instagramUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    📷 @{siteConfig.instagram}
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-bold text-sm uppercase tracking-wider text-[color:var(--muted)]">Atendimento</h4>
-              <ul className="mt-4 space-y-2 text-sm">
-                <li>📍 {siteConfig.city}/{siteConfig.state}</li>
-                <li>🏠 Atendimento em domicílio</li>
-                <li>🕒 {siteConfig.businessHours}</li>
-              </ul>
-            </div>
-          </div>
-          <div className="border-t border-[color:var(--line)]">
-            <div className="container py-5 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-[color:var(--muted)]">
-              <div>© {new Date().getFullYear()} {siteConfig.brandName}. Todos os direitos reservados.</div>
-              
-            </div>
-          </div>
-        </footer>
-
-
-
-        {activeVideo && (
-          <div
-            className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/90 backdrop-blur-sm p-4 animate-in fade-in duration-200"
-            onClick={() => setActiveVideo(null)}
-            role="dialog"
-            aria-modal="true"
-          >
             <button
-              type="button"
-              onClick={() => setActiveVideo(null)}
-              aria-label="Fechar vídeo"
-              className="absolute top-4 right-4 md:top-6 md:right-6 w-11 h-11 rounded-full bg-white/95 hover:bg-white text-slate-900 flex items-center justify-center text-2xl font-bold shadow-xl transition"
+              onClick={() => setIdx((i) => (i + 1) % items.length)}
+              className="w-11 h-11 rounded-full border border-slate-200 grid place-items-center hover:border-[#1D74D6] hover:text-[#1D74D6] transition-colors"
+              aria-label="Próximo"
             >
-              ×
+              <ChevronRight className="w-5 h-5" />
             </button>
-            <video
-              key={activeVideo}
-              src={activeVideo}
-              className="max-w-full max-h-[90vh] w-auto h-auto rounded-2xl shadow-2xl"
-              controls
-              autoPlay
-              playsInline
-              onClick={(e) => e.stopPropagation()}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ----------------------------------- FAQ ----------------------------------- */
+function FAQ() {
+  const anim = useAnim();
+  const [open, setOpen] = useState<number | null>(0);
+  return (
+    <section id="faq" className="py-24 md:py-32 bg-[#F0F5FB]/50">
+      <div className="container-page grid lg:grid-cols-[.9fr_1.1fr] gap-14">
+        <motion.div {...anim.fadeUp}>
+          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#0B2E59]/5 border border-[#0B2E59]/10 text-[12px] font-semibold tracking-wider uppercase text-[#0B2E59]">
+            FAQ
+          </span>
+          <h2 className="font-display font-extrabold text-4xl md:text-5xl lg:text-6xl mt-5 text-[#0B2E59] leading-tight">
+            Perguntas frequentes.
+          </h2>
+          <p className="mt-5 text-slate-600 leading-relaxed">
+            Não encontrou sua dúvida? Chama a gente no WhatsApp — respondemos rapidinho.
+          </p>
+          <a
+            href={whatsappLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-6 inline-flex items-center gap-2 h-12 px-5 rounded-xl font-semibold text-white shadow-lg"
+            style={{ background: "linear-gradient(135deg,#25D366,#128C7E)" }}
+          >
+            Tirar dúvidas no WhatsApp <ArrowRight className="w-4 h-4" />
+          </a>
+        </motion.div>
+
+        <div className="space-y-3">
+          {siteConfig.faq.map((f, i) => {
+            const active = open === i;
+            return (
+              <motion.div
+                key={i}
+                {...anim.stagger(i)}
+                className={`bg-white rounded-2xl border transition-all ${
+                  active ? "border-[#1D74D6]/40 shadow-[0_18px_40px_rgba(11,46,89,.10)]" : "border-slate-100"
+                }`}
+              >
+                <button
+                  onClick={() => setOpen(active ? null : i)}
+                  className="w-full flex items-center justify-between gap-4 p-5 md:p-6 text-left"
+                >
+                  <span className="font-display font-bold text-[#0B2E59] text-base md:text-lg">
+                    {f.question}
+                  </span>
+                  <span
+                    className={`w-8 h-8 rounded-full grid place-items-center shrink-0 transition-colors ${
+                      active ? "bg-[#1D74D6] text-white" : "bg-slate-100 text-slate-600"
+                    }`}
+                  >
+                    {active ? <Minus className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+                  </span>
+                </button>
+                <AnimatePresence initial={false}>
+                  {active && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3, ease: easeSmooth }}
+                      className="overflow-hidden"
+                    >
+                      <p className="px-5 md:px-6 pb-6 text-slate-600 leading-relaxed">{f.answer}</p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ---------------------------------- BLOG ---------------------------------- */
+function BlogSection() {
+  const anim = useAnim();
+  const posts = blogPosts.slice(0, 3);
+  return (
+    <section id="blog" className="py-24 md:py-32">
+      <div className="container-page">
+        <motion.div {...anim.fadeUp} className="flex items-end justify-between flex-wrap gap-6">
+          <div className="max-w-2xl">
+            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#0B2E59]/5 border border-[#0B2E59]/10 text-[12px] font-semibold tracking-wider uppercase text-[#0B2E59]">
+              Blog
+            </span>
+            <h2 className="font-display font-extrabold text-4xl md:text-5xl lg:text-6xl mt-5 text-[#0B2E59] leading-tight">
+              Dicas e conteúdo do especialista.
+            </h2>
+          </div>
+          <Link
+            to="/blog"
+            className="inline-flex items-center gap-2 font-semibold text-[#1D74D6] hover:gap-3 transition-all"
+          >
+            Ver todos <ArrowRight className="w-4 h-4" />
+          </Link>
+        </motion.div>
+
+        <div className="mt-12 grid md:grid-cols-3 gap-6">
+          {posts.map((p, i) => (
+            <motion.article
+              key={p.slug}
+              {...anim.stagger(i)}
+              whileHover={{ y: -6 }}
+              className="group bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-[0_10px_40px_rgba(11,46,89,.06)] hover:shadow-[0_24px_60px_rgba(11,46,89,.12)] transition-shadow"
+            >
+              <Link to="/blog/$slug" params={{ slug: p.slug }} className="block">
+                <div className="h-48 overflow-hidden">
+                  <img
+                    src={p.cover}
+                    alt=""
+                    loading="lazy"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                  />
+                </div>
+                <div className="p-6">
+                  <div className="flex items-center gap-2 text-xs text-slate-500">
+                    <span className="px-2.5 py-1 rounded-full bg-[#1D74D6]/10 text-[#1D74D6] font-semibold">
+                      {p.category}
+                    </span>
+                    <span>•</span>
+                    <span>{p.readingTime}</span>
+                  </div>
+                  <h3 className="mt-3 font-display font-bold text-lg text-[#0B2E59] leading-snug group-hover:text-[#1D74D6] transition-colors">
+                    {p.title.split("|")[0].trim()}
+                  </h3>
+                  <p className="mt-2 text-sm text-slate-600 leading-relaxed line-clamp-3">{p.excerpt}</p>
+                </div>
+              </Link>
+            </motion.article>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ---------------------------------- CTA ---------------------------------- */
+function FinalCTA() {
+  const anim = useAnim();
+  return (
+    <section id="contato" className="py-24 md:py-32">
+      <div className="container-page">
+        <motion.div
+          {...anim.fadeUp}
+          className="relative overflow-hidden rounded-[36px] px-8 py-16 md:p-20 text-center text-white"
+          style={{
+            background:
+              "linear-gradient(135deg,#0B2E59 0%,#0F3F73 40%,#1D74D6 80%,#35A8FF 130%)",
+          }}
+        >
+          <div className="absolute inset-0 opacity-25 pointer-events-none">
+            <div className="absolute -top-32 left-0 w-[500px] h-[500px] rounded-full blur-3xl" style={{ background: "#35A8FF" }} />
+            <div className="absolute -bottom-40 right-0 w-[500px] h-[500px] rounded-full blur-3xl" style={{ background: "#0B2E59" }} />
+          </div>
+          <div className="relative max-w-3xl mx-auto">
+            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/15 border border-white/25 text-[12px] font-semibold tracking-wider uppercase">
+              <Sparkles className="w-3.5 h-3.5" /> Sua casa merece
+            </span>
+            <h2 className="font-display font-extrabold text-4xl md:text-6xl mt-6 leading-[1.05]">
+              Seu sofá merece um cuidado profissional.
+            </h2>
+            <p className="mt-6 text-lg md:text-xl text-white/85 leading-relaxed">
+              Chame a Siqueira e devolva vida, cor e saúde ao seu estofado. Atendimento em São Luís e região.
+            </p>
+            <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
+              <Link
+                to="/agendar"
+                className="inline-flex items-center justify-center gap-2 h-16 px-10 rounded-2xl font-bold text-lg text-[#0B2E59] bg-white shadow-2xl hover:-translate-y-0.5 transition-all"
+              >
+                Solicitar orçamento <ArrowRight className="w-5 h-5" />
+              </Link>
+              <a
+                href={whatsappLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2 h-16 px-10 rounded-2xl font-bold text-lg text-white shadow-2xl hover:-translate-y-0.5 transition-all"
+                style={{ background: "linear-gradient(135deg,#25D366,#128C7E)" }}
+              >
+                Falar no WhatsApp
+              </a>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
+/* --------------------------------- FOOTER --------------------------------- */
+function Footer() {
+  return (
+    <footer className="bg-[#0B2E59] text-slate-300">
+      <div className="container-page py-16 grid md:grid-cols-4 gap-10">
+        <div>
+          <div className="flex items-center gap-3">
+            <img src={logoAsset} alt="" className="w-10 h-10" />
+            <span className="font-display font-extrabold text-white text-lg">{siteConfig.brandName}</span>
+          </div>
+          <p className="mt-4 text-sm leading-relaxed text-slate-400">
+            Higienização profissional de estofados, colchões, tapetes e veículos em São Luís/MA e região.
+          </p>
+          <div className="mt-5 flex items-center gap-3">
+            <a
+              href={siteConfig.instagramUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram"
+              className="w-10 h-10 rounded-full border border-white/15 grid place-items-center hover:bg-white/10 transition-colors"
+            >
+              <Instagram className="w-4 h-4" />
+            </a>
+            <a
+              href={whatsappLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="WhatsApp"
+              className="w-10 h-10 rounded-full border border-white/15 grid place-items-center hover:bg-white/10 transition-colors"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+                <path d="M20.52 3.48A11.86 11.86 0 0 0 12.05 0C5.5 0 .18 5.32.18 11.86c0 2.09.55 4.13 1.6 5.93L0 24l6.35-1.66a11.85 11.85 0 0 0 5.7 1.45c6.55 0 11.87-5.32 11.87-11.86 0-3.17-1.24-6.15-3.41-8.45z" />
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        <div>
+          <h4 className="font-display font-bold text-white text-sm uppercase tracking-wider">Contato</h4>
+          <ul className="mt-4 space-y-3 text-sm">
+            <li className="flex items-center gap-2">
+              <Phone className="w-4 h-4 text-[#35A8FF]" /> {siteConfig.phoneDisplay}
+            </li>
+            <li className="flex items-center gap-2">
+              <MapPin className="w-4 h-4 text-[#35A8FF]" /> {siteConfig.address}
+            </li>
+            <li className="flex items-center gap-2">
+              <Clock className="w-4 h-4 text-[#35A8FF]" /> {siteConfig.businessHours}
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 className="font-display font-bold text-white text-sm uppercase tracking-wider">Links úteis</h4>
+          <ul className="mt-4 space-y-2 text-sm">
+            <li><a href="#servicos" className="hover:text-white">Serviços</a></li>
+            <li><a href="#antes-depois" className="hover:text-white">Antes e Depois</a></li>
+            <li><a href="#depoimentos" className="hover:text-white">Depoimentos</a></li>
+            <li><a href="#faq" className="hover:text-white">FAQ</a></li>
+            <li><Link to="/blog" className="hover:text-white">Blog</Link></li>
+            <li><Link to="/agendar" className="hover:text-white">Agendar Higienização</Link></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 className="font-display font-bold text-white text-sm uppercase tracking-wider">Área de atendimento</h4>
+          <div className="mt-4 rounded-2xl overflow-hidden border border-white/10">
+            <iframe
+              title="Mapa São Luís/MA"
+              src="https://www.google.com/maps?q=São+Luís+MA&output=embed"
+              loading="lazy"
+              className="w-full h-40 grayscale contrast-125"
             />
           </div>
-        )}
+        </div>
       </div>
-    </>
+      <div className="border-t border-white/10">
+        <div className="container-page py-6 text-xs text-slate-400 flex flex-wrap gap-3 items-center justify-between">
+          <span>© {new Date().getFullYear()} {siteConfig.brandName}. Todos os direitos reservados.</span>
+          <span>CNPJ · Higienização profissional em São Luís/MA</span>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+/* ---------------------------------- PAGE ---------------------------------- */
+function LandingPage() {
+  return (
+    <main className="min-h-screen bg-background text-foreground overflow-x-clip">
+      <Nav />
+      <Hero />
+      <Services />
+      <CalculatorSection />
+      <BeforeAfter />
+      <Process />
+      <Features />
+      <Stats />
+      <Testimonials />
+      <FAQ />
+      <BlogSection />
+      <FinalCTA />
+      <Footer />
+    </main>
   );
 }
