@@ -343,7 +343,7 @@ function BookingForm(props: {
 }) {
   const {
     isLoading, date, setDate, isDayDisabled, today, maxDate,
-    slot, setSlot, takenSlots,
+    slot, setSlot, takenSlots, pastSlots,
     name, setName, cpf, setCpf, phone, setPhone,
     address, setAddress, service, setService,
     notes, setNotes,
