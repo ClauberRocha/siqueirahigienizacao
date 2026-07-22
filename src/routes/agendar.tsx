@@ -164,6 +164,15 @@ function AgendarPage() {
   const dateKey = date ? format(date, "yyyy-MM-dd") : "";
   const takenSlots = dateKey ? bookedMap.get(dateKey) ?? new Set() : new Set();
 
+  // Slots que já passaram no dia de hoje (manhã encerra 12h, tarde 18h).
+  const isToday = !!date && format(date, "yyyy-MM-dd") === format(new Date(), "yyyy-MM-dd");
+  const now = new Date();
+  const pastSlots = new Set<TimeSlot>();
+  if (isToday) {
+    if (now.getHours() >= 12) pastSlots.add("morning");
+    if (now.getHours() >= 18) pastSlots.add("afternoon");
+  }
+
   const mutation = useMutation({
     mutationFn: async () => {
       if (!date) throw new Error("Escolha uma data.");
