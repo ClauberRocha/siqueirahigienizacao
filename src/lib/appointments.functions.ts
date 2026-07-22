@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { validateSlotLeadTime, nowInSaoLuis } from "./booking-time";
 
 // Validação leve de CPF: 11 dígitos, ignorando pontuação.
 const cpfSchema = z
