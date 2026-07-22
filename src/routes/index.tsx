@@ -15,7 +15,15 @@ import video5 from "@/assets/videos/trabalho-5.mp4.asset.json";
 import video6 from "@/assets/videos/trabalho-6.mp4.asset.json";
 import video7 from "@/assets/videos/trabalho-7.mp4.asset.json";
 
-const workVideos = [video1, video2, video3, video4, video5, video6, video7];
+// Asset pointers use relative paths (/__l5e/...) served only by Lovable's edge.
+// When deployed to other hosts (e.g. Vercel), prefix with the Lovable CDN origin
+// so the videos still resolve.
+const ASSET_ORIGIN = "https://siqueirahigienizacao.lovable.app";
+const toAbsolute = (a: { url: string }) => ({
+  ...a,
+  url: a.url.startsWith("http") ? a.url : `${ASSET_ORIGIN}${a.url}`,
+});
+const workVideos = [video1, video2, video3, video4, video5, video6, video7].map(toAbsolute);
 
 const CSS = `
 
