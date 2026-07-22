@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { validateSlotLeadTime } from "./booking-time";
 
 /** Retorna se o usuário logado é administrador. */
 export const getIsAdmin = createServerFn({ method: "GET" })
@@ -105,3 +106,63 @@ export const updateAppointment = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return { ok: true };
   });
+
+const rescheduleSchema = z.object({
+  id: z.string().uuid(),
+  scheduled_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Data inválida"),
+  time_slot: z.enum(["morning", "afternoon"]),
+});
+
+export const rescheduleAppointment = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: unknown) => rescheduleSchema.parse(data))
+  .handler(async ({ data, context }) => {
+    const [y, m, d] = data.scheduled_date.split("-").map(Number);
+    const chosen = new Date(Date.UTC(y, m - 1, d));
+    if (chosen.getUTCDay() === 0) {
+      throw new Error("Não atendemos aos domingos.");
+    }
+    const leadError = validateSlotLeadTime(data.scheduled_date, data.time_slot);
+    if (leadError) throw new Error(leadError);
+
+    const { data: conflict, error: cErr } = await context.supabase
+      .from("appointments")
+      .select("id")
+      .eq("scheduled_date", data.scheduled_date)
+      .eq("time_slot", data.time_slot)
+      .neq("id", data.id)
+      .maybeSingle();
+    if (cErr) throw new Error(cErr.message);
+    if (conflict) throw new Error("Este horário já foi reservado. Escolha outro.");
+
+    const { error } = await context.supabase
+      .from("appointments")
+      .update({
+        scheduled_date: data.scheduled_date,
+        time_slot: data.time_slot,
+        status: "confirmed",
+      })
+      .eq("id", data.id);
+    if (error) {
+      if ((error as { code?: string }).code === "23505") {
+        throw new Error("Este horário já foi reservado. Escolha outro.");
+      }
+      throw new Error(error.message);
+    }
+    return { ok: true };
+  });
+
+const idSchema = z.object({ id: z.string().uuid() });
+
+export const cancelAppointment = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: unknown) => idSchema.parse(data))
+  .handler(async ({ data, context }) => {
+    const { error } = await context.supabase
+      .from("appointments")
+      .delete()
+      .eq("id", data.id);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+

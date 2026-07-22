@@ -39,6 +39,7 @@ export const getBookedSlots = createServerFn({ method: "GET" }).handler(
     const { data, error } = await supabaseAdmin
       .from("appointments")
       .select("scheduled_date, time_slot")
+      .neq("status", "cancelled")
       .gte("scheduled_date", today);
     if (error) throw new Error(error.message);
     return (data ?? []).map((r) => ({

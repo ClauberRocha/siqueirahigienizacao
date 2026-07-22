@@ -35,6 +35,8 @@ import {
   listAppointments,
   updateAppointmentStatus,
   updateAppointment,
+  rescheduleAppointment,
+  cancelAppointment,
 } from "@/lib/admin.functions";
 
 export const Route = createFileRoute("/_authenticated/admin")({
@@ -120,6 +122,8 @@ function AdminPage() {
   const fetchAppointments = useServerFn(listAppointments);
   const setStatus = useServerFn(updateAppointmentStatus);
   const saveAppointment = useServerFn(updateAppointment);
+  const rescheduleFn = useServerFn(rescheduleAppointment);
+  const cancelFn = useServerFn(cancelAppointment);
 
   const isAdminQ = useQuery({ queryKey: ["is-admin"], queryFn: () => fetchIsAdmin() });
   const isAdmin = isAdminQ.data?.isAdmin ?? false;
@@ -161,6 +165,16 @@ function AdminPage() {
     service: "",
     status: "pending" as StatusKey,
   });
+
+  // Modal de reagendamento
+  const [rescheduling, setRescheduling] = useState<Appointment | null>(null);
+  const [rescheduleForm, setRescheduleForm] = useState({
+    scheduled_date: "",
+    time_slot: "morning" as "morning" | "afternoon",
+  });
+
+  // Confirmação de cancelamento
+  const [cancelTarget, setCancelTarget] = useState<Appointment | null>(null);
 
   const apps = (appointmentsQ.data ?? []) as Appointment[];
 
@@ -242,6 +256,30 @@ function AdminPage() {
     onError: (e: Error) => toast.error("Falha ao salvar", { description: e.message }),
   });
 
+  const rescheduleMut = useMutation({
+    mutationFn: (v: { id: string; scheduled_date: string; time_slot: "morning" | "afternoon" }) =>
+      rescheduleFn({ data: v }),
+    onSuccess: () => {
+      toast.success("Agendamento remarcado");
+      qc.invalidateQueries({ queryKey: ["admin-appointments"] });
+      qc.invalidateQueries({ queryKey: ["booked-slots"] });
+      setRescheduling(null);
+    },
+    onError: (e: Error) => toast.error("Não foi possível remarcar", { description: e.message }),
+  });
+
+  const cancelMut = useMutation({
+    mutationFn: (id: string) => cancelFn({ data: { id } }),
+    onSuccess: () => {
+      toast.success("Agendamento cancelado", { description: "Horário liberado na agenda." });
+      qc.invalidateQueries({ queryKey: ["admin-appointments"] });
+      qc.invalidateQueries({ queryKey: ["booked-slots"] });
+      setCancelTarget(null);
+      setEditing(null);
+    },
+    onError: (e: Error) => toast.error("Não foi possível cancelar", { description: e.message }),
+  });
+
   const openEdit = (a: Appointment) => {
     setEditing(a);
     setEditForm({
@@ -252,6 +290,15 @@ function AdminPage() {
       status: (a.status as StatusKey) ?? "pending",
     });
   };
+
+  const openReschedule = (a: Appointment) => {
+    setRescheduling(a);
+    setRescheduleForm({
+      scheduled_date: a.scheduled_date,
+      time_slot: (a.time_slot === "afternoon" ? "afternoon" : "morning"),
+    });
+  };
+
 
   const editPhoneValid = useMemo(
     () => digitsOnly(editForm.customer_phone).length === 10 || digitsOnly(editForm.customer_phone).length === 11,
@@ -519,9 +566,26 @@ function AdminPage() {
                                 : "—"}
                             </td>
                             <td className="py-2 pr-3">
-                              <Button size="sm" variant="outline" onClick={() => openEdit(a)}>
-                                Detalhes
-                              </Button>
+                              <div className="flex flex-wrap gap-1">
+                                <Button size="sm" variant="outline" onClick={() => openEdit(a)}>
+                                  Detalhes
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => openReschedule(a)}
+                                  disabled={a.status === "cancelled"}
+                                >
+                                  Reagendar
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="destructive"
+                                  onClick={() => setCancelTarget(a)}
+                                >
+                                  Cancelar
+                                </Button>
+                              </div>
                             </td>
                           </tr>
                         ))}
@@ -718,6 +782,111 @@ function AdminPage() {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Modal de reagendamento */}
+      <Dialog open={!!rescheduling} onOpenChange={(o) => !o && setRescheduling(null)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Reagendar atendimento</DialogTitle>
+            {rescheduling && (
+              <DialogDescription>
+                Cliente: {rescheduling.customer_name} · atual:{" "}
+                {format(new Date(rescheduling.scheduled_date + "T00:00:00"), "dd/MM/yyyy", { locale: ptBR })}{" "}
+                · {SLOT_LABEL[rescheduling.time_slot] ?? rescheduling.time_slot}
+              </DialogDescription>
+            )}
+          </DialogHeader>
+          {rescheduling && (
+            <form
+              className="space-y-3"
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (!rescheduleForm.scheduled_date) {
+                  toast.error("Escolha uma data.");
+                  return;
+                }
+                rescheduleMut.mutate({
+                  id: rescheduling.id,
+                  scheduled_date: rescheduleForm.scheduled_date,
+                  time_slot: rescheduleForm.time_slot,
+                });
+              }}
+            >
+              <div>
+                <Label htmlFor="resched-date">Nova data</Label>
+                <Input
+                  id="resched-date"
+                  type="date"
+                  min={new Date().toISOString().slice(0, 10)}
+                  value={rescheduleForm.scheduled_date}
+                  onChange={(e) =>
+                    setRescheduleForm((f) => ({ ...f, scheduled_date: e.target.value }))
+                  }
+                  required
+                />
+              </div>
+              <div>
+                <Label>Novo turno</Label>
+                <Select
+                  value={rescheduleForm.time_slot}
+                  onValueChange={(v) =>
+                    setRescheduleForm((f) => ({ ...f, time_slot: v as "morning" | "afternoon" }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="morning">Manhã (08–12h)</SelectItem>
+                    <SelectItem value="afternoon">Tarde (13–18h)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Domingos não são atendidos. Antecedência mínima de 2h em relação ao fim do turno.
+              </p>
+              <DialogFooter>
+                <Button type="button" variant="ghost" onClick={() => setRescheduling(null)}>
+                  Voltar
+                </Button>
+                <Button type="submit" disabled={rescheduleMut.isPending}>
+                  {rescheduleMut.isPending ? "Remarcando…" : "Confirmar remarcação"}
+                </Button>
+              </DialogFooter>
+            </form>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Confirmação de cancelamento */}
+      <Dialog open={!!cancelTarget} onOpenChange={(o) => !o && setCancelTarget(null)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Cancelar agendamento?</DialogTitle>
+            {cancelTarget && (
+              <DialogDescription>
+                {cancelTarget.customer_name} ·{" "}
+                {format(new Date(cancelTarget.scheduled_date + "T00:00:00"), "dd/MM/yyyy", { locale: ptBR })}{" "}
+                · {SLOT_LABEL[cancelTarget.time_slot] ?? cancelTarget.time_slot}. O horário
+                voltará a ficar disponível imediatamente.
+              </DialogDescription>
+            )}
+          </DialogHeader>
+          <DialogFooter>
+            <Button type="button" variant="ghost" onClick={() => setCancelTarget(null)}>
+              Voltar
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => cancelTarget && cancelMut.mutate(cancelTarget.id)}
+              disabled={cancelMut.isPending}
+            >
+              {cancelMut.isPending ? "Cancelando…" : "Sim, cancelar"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
+
