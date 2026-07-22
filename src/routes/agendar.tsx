@@ -308,6 +308,8 @@ function BookingForm(props: {
   setAddress: (v: string) => void;
   service: string;
   setService: (v: string) => void;
+  notes: string;
+  setNotes: (v: string) => void;
   onSubmit: () => void;
   submitting: boolean;
 }) {
@@ -316,6 +318,7 @@ function BookingForm(props: {
     slot, setSlot, takenSlots,
     name, setName, cpf, setCpf, phone, setPhone,
     address, setAddress, service, setService,
+    notes, setNotes,
     onSubmit, submitting,
   } = props;
   return (
