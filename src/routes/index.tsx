@@ -3,8 +3,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import {
   motion,
   AnimatePresence,
-  useScroll,
-  useTransform,
   useInView,
   useMotionValue,
   animate as motionAnimate,
@@ -263,8 +261,6 @@ function Nav() {
 
 /* --------------------------------- HERO --------------------------------- */
 function Hero() {
-  const { scrollY } = useScroll();
-  const imgY = useTransform(scrollY, [0, 600], [0, 80]);
   const reduce = useReducedMotion();
 
   return (
@@ -424,7 +420,6 @@ function Hero() {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.9, ease: easeSmooth }}
           className="relative"
-          style={{ y: reduce ? undefined : imgY }}
         >
           <div
             className="relative rounded-[28px] overflow-hidden shadow-2xl"
