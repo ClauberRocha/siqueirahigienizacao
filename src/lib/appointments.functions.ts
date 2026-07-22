@@ -69,13 +69,21 @@ export const createAppointment = createServerFn({ method: "POST" })
 
     const [y, m, d] = data.scheduled_date.split("-").map(Number);
     const chosen = new Date(Date.UTC(y, m - 1, d));
-    const todayUtc = new Date();
-    todayUtc.setUTCHours(0, 0, 0, 0);
-    if (chosen.getTime() < todayUtc.getTime()) {
-      throw new Error("Não é possível agendar em datas passadas.");
-    }
     if (chosen.getUTCDay() === 0) {
       throw new Error("Não atendemos aos domingos.");
+    }
+
+    // Bloqueia datas passadas e horários dentro da janela mínima de antecedência.
+    const leadError = validateSlotLeadTime(data.scheduled_date, data.time_slot);
+    if (leadError) throw new Error(leadError);
+
+    // Bloqueia datas muito futuras (>60 dias) para consistência com a UI.
+    const nowLocal = nowInSaoLuis();
+    const [ty, tm, td] = nowLocal.dateKey.split("-").map(Number);
+    const todayUtc = new Date(Date.UTC(ty, tm - 1, td));
+    const diffDays = (chosen.getTime() - todayUtc.getTime()) / 86_400_000;
+    if (diffDays > 60) {
+      throw new Error("Só aceitamos agendamentos para os próximos 60 dias.");
     }
 
     const { data: existing, error: exErr } = await supabaseAdmin
