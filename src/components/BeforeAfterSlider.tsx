@@ -5,9 +5,11 @@ type Props = {
   after: string;
   label?: string;
   initial?: number;
+  /** Same object-position applied to BOTH images so the pair aligns perfectly. */
+  objectPosition?: string;
 };
 
-export function BeforeAfterSlider({ before, after, label, initial = 50 }: Props) {
+export function BeforeAfterSlider({ before, after, label, initial = 50, objectPosition = "center center" }: Props) {
   const [pos, setPos] = useState(initial);
   const [dragging, setDragging] = useState(false);
   const wrapRef = useRef<HTMLDivElement>(null);
