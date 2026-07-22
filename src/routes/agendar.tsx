@@ -524,6 +524,9 @@ function ConfirmationPanel({
           <Row label="Telefone">{confirmation.phone}</Row>
           <Row label="Endereço">{confirmation.address}</Row>
           <Row label="Serviço">{confirmation.service}</Row>
+          {confirmation.notes.trim() && (
+            <Row label="Observações">{confirmation.notes}</Row>
+          )}
         </dl>
 
         <pre className="mt-5 max-h-64 overflow-auto rounded-md border bg-muted/40 p-3 text-xs whitespace-pre-wrap">
