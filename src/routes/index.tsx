@@ -47,6 +47,7 @@ import { siteConfig, whatsappLink } from "@/lib/site-config";
 import { track } from "@/lib/analytics";
 import { BeforeAfterSlider } from "@/components/BeforeAfterSlider";
 import { BeforeAfterZoomModal } from "@/components/BeforeAfterZoomModal";
+import { useLogoConfig, cornerStyle, HeroLogoInspector } from "@/components/HeroLogoControl";
 
 import { blogPosts } from "@/lib/blog-data";
 
@@ -275,6 +276,16 @@ const HERO_SLIDES = [
 function HeroCarousel() {
   const [i, setI] = useState(0);
   const reduce = useReducedMotion();
+  const [logoCfg] = useLogoConfig();
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 640px)");
+    const upd = () => setIsDesktop(mq.matches);
+    upd();
+    mq.addEventListener("change", upd);
+    return () => mq.removeEventListener("change", upd);
+  }, []);
 
   useEffect(() => {
     if (reduce) return;
@@ -284,9 +295,11 @@ function HeroCarousel() {
     return () => window.clearInterval(id);
   }, [reduce]);
 
+  const active = isDesktop ? logoCfg.desktop : logoCfg.mobile;
+
   return (
     <div
-      className="relative rounded-[28px] overflow-hidden shadow-2xl h-[520px] lg:h-[620px]"
+      className="relative rounded-[28px] overflow-hidden shadow-2xl h-[520px] lg:h-[620px] isolate"
       style={{ boxShadow: "0 40px 90px -20px rgba(11,46,89,.35)" }}
     >
       {HERO_SLIDES.map((s, idx) => (
@@ -305,7 +318,11 @@ function HeroCarousel() {
         className="absolute inset-0 pointer-events-none"
         style={{ background: "linear-gradient(180deg,transparent 55%,rgba(11,46,89,.35))" }}
       />
-      <div className="absolute top-4 right-4 z-10 flex items-center gap-2 rounded-2xl bg-white/85 backdrop-blur-md px-3 py-2 shadow-lg ring-1 ring-white/60">
+      <div
+        data-hero-logo
+        className="absolute z-[1] flex items-center gap-2 rounded-2xl bg-white/85 backdrop-blur-md px-3 py-2 shadow-lg ring-1 ring-white/60 transition-[top,left,right,bottom] duration-200"
+        style={cornerStyle(active)}
+      >
         <img
           src={logoAsset}
           alt="Siqueira Higienização"
@@ -315,7 +332,7 @@ function HeroCarousel() {
           decoding="async"
         />
       </div>
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-[2]">
         {HERO_SLIDES.map((_, idx) => (
           <button
             key={idx}
@@ -329,6 +346,7 @@ function HeroCarousel() {
     </div>
   );
 }
+
 
 /* --------------------------------- HERO --------------------------------- */
 function Hero() {
@@ -500,7 +518,8 @@ function Hero() {
             initial={{ opacity: 0, x: -20, y: 10 }}
             animate={{ opacity: 1, x: 0, y: 0 }}
             transition={{ duration: 0.7, delay: 0.7, ease: easeSmooth }}
-            className="hidden sm:flex absolute -left-4 top-8 items-center gap-3 bg-white rounded-2xl p-4 shadow-xl border border-slate-100"
+            data-google-card
+            className="hidden sm:flex absolute -left-4 top-8 z-30 items-center gap-3 bg-white rounded-2xl p-4 shadow-xl border border-slate-100"
           >
             <div className="w-11 h-11 rounded-xl bg-amber-100 grid place-items-center">
               <Star className="w-6 h-6 text-amber-500 fill-current" />
@@ -1567,6 +1586,7 @@ function LandingPage() {
       <BlogSection />
       <FinalCTA />
       <Footer />
+      {import.meta.env.DEV && <HeroLogoInspector />}
     </main>
   );
 }
