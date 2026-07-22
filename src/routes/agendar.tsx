@@ -406,25 +406,28 @@ function BookingForm(props: {
               <div className="grid grid-cols-2 gap-2">
                 {(["morning", "afternoon"] as TimeSlot[]).map((s) => {
                   const taken = takenSlots.has(s);
+                  const past = pastSlots.has(s);
+                  const disabled = !date || taken || past;
                   const active = slot === s;
                   return (
                     <button
                       key={s}
                       type="button"
-                      disabled={!date || taken}
+                      disabled={disabled}
                       onClick={() => setSlot(s)}
                       className={
                         "rounded-md border px-3 py-2 text-sm transition " +
                         (active
                           ? "border-primary bg-primary text-primary-foreground"
                           : "border-input bg-background hover:bg-muted") +
-                        (!date || taken
+                        (disabled
                           ? " cursor-not-allowed opacity-50 hover:bg-background"
                           : "")
                       }
                     >
                       {SLOT_LABELS[s]}
                       {taken && <span className="ml-1 text-xs">(ocupado)</span>}
+                      {!taken && past && <span className="ml-1 text-xs">(encerrado)</span>}
                     </button>
                   );
                 })}
