@@ -7,9 +7,22 @@ type Props = {
   initial?: number;
   /** Same object-position applied to BOTH images so the pair aligns perfectly. */
   objectPosition?: string;
+  /** Overlay grid + centerlines to inspect crop alignment. */
+  showGrid?: boolean;
+  /** Fixed aspect-ratio (default 4/3). Applied identically on mobile/tablet/desktop. */
+  aspectRatio?: string;
 };
 
-export function BeforeAfterSlider({ before, after, label, initial = 50, objectPosition = "center center" }: Props) {
+export function BeforeAfterSlider({
+  before,
+  after,
+  label,
+  initial = 50,
+  objectPosition = "center center",
+  showGrid = false,
+  aspectRatio = "4 / 3",
+}: Props) {
+
   const [pos, setPos] = useState(initial);
   const [dragging, setDragging] = useState(false);
   const wrapRef = useRef<HTMLDivElement>(null);
