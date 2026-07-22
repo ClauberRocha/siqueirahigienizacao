@@ -1274,12 +1274,15 @@ function FinalCTA() {
               Chame a Siqueira e devolva vida, cor e saúde ao seu estofado. Atendimento em São Luís e região.
             </p>
             <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
-              <Link
-                to="/agendar"
+              <a
+                href={whatsappLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => track("whatsapp_click", { location: "final_cta_orcamento" })}
                 className="inline-flex items-center justify-center gap-2 h-16 px-10 rounded-2xl font-bold text-lg text-[#0B2E59] bg-white shadow-2xl hover:-translate-y-0.5 transition-all"
               >
                 Solicitar orçamento <ArrowRight className="w-5 h-5" />
-              </Link>
+              </a>
               <a
                 href={whatsappLink}
                 target="_blank"
