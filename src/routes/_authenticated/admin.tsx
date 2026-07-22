@@ -35,6 +35,8 @@ import {
   listAppointments,
   updateAppointmentStatus,
   updateAppointment,
+  rescheduleAppointment,
+  cancelAppointment,
 } from "@/lib/admin.functions";
 
 export const Route = createFileRoute("/_authenticated/admin")({
