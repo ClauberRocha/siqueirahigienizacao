@@ -424,22 +424,8 @@ function Hero() {
           transition={{ duration: 0.9, ease: easeSmooth }}
           className="relative"
         >
-          <div
-            className="relative rounded-[28px] overflow-hidden shadow-2xl"
-            style={{ boxShadow: "0 40px 90px -20px rgba(11,46,89,.35)" }}
-          >
-            <img
-              src={heroImage}
-              alt="Técnico Siqueira Higienização higienizando sofá com equipamento profissional"
-              className="w-full h-[520px] lg:h-[620px] object-cover"
-              fetchPriority="high"
-              decoding="async"
-            />
-            <div
-              className="absolute inset-0 pointer-events-none"
-              style={{ background: "linear-gradient(180deg,transparent 55%,rgba(11,46,89,.35))" }}
-            />
-          </div>
+          <HeroCarousel />
+
 
           {/* Floating cards */}
           <motion.div
