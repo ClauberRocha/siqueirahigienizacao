@@ -325,6 +325,7 @@ function BookingForm(props: {
   slot: TimeSlot | "";
   setSlot: (s: TimeSlot) => void;
   takenSlots: Set<TimeSlot>;
+  pastSlots: Set<TimeSlot>;
   name: string;
   setName: (v: string) => void;
   cpf: string;
