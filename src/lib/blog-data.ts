@@ -475,6 +475,187 @@ export const blogPosts: BlogPost[] = [
       },
     ],
   },
+  {
+    slug: "higienizacao-de-sofa-no-calhau-sao-luis",
+    title: "Higienização de sofá no Calhau (São Luís/MA) | Siqueira",
+    description:
+      "Higienização profissional de sofá no bairro Calhau em São Luís/MA: atendimento em domicílio, secagem rápida, produtos seguros e orçamento no WhatsApp.",
+    h1: "Higienização de sofá no Calhau, São Luís/MA",
+    readingTime: "5 min",
+    publishedAt: "2026-07-15",
+    category: "Bairros",
+    cover:
+      "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?w=1200&q=75&fm=webp",
+    excerpt:
+      "Atendemos o Calhau com higienização de sofá em domicílio, extração profissional e produtos seguros para crianças e pets.",
+    tags: ["sofá", "calhau", "são luís", "higienização", "bairro"],
+    blocks: [
+      {
+        type: "p",
+        text: "Mora no Calhau e está procurando alguém de confiança para higienizar o sofá? A Siqueira Higienização atende toda a região do Calhau em São Luís/MA com serviço em domicílio, equipamento profissional de extração e produtos biodegradáveis, seguros para crianças, pets e alérgicos.",
+      },
+      { type: "h2", text: "Por que higienizar o sofá no Calhau?" },
+      {
+        type: "p",
+        text: "O clima quente e úmido de São Luís acelera o crescimento de ácaros e fungos dentro do estofado. No Calhau, a proximidade com o mar aumenta a maresia — que se combina com poeira, suor e resíduo de pele, deixando o sofá com cheiro e favorecendo alergias respiratórias, principalmente em crianças.",
+      },
+      { type: "h2", text: "Como funciona nosso atendimento no Calhau" },
+      {
+        type: "ol",
+        items: [
+          "Você envia foto do sofá pelo WhatsApp e recebe o orçamento em minutos.",
+          "Agendamos data e horário — atendemos de segunda a sábado no Calhau.",
+          "Chegamos no horário combinado, protegemos o piso e higienizamos o sofá dentro da sua casa.",
+          "Secagem rápida: em 3 a 6 horas o sofá está liberado para uso.",
+        ],
+      },
+      { type: "h2", text: "Quanto custa higienizar o sofá no Calhau?" },
+      {
+        type: "p",
+        text: "O valor depende do número de lugares, tipo de tecido e estado do estofado. Sofá de 3 lugares em tecido comum costuma partir de valores acessíveis. Envie foto no WhatsApp e receba o orçamento fechado antes de qualquer visita.",
+      },
+      { type: "h2", text: "Também atendemos" },
+      {
+        type: "ul",
+        items: [
+          "Colchões (casal, solteiro, king)",
+          "Poltronas e cadeiras",
+          "Tapetes e carpetes",
+          "Bancos automotivos",
+        ],
+      },
+    ],
+    faq: [
+      {
+        q: "Vocês atendem em todo o Calhau?",
+        a: "Sim, atendemos todo o Calhau em São Luís/MA, incluindo condomínios e casas próximas à praia.",
+      },
+      {
+        q: "Em quanto tempo o sofá seca?",
+        a: "Entre 3 e 6 horas, dependendo do tecido e da ventilação do ambiente.",
+      },
+      {
+        q: "Os produtos são seguros para meu bebê?",
+        a: "Sim. Trabalhamos com produtos biodegradáveis, sem cheiro forte e seguros para crianças, pets e alérgicos.",
+      },
+    ],
+  },
+  {
+    slug: "higienizacao-de-sofa-na-cohama-sao-luis",
+    title: "Higienização de sofá na Cohama (São Luís/MA) | Siqueira",
+    description:
+      "Higienização de sofá na Cohama, São Luís/MA: atendimento em domicílio, extração profissional, produtos seguros e orçamento rápido no WhatsApp.",
+    h1: "Higienização de sofá na Cohama, São Luís/MA",
+    readingTime: "5 min",
+    publishedAt: "2026-07-16",
+    category: "Bairros",
+    cover:
+      "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?w=1200&q=75&fm=webp",
+    excerpt:
+      "Higienização profissional de sofá na Cohama, com equipamento de extração, produtos biodegradáveis e secagem rápida.",
+    tags: ["sofá", "cohama", "são luís", "higienização", "bairro"],
+    blocks: [
+      {
+        type: "p",
+        text: "Se você mora na Cohama e quer higienizar o sofá sem precisar sair de casa, a Siqueira Higienização atende toda a região com serviço em domicílio, equipamento profissional e produtos seguros para toda a família.",
+      },
+      { type: "h2", text: "Sofá limpo = ar mais saudável dentro de casa" },
+      {
+        type: "p",
+        text: "Um sofá acumula ácaros, pele morta, pelos de animais, poeira e suor. Aspirar em casa remove só a sujeira superficial — o que causa alergia e cheiro fica dentro da espuma. A extração profissional retira até 90% desses resíduos.",
+      },
+      { type: "h2", text: "O que está incluído no serviço na Cohama" },
+      {
+        type: "ul",
+        items: [
+          "Aspiração profunda com equipamento profissional",
+          "Aplicação de produto biodegradável específico para o tecido",
+          "Escovação técnica e extração da sujeira dissolvida",
+          "Neutralização de odores (fumaça, xixi de pet, suor)",
+          "Secagem rápida para uso em poucas horas",
+        ],
+      },
+      { type: "h2", text: "Agendamento fácil pelo WhatsApp" },
+      {
+        type: "p",
+        text: "Envie uma foto do sofá pelo WhatsApp, receba o orçamento fechado e agende o horário que melhor se encaixa na sua rotina. Atendemos de segunda a sábado em toda a Cohama.",
+      },
+    ],
+    faq: [
+      {
+        q: "Preciso tirar o sofá do lugar?",
+        a: "Não. Fazemos toda a higienização no local, protegendo o piso e paredes.",
+      },
+      {
+        q: "Vocês higienizam sofá de couro na Cohama?",
+        a: "Sim. Trabalhamos com sofá de tecido, suede, veludo, chenille, couro natural e corino.",
+      },
+      {
+        q: "Qual a forma de pagamento?",
+        a: "Aceitamos Pix, cartão de débito e crédito na hora do atendimento.",
+      },
+    ],
+  },
+  {
+    slug: "higienizacao-de-sofa-na-renascenca-sao-luis",
+    title: "Higienização de sofá na Renascença (São Luís/MA) | Siqueira",
+    description:
+      "Higienização de sofá na Renascença, São Luís/MA: serviço profissional em domicílio, produtos seguros para pets e crianças e orçamento no WhatsApp.",
+    h1: "Higienização de sofá na Renascença, São Luís/MA",
+    readingTime: "5 min",
+    publishedAt: "2026-07-17",
+    category: "Bairros",
+    cover:
+      "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?w=1200&q=75&fm=webp",
+    excerpt:
+      "Atendimento profissional na Renascença com extração, produtos biodegradáveis e secagem rápida — sem precisar tirar o sofá de casa.",
+    tags: ["sofá", "renascença", "são luís", "higienização", "bairro"],
+    blocks: [
+      {
+        type: "p",
+        text: "A Siqueira Higienização atende a Renascença em São Luís/MA com serviço profissional de higienização de sofá em domicílio. Chegamos no horário combinado, higienizamos dentro do seu apartamento ou casa e liberamos o estofado para uso em poucas horas.",
+      },
+      { type: "h2", text: "Ideal para apartamentos da Renascença" },
+      {
+        type: "p",
+        text: "Nossa equipe está acostumada a atender apartamentos: usamos equipamento silencioso, protegemos o piso e organizamos tudo antes de sair. Você não precisa mover o sofá nem contratar frete.",
+      },
+      { type: "h2", text: "Serviços mais pedidos na Renascença" },
+      {
+        type: "ul",
+        items: [
+          "Higienização de sofá retrátil e reclinável",
+          "Limpeza de colchão king e queen",
+          "Poltronas de leitura e cadeiras de jantar",
+          "Tapetes de sala e quarto",
+        ],
+      },
+      { type: "h2", text: "Cuidado com produtos caseiros" },
+      {
+        type: "p",
+        text: "Água sanitária, sabão em pó e amaciante mancham tecido e ressecam couro. O correto é usar produto neutro, com pH controlado e extração profissional para retirar toda a espuma — caso contrário, o sofá volta a sujar muito mais rápido.",
+      },
+      { type: "h2", text: "Peça seu orçamento agora" },
+      {
+        type: "p",
+        text: "Envie uma foto pelo WhatsApp e receba o orçamento fechado antes de qualquer visita. Atendemos toda a Renascença I e II.",
+      },
+    ],
+    faq: [
+      {
+        q: "Vocês atendem em prédios com síndico?",
+        a: "Sim. Trabalhamos em condomínios com portaria — basta autorizar nossa entrada no dia agendado.",
+      },
+      {
+        q: "Quanto tempo dura a higienização?",
+        a: "Entre 40 minutos e 1h30, dependendo do tamanho e tipo do sofá.",
+      },
+      {
+        q: "Fazem higienização de colchão junto?",
+        a: "Sim, oferecemos combo sofá + colchão com desconto — pergunte no WhatsApp.",
+      },
+    ],
+  },
 ];
 
 export function getPostBySlug(slug: string): BlogPost | undefined {
