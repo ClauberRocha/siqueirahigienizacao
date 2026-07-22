@@ -69,7 +69,7 @@ export function BeforeAfterSlider({
         userSelect: "none",
         touchAction: "none",
         position: "relative",
-        aspectRatio: "4 / 3",
+        aspectRatio,
         overflow: "hidden",
         width: "100%",
       }}
