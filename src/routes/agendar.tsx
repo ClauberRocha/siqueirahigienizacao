@@ -450,6 +450,13 @@ function BookingForm(props: {
                   Quanto mais detalhes, melhor preparamos o atendimento.
                 </p>
               </div>
+              <div className="sm:col-span-2">
+                <Label htmlFor="notes">Observações (opcional)</Label>
+                <Textarea id="notes" maxLength={500}
+                  value={notes} onChange={(e) => setNotes(e.target.value)}
+                  placeholder="Ex.: portão azul, ligar antes de chegar, animal de estimação em casa."
+                  rows={3} className="resize-y" />
+              </div>
             </div>
 
             <Button
