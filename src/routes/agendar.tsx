@@ -90,20 +90,33 @@ type Confirmation = {
   phone: string;
   address: string;
   service: string;
+  notes: string;
   ownerWhatsapp: string;
 };
 
 function buildWhatsappMessage(c: Confirmation) {
-  return (
-    `*Novo agendamento — ${siteConfig.brandName}*\n\n` +
-    `📅 Data: ${c.dateLabel}\n` +
-    `⏰ Horário: ${SLOT_LABELS[c.slot]}\n` +
-    `👤 Nome: ${c.name}\n` +
-    `🪪 CPF: ${c.cpf}\n` +
-    `📱 Telefone: ${c.phone}\n` +
-    `📍 Endereço: ${c.address}\n` +
-    `🧼 Serviço: ${c.service}`
-  );
+  const lines = [
+    `*Novo agendamento — ${siteConfig.brandName}*`,
+    `Protocolo: ${c.id.slice(0, 8).toUpperCase()}`,
+    ``,
+    `👤 *Cliente*`,
+    `Nome: ${c.name}`,
+    `CPF: ${c.cpf}`,
+    `Telefone: ${c.phone}`,
+    `Endereço: ${c.address}`,
+    ``,
+    `📅 *Agendamento*`,
+    `Data: ${c.dateLabel}`,
+    `Turno: ${SLOT_PERIOD[c.slot]}`,
+    `Horário: ${SLOT_WINDOW[c.slot]}`,
+    ``,
+    `🧼 *Serviço*`,
+    c.service,
+  ];
+  if (c.notes.trim()) {
+    lines.push(``, `📝 *Observações*`, c.notes.trim());
+  }
+  return lines.join("\n");
 }
 
 function AgendarPage() {
