@@ -412,7 +412,7 @@ function Hero() {
                 className="flex items-center gap-2 text-[13px] font-semibold text-[#0B2E59] bg-white/70 backdrop-blur border border-slate-200/70 rounded-xl px-3 py-2"
               >
                 <s.icon className="w-4 h-4 text-[#1D74D6] shrink-0" />
-                <span className="truncate">{s.label}</span>
+                <span className="leading-tight">{s.label}</span>
               </div>
             ))}
           </motion.div>
