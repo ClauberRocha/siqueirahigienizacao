@@ -195,6 +195,7 @@ function AgendarPage() {
         phone,
         address,
         service,
+        notes,
         ownerWhatsapp:
           publicSettings?.owner_whatsapp || siteConfig.whatsappNumber,
       };
@@ -208,6 +209,7 @@ function AgendarPage() {
       setPhone("");
       setAddress("");
       setService("");
+      setNotes("");
       setDate(undefined);
       setSlot("");
       router.invalidate();
