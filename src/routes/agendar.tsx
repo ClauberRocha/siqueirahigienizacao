@@ -158,6 +158,7 @@ function AgendarPage() {
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [service, setService] = useState("");
+  const [notes, setNotes] = useState("");
   const [confirmation, setConfirmation] = useState<Confirmation | null>(null);
 
   const dateKey = date ? format(date, "yyyy-MM-dd") : "";
