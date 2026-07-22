@@ -641,7 +641,13 @@ function AdminPage() {
                                 ? format(new Date(a.created_at), "dd/MM/yy HH:mm", { locale: ptBR })
                                 : "—"}
                             </td>
+                            <td className="py-2 pr-3 whitespace-nowrap text-xs text-muted-foreground">
+                              {a.updated_at
+                                ? format(new Date(a.updated_at), "dd/MM/yy HH:mm", { locale: ptBR })
+                                : "—"}
+                            </td>
                             <td className="py-2 pr-3">
+
                               <div className="flex flex-wrap gap-1">
                                 <Button size="sm" variant="outline" onClick={() => openEdit(a)}>
                                   Detalhes
