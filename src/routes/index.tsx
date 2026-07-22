@@ -303,6 +303,16 @@ function HeroCarousel() {
         className="absolute inset-0 pointer-events-none"
         style={{ background: "linear-gradient(180deg,transparent 55%,rgba(11,46,89,.35))" }}
       />
+      <div className="absolute top-4 left-4 z-10 flex items-center gap-2 rounded-2xl bg-white/85 backdrop-blur-md px-3 py-2 shadow-lg ring-1 ring-white/60">
+        <img
+          src={logoAsset}
+          alt="Siqueira Higienização"
+          className="h-8 w-auto md:h-10"
+          width={160}
+          height={40}
+          decoding="async"
+        />
+      </div>
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
         {HERO_SLIDES.map((_, idx) => (
           <button
