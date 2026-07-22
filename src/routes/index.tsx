@@ -46,6 +46,8 @@ import logoAsset from "@/assets/logo-siqueira.png";
 import { siteConfig, whatsappLink } from "@/lib/site-config";
 import { track } from "@/lib/analytics";
 import { BeforeAfterSlider } from "@/components/BeforeAfterSlider";
+import { BeforeAfterZoomModal } from "@/components/BeforeAfterZoomModal";
+
 import { blogPosts } from "@/lib/blog-data";
 
 const SITE_URL = "https://siqueirahigienizacao.lovable.app";
