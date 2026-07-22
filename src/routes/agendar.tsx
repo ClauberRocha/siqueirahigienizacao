@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
+import { createFileRoute, Link, useRouter, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -26,6 +26,16 @@ import {
   validateSlotLeadTime,
   type BookingSlot,
 } from "@/lib/booking-time";
+import {
+  SLOT_LABELS,
+  SLOT_PERIOD,
+  SLOT_WINDOW,
+  buildWhatsappMessage,
+  saveConfirmation,
+  type Confirmation,
+  type TimeSlot,
+} from "@/lib/booking-confirmation";
+
 
 export const Route = createFileRoute("/agendar")({
   head: () => ({
@@ -47,22 +57,9 @@ export const Route = createFileRoute("/agendar")({
   component: AgendarPage,
 });
 
-type TimeSlot = BookingSlot;
+// Tipos e labels de horário/slot vêm de "@/lib/booking-confirmation".
 
-const SLOT_LABELS: Record<TimeSlot, string> = {
-  morning: "Manhã (08h – 12h)",
-  afternoon: "Tarde (13h – 18h)",
-};
 
-const SLOT_PERIOD: Record<TimeSlot, string> = {
-  morning: "Manhã",
-  afternoon: "Tarde",
-};
-
-const SLOT_WINDOW: Record<TimeSlot, string> = {
-  morning: "08h às 12h",
-  afternoon: "13h às 18h",
-};
 
 function maskCPF(v: string) {
   const d = v.replace(/\D/g, "").slice(0, 11);
@@ -93,18 +90,8 @@ function isCpfValid(v: string): boolean {
   return v.replace(/\D/g, "").length === 11;
 }
 
-type Confirmation = {
-  id: string;
-  dateLabel: string;
-  slot: TimeSlot;
-  name: string;
-  cpf: string;
-  phone: string;
-  address: string;
-  service: string;
-  notes: string;
-  ownerWhatsapp: string;
-};
+// Confirmation type importado de "@/lib/booking-confirmation".
+
 
 type FieldKey =
   | "date"
@@ -127,30 +114,8 @@ const FIELD_LABEL: Record<FieldKey, string> = {
   service: "Serviço",
 };
 
-function buildWhatsappMessage(c: Confirmation) {
-  const lines = [
-    `*Novo agendamento — ${siteConfig.brandName}*`,
-    `Protocolo: ${c.id.slice(0, 8).toUpperCase()}`,
-    ``,
-    `👤 *Cliente*`,
-    `Nome: ${c.name}`,
-    `CPF: ${c.cpf}`,
-    `Telefone: ${c.phone}`,
-    `Endereço: ${c.address}`,
-    ``,
-    `📅 *Agendamento*`,
-    `Data: ${c.dateLabel}`,
-    `Turno: ${SLOT_PERIOD[c.slot]}`,
-    `Horário: ${SLOT_WINDOW[c.slot]}`,
-    ``,
-    `🧼 *Serviço*`,
-    c.service,
-  ];
-  if (c.notes.trim()) {
-    lines.push(``, `📝 *Observações*`, c.notes.trim());
-  }
-  return lines.join("\n");
-}
+// buildWhatsappMessage importado de "@/lib/booking-confirmation".
+
 
 function AgendarPage() {
   const qc = useQueryClient();
@@ -192,7 +157,8 @@ function AgendarPage() {
   const [service, setService] = useState("");
   const [notes, setNotes] = useState("");
   const [errors, setErrors] = useState<FieldErrors>({});
-  const [confirmation, setConfirmation] = useState<Confirmation | null>(null);
+  const navigate = useNavigate();
+
 
   const dateKey = date ? format(date, "yyyy-MM-dd") : "";
   const takenSlots = dateKey ? bookedMap.get(dateKey) ?? new Set() : new Set();
@@ -277,7 +243,7 @@ function AgendarPage() {
         ownerWhatsapp:
           publicSettings?.owner_whatsapp || siteConfig.whatsappNumber,
       };
-      setConfirmation(c);
+      saveConfirmation(c);
       toast.success("Agendamento confirmado!", {
         description: `${dateLabel} · ${SLOT_LABELS[c.slot]}`,
       });
@@ -292,6 +258,8 @@ function AgendarPage() {
       setSlot("");
       setErrors({});
       router.invalidate();
+      navigate({ to: "/agendar/confirmado", search: { id: c.id } });
+
     },
     onError: (err: Error) => {
       toast.error("Não foi possível agendar", { description: err.message });
@@ -333,62 +301,56 @@ function AgendarPage() {
       </header>
 
       <main className="mx-auto max-w-5xl px-6 py-10">
-        {confirmation ? (
-          <ConfirmationPanel
-            confirmation={confirmation}
-            onReset={() => setConfirmation(null)}
-          />
-        ) : (
-          <BookingForm
-            isLoading={isLoading}
-            date={date}
-            setDate={(d) => {
-              setDate(d);
-              setSlot("");
-              setErrors((prev) => ({ ...prev, date: undefined, slot: undefined }));
-            }}
-            isDayDisabled={isDayDisabled}
-            today={today}
-            maxDate={maxDate}
-            slot={slot}
-            setSlot={(s) => {
-              setSlot(s);
-              setErrors((prev) => ({ ...prev, slot: undefined }));
-            }}
-            takenSlots={takenSlots as Set<TimeSlot>}
-            pastSlots={pastSlots}
-            name={name}
-            setName={(v) => {
-              setName(v);
-              if (errors.name) setErrors((p) => ({ ...p, name: undefined }));
-            }}
-            cpf={cpf}
-            setCpf={(v) => {
-              setCpf(v);
-              if (errors.cpf) setErrors((p) => ({ ...p, cpf: undefined }));
-            }}
-            phone={phone}
-            setPhone={(v) => {
-              setPhone(v);
-              if (errors.phone) setErrors((p) => ({ ...p, phone: undefined }));
-            }}
-            address={address}
-            setAddress={(v) => {
-              setAddress(v);
-              if (errors.address) setErrors((p) => ({ ...p, address: undefined }));
-            }}
-            service={service}
-            setService={(v) => {
-              setService(v);
-              if (errors.service) setErrors((p) => ({ ...p, service: undefined }));
-            }}
-            notes={notes}
-            setNotes={setNotes}
-            errors={errors}
-            onSubmit={() => mutation.mutate()}
-            submitting={mutation.isPending}
-          />
-        )}
+        <BookingForm
+          isLoading={isLoading}
+          date={date}
+          setDate={(d) => {
+            setDate(d);
+            setSlot("");
+            setErrors((prev) => ({ ...prev, date: undefined, slot: undefined }));
+          }}
+          isDayDisabled={isDayDisabled}
+          today={today}
+          maxDate={maxDate}
+          slot={slot}
+          setSlot={(s) => {
+            setSlot(s);
+            setErrors((prev) => ({ ...prev, slot: undefined }));
+          }}
+          takenSlots={takenSlots as Set<TimeSlot>}
+          pastSlots={pastSlots}
+          name={name}
+          setName={(v) => {
+            setName(v);
+            if (errors.name) setErrors((p) => ({ ...p, name: undefined }));
+          }}
+          cpf={cpf}
+          setCpf={(v) => {
+            setCpf(v);
+            if (errors.cpf) setErrors((p) => ({ ...p, cpf: undefined }));
+          }}
+          phone={phone}
+          setPhone={(v) => {
+            setPhone(v);
+            if (errors.phone) setErrors((p) => ({ ...p, phone: undefined }));
+          }}
+          address={address}
+          setAddress={(v) => {
+            setAddress(v);
+            if (errors.address) setErrors((p) => ({ ...p, address: undefined }));
+          }}
+          service={service}
+          setService={(v) => {
+            setService(v);
+            if (errors.service) setErrors((p) => ({ ...p, service: undefined }));
+          }}
+          notes={notes}
+          setNotes={setNotes}
+          errors={errors}
+          onSubmit={() => mutation.mutate()}
+          submitting={mutation.isPending}
+        />
+
       </main>
     </div>
   );
@@ -702,90 +664,5 @@ function BookingForm(props: {
   );
 }
 
-function ConfirmationPanel({
-  confirmation,
-  onReset,
-}: {
-  confirmation: Confirmation;
-  onReset: () => void;
-}) {
-  const message = buildWhatsappMessage(confirmation);
-  const waUrl = `https://wa.me/${confirmation.ownerWhatsapp}?text=${encodeURIComponent(message)}`;
+// ConfirmationPanel movido para src/routes/agendar.confirmado.tsx.
 
-  const copy = async () => {
-    try {
-      await navigator.clipboard.writeText(message);
-      toast.success("Dados copiados para a área de transferência.");
-    } catch {
-      toast.error("Não foi possível copiar automaticamente.");
-    }
-  };
-
-  return (
-    <div className="mx-auto max-w-2xl">
-      <div className="mb-6 text-center">
-        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-2xl">
-          ✅
-        </div>
-        <h1 className="mt-3 text-2xl font-bold">Agendamento confirmado!</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Enviaremos os dados abaixo pelo WhatsApp para o proprietário
-          ({formatBrPhoneDisplay(confirmation.ownerWhatsapp)}).
-        </p>
-      </div>
-
-      <Card className="p-6">
-        <div className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-          Resumo do agendamento
-        </div>
-        <dl className="mt-3 space-y-2 text-sm">
-          <Row label="Protocolo">{confirmation.id.slice(0, 8).toUpperCase()}</Row>
-          <Row label="Data">{confirmation.dateLabel}</Row>
-          <Row label="Horário">{SLOT_LABELS[confirmation.slot]}</Row>
-          <Row label="Nome">{confirmation.name}</Row>
-          <Row label="CPF">{confirmation.cpf}</Row>
-          <Row label="Telefone">{confirmation.phone}</Row>
-          <Row label="Endereço">{confirmation.address}</Row>
-          <Row label="Serviço">{confirmation.service}</Row>
-          {confirmation.notes.trim() && (
-            <Row label="Observações">{confirmation.notes}</Row>
-          )}
-        </dl>
-
-        <pre className="mt-5 max-h-64 overflow-auto rounded-md border bg-muted/40 p-3 text-xs whitespace-pre-wrap">
-{message}
-        </pre>
-
-        <div className="mt-5 flex flex-wrap gap-2">
-          <Button type="button" variant="outline" onClick={copy}>
-            📋 Copiar dados
-          </Button>
-          <Button asChild>
-            <a href={waUrl} target="_blank" rel="noopener noreferrer">
-              Enviar pelo WhatsApp →
-            </a>
-          </Button>
-          <Button type="button" variant="ghost" onClick={onReset}>
-            Fazer novo agendamento
-          </Button>
-        </div>
-
-        <p className="mt-3 text-xs text-muted-foreground">
-          Seu pedido já ficou registrado no sistema. Se preferir, envie os dados
-          copiados por qualquer outro canal.
-        </p>
-      </Card>
-    </div>
-  );
-}
-
-function Row({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <div className="flex flex-col gap-0.5 border-b border-border/60 pb-2 last:border-b-0 sm:flex-row sm:gap-4">
-      <dt className="text-xs font-medium uppercase tracking-wide text-muted-foreground sm:w-28">
-        {label}
-      </dt>
-      <dd className="text-sm">{children}</dd>
-    </div>
-  );
-}
