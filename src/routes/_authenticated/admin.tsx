@@ -122,6 +122,8 @@ function AdminPage() {
   const fetchAppointments = useServerFn(listAppointments);
   const setStatus = useServerFn(updateAppointmentStatus);
   const saveAppointment = useServerFn(updateAppointment);
+  const rescheduleFn = useServerFn(rescheduleAppointment);
+  const cancelFn = useServerFn(cancelAppointment);
 
   const isAdminQ = useQuery({ queryKey: ["is-admin"], queryFn: () => fetchIsAdmin() });
   const isAdmin = isAdminQ.data?.isAdmin ?? false;
