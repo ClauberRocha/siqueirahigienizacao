@@ -277,6 +277,8 @@ function AgendarPage() {
             setAddress={setAddress}
             service={service}
             setService={setService}
+            notes={notes}
+            setNotes={setNotes}
             onSubmit={() => mutation.mutate()}
             submitting={mutation.isPending}
           />
