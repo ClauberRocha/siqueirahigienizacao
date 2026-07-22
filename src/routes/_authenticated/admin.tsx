@@ -596,7 +596,9 @@ function AdminPage() {
                           <th className="py-2 pr-3">Serviço</th>
                           <th className="py-2 pr-3">Status</th>
                           <th className="py-2 pr-3">Criado</th>
+                          <th className="py-2 pr-3">Atualizado</th>
                           <th className="py-2 pr-3"></th>
+
                         </tr>
                       </thead>
                       <tbody>
