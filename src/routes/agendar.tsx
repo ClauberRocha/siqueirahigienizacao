@@ -293,6 +293,7 @@ function AgendarPage() {
             slot={slot}
             setSlot={setSlot}
             takenSlots={takenSlots as Set<TimeSlot>}
+            pastSlots={pastSlots}
             name={name}
             setName={setName}
             cpf={cpf}
