@@ -66,15 +66,16 @@ export function BeforeAfterSlider({ before, after, label, initial = 50, objectPo
         alt={label ? `Antes — ${label}` : "Antes"}
         loading="lazy"
         draggable={false}
-        style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
+        style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition }}
       />
       <img
         src={after}
         alt={label ? `Depois — ${label}` : "Depois"}
         loading="lazy"
         draggable={false}
-        style={{ clipPath: `inset(0 0 0 ${pos}%)`, position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
+        style={{ clipPath: `inset(0 0 0 ${pos}%)`, position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition }}
       />
+
 
       <span className="tag tl">ANTES</span>
       <span className="tag tr">DEPOIS</span>
