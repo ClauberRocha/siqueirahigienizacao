@@ -1586,6 +1586,7 @@ function LandingPage() {
       <BlogSection />
       <FinalCTA />
       <Footer />
+      {import.meta.env.DEV && <HeroLogoInspector />}
     </main>
   );
 }
