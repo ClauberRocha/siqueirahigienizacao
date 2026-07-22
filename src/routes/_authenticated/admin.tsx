@@ -770,9 +770,24 @@ function AdminPage() {
                 {SLOT_LABEL[editing.time_slot] ?? editing.time_slot}
                 {" · CPF "}
                 {editing.customer_cpf}
+                <span className="mt-1 block text-xs text-muted-foreground">
+                  Criado{" "}
+                  {editing.created_at
+                    ? format(new Date(editing.created_at), "dd/MM/yy HH:mm", { locale: ptBR })
+                    : "—"}
+                  {editing.updated_at && (
+                    <> · Atualizado {format(new Date(editing.updated_at), "dd/MM/yy HH:mm", { locale: ptBR })}</>
+                  )}
+                </span>
+                {editing.status === "cancelled" && editing.cancellation_reason && (
+                  <span className="mt-1 block text-xs text-destructive">
+                    Motivo do cancelamento: {editing.cancellation_reason}
+                  </span>
+                )}
               </DialogDescription>
             )}
           </DialogHeader>
+
           {editing && (
             <form
               className="space-y-3"
