@@ -166,6 +166,16 @@ function AdminPage() {
     status: "pending" as StatusKey,
   });
 
+  // Modal de reagendamento
+  const [rescheduling, setRescheduling] = useState<Appointment | null>(null);
+  const [rescheduleForm, setRescheduleForm] = useState({
+    scheduled_date: "",
+    time_slot: "morning" as "morning" | "afternoon",
+  });
+
+  // Confirmação de cancelamento
+  const [cancelTarget, setCancelTarget] = useState<Appointment | null>(null);
+
   const apps = (appointmentsQ.data ?? []) as Appointment[];
 
   const filtered = useMemo(() => {
