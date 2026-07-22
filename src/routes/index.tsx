@@ -518,7 +518,8 @@ function Hero() {
             initial={{ opacity: 0, x: -20, y: 10 }}
             animate={{ opacity: 1, x: 0, y: 0 }}
             transition={{ duration: 0.7, delay: 0.7, ease: easeSmooth }}
-            className="hidden sm:flex absolute -left-4 top-8 items-center gap-3 bg-white rounded-2xl p-4 shadow-xl border border-slate-100"
+            data-google-card
+            className="hidden sm:flex absolute -left-4 top-8 z-30 items-center gap-3 bg-white rounded-2xl p-4 shadow-xl border border-slate-100"
           >
             <div className="w-11 h-11 rounded-xl bg-amber-100 grid place-items-center">
               <Star className="w-6 h-6 text-amber-500 fill-current" />
