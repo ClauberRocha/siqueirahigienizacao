@@ -263,8 +263,6 @@ function Nav() {
 
 /* --------------------------------- HERO --------------------------------- */
 function Hero() {
-  const { scrollY } = useScroll();
-  const imgY = useTransform(scrollY, [0, 600], [0, 80]);
   const reduce = useReducedMotion();
 
   return (
