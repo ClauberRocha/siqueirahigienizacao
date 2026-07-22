@@ -248,8 +248,11 @@ function AgendarPage() {
     if (d.getDay() === 0) return true;
     const key = format(d, "yyyy-MM-dd");
     const s = bookedMap.get(key);
-    // Dia bloqueado apenas se os dois turnos estiverem ocupados.
-    return !!s && s.has("morning") && s.has("afternoon");
+    const morningBlocked = (s?.has("morning") ?? false) ||
+      (key === format(new Date(), "yyyy-MM-dd") && new Date().getHours() >= 12);
+    const afternoonBlocked = (s?.has("afternoon") ?? false) ||
+      (key === format(new Date(), "yyyy-MM-dd") && new Date().getHours() >= 18);
+    return morningBlocked && afternoonBlocked;
   };
 
   return (
