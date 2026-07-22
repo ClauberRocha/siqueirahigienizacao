@@ -337,15 +337,17 @@ function Hero() {
             transition={{ duration: 0.7, delay: 0.3, ease: easeSmooth }}
             className="mt-8 flex flex-col sm:flex-row gap-3"
           >
-            <Link
-              to="/agendar"
-              onClick={() => track("agendar_click", { location: "hero" })}
+            <a
+              href={whatsappLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => track("whatsapp_click", { location: "hero_orcamento" })}
               className="group inline-flex items-center justify-center gap-2 h-14 px-7 rounded-2xl font-bold text-white shadow-xl shadow-[#0B2E59]/25 hover:shadow-2xl hover:-translate-y-0.5 transition-all"
               style={{ background: "linear-gradient(135deg,#0B2E59 0%,#1D74D6 100%)" }}
             >
               Solicitar Orçamento
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition" />
-            </Link>
+            </a>
             <a
               href={whatsappLink}
               target="_blank"
@@ -1272,12 +1274,15 @@ function FinalCTA() {
               Chame a Siqueira e devolva vida, cor e saúde ao seu estofado. Atendimento em São Luís e região.
             </p>
             <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
-              <Link
-                to="/agendar"
+              <a
+                href={whatsappLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => track("whatsapp_click", { location: "final_cta_orcamento" })}
                 className="inline-flex items-center justify-center gap-2 h-16 px-10 rounded-2xl font-bold text-lg text-[#0B2E59] bg-white shadow-2xl hover:-translate-y-0.5 transition-all"
               >
                 Solicitar orçamento <ArrowRight className="w-5 h-5" />
-              </Link>
+              </a>
               <a
                 href={whatsappLink}
                 target="_blank"
