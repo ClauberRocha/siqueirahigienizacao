@@ -566,9 +566,26 @@ function AdminPage() {
                                 : "—"}
                             </td>
                             <td className="py-2 pr-3">
-                              <Button size="sm" variant="outline" onClick={() => openEdit(a)}>
-                                Detalhes
-                              </Button>
+                              <div className="flex flex-wrap gap-1">
+                                <Button size="sm" variant="outline" onClick={() => openEdit(a)}>
+                                  Detalhes
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => openReschedule(a)}
+                                  disabled={a.status === "cancelled"}
+                                >
+                                  Reagendar
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="destructive"
+                                  onClick={() => setCancelTarget(a)}
+                                >
+                                  Cancelar
+                                </Button>
+                              </div>
                             </td>
                           </tr>
                         ))}
