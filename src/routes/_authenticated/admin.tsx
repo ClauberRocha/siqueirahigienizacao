@@ -782,6 +782,111 @@ function AdminPage() {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Modal de reagendamento */}
+      <Dialog open={!!rescheduling} onOpenChange={(o) => !o && setRescheduling(null)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Reagendar atendimento</DialogTitle>
+            {rescheduling && (
+              <DialogDescription>
+                Cliente: {rescheduling.customer_name} · atual:{" "}
+                {format(new Date(rescheduling.scheduled_date + "T00:00:00"), "dd/MM/yyyy", { locale: ptBR })}{" "}
+                · {SLOT_LABEL[rescheduling.time_slot] ?? rescheduling.time_slot}
+              </DialogDescription>
+            )}
+          </DialogHeader>
+          {rescheduling && (
+            <form
+              className="space-y-3"
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (!rescheduleForm.scheduled_date) {
+                  toast.error("Escolha uma data.");
+                  return;
+                }
+                rescheduleMut.mutate({
+                  id: rescheduling.id,
+                  scheduled_date: rescheduleForm.scheduled_date,
+                  time_slot: rescheduleForm.time_slot,
+                });
+              }}
+            >
+              <div>
+                <Label htmlFor="resched-date">Nova data</Label>
+                <Input
+                  id="resched-date"
+                  type="date"
+                  min={new Date().toISOString().slice(0, 10)}
+                  value={rescheduleForm.scheduled_date}
+                  onChange={(e) =>
+                    setRescheduleForm((f) => ({ ...f, scheduled_date: e.target.value }))
+                  }
+                  required
+                />
+              </div>
+              <div>
+                <Label>Novo turno</Label>
+                <Select
+                  value={rescheduleForm.time_slot}
+                  onValueChange={(v) =>
+                    setRescheduleForm((f) => ({ ...f, time_slot: v as "morning" | "afternoon" }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="morning">Manhã (08–12h)</SelectItem>
+                    <SelectItem value="afternoon">Tarde (13–18h)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Domingos não são atendidos. Antecedência mínima de 2h em relação ao fim do turno.
+              </p>
+              <DialogFooter>
+                <Button type="button" variant="ghost" onClick={() => setRescheduling(null)}>
+                  Voltar
+                </Button>
+                <Button type="submit" disabled={rescheduleMut.isPending}>
+                  {rescheduleMut.isPending ? "Remarcando…" : "Confirmar remarcação"}
+                </Button>
+              </DialogFooter>
+            </form>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Confirmação de cancelamento */}
+      <Dialog open={!!cancelTarget} onOpenChange={(o) => !o && setCancelTarget(null)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Cancelar agendamento?</DialogTitle>
+            {cancelTarget && (
+              <DialogDescription>
+                {cancelTarget.customer_name} ·{" "}
+                {format(new Date(cancelTarget.scheduled_date + "T00:00:00"), "dd/MM/yyyy", { locale: ptBR })}{" "}
+                · {SLOT_LABEL[cancelTarget.time_slot] ?? cancelTarget.time_slot}. O horário
+                voltará a ficar disponível imediatamente.
+              </DialogDescription>
+            )}
+          </DialogHeader>
+          <DialogFooter>
+            <Button type="button" variant="ghost" onClick={() => setCancelTarget(null)}>
+              Voltar
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => cancelTarget && cancelMut.mutate(cancelTarget.id)}
+              disabled={cancelMut.isPending}
+            >
+              {cancelMut.isPending ? "Cancelando…" : "Sim, cancelar"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
+
