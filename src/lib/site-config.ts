@@ -8,6 +8,8 @@ import baColchaoAntes from "@/assets/ba-colchao-antes.jpg";
 import baColchaoDepois from "@/assets/ba-colchao-depois.jpg";
 import baBancoAntes from "@/assets/ba-banco-antes.jpg";
 import baBancoDepois from "@/assets/ba-banco-depois.jpg";
+import baTapeteAntes from "@/assets/ba-tapete-antes.jpg";
+import baTapeteDepois from "@/assets/ba-tapete-depois.jpg";
 import serviceBancosAutomotivos from "@/assets/service-bancos-automotivos.jpg";
 import logoSiqueira from "@/assets/logo-siqueira.png";
 
@@ -228,6 +230,11 @@ export const siteConfig = {
       before: baBancoAntes,
       after: baBancoDepois,
       label: "Bancos automotivos",
+    },
+    {
+      before: baTapeteAntes,
+      after: baTapeteDepois,
+      label: "Tapete de sala",
     },
   ],
 
