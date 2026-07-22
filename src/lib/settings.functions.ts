@@ -6,23 +6,10 @@ import { toWhatsappNumber } from "./phone";
 /** Leitura pública das configurações do site (número do WhatsApp do proprietário). */
 export const getPublicSettings = createServerFn({ method: "GET" }).handler(
   async () => {
-    const { createClient } = await import("@supabase/supabase-js");
-    const url = process.env.SUPABASE_URL!;
-    const key = process.env.SUPABASE_PUBLISHABLE_KEY!;
-    const client = createClient(url, key, {
-      auth: { storage: undefined, persistSession: false, autoRefreshToken: false },
-      global: {
-        fetch: (input, init) => {
-          const h = new Headers(init?.headers);
-          if (key.startsWith("sb_") && h.get("Authorization") === `Bearer ${key}`) {
-            h.delete("Authorization");
-          }
-          h.set("apikey", key);
-          return fetch(input, { ...init, headers: h });
-        },
-      },
-    });
-    const { data, error } = await client
+    // Public read is restricted at the DB level; use the trusted server client
+    // to expose only the owner_whatsapp field, never updated_by / updated_at.
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data, error } = await supabaseAdmin
       .from("site_settings")
       .select("owner_whatsapp")
       .eq("id", true)
