@@ -3,8 +3,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import {
   motion,
   AnimatePresence,
-  useScroll,
-  useTransform,
   useInView,
   useMotionValue,
   animate as motionAnimate,
