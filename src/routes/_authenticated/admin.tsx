@@ -256,6 +256,30 @@ function AdminPage() {
     onError: (e: Error) => toast.error("Falha ao salvar", { description: e.message }),
   });
 
+  const rescheduleMut = useMutation({
+    mutationFn: (v: { id: string; scheduled_date: string; time_slot: "morning" | "afternoon" }) =>
+      rescheduleFn({ data: v }),
+    onSuccess: () => {
+      toast.success("Agendamento remarcado");
+      qc.invalidateQueries({ queryKey: ["admin-appointments"] });
+      qc.invalidateQueries({ queryKey: ["booked-slots"] });
+      setRescheduling(null);
+    },
+    onError: (e: Error) => toast.error("Não foi possível remarcar", { description: e.message }),
+  });
+
+  const cancelMut = useMutation({
+    mutationFn: (id: string) => cancelFn({ data: { id } }),
+    onSuccess: () => {
+      toast.success("Agendamento cancelado", { description: "Horário liberado na agenda." });
+      qc.invalidateQueries({ queryKey: ["admin-appointments"] });
+      qc.invalidateQueries({ queryKey: ["booked-slots"] });
+      setCancelTarget(null);
+      setEditing(null);
+    },
+    onError: (e: Error) => toast.error("Não foi possível cancelar", { description: e.message }),
+  });
+
   const openEdit = (a: Appointment) => {
     setEditing(a);
     setEditForm({
@@ -266,6 +290,15 @@ function AdminPage() {
       status: (a.status as StatusKey) ?? "pending",
     });
   };
+
+  const openReschedule = (a: Appointment) => {
+    setRescheduling(a);
+    setRescheduleForm({
+      scheduled_date: a.scheduled_date,
+      time_slot: (a.time_slot === "afternoon" ? "afternoon" : "morning"),
+    });
+  };
+
 
   const editPhoneValid = useMemo(
     () => digitsOnly(editForm.customer_phone).length === 10 || digitsOnly(editForm.customer_phone).length === 11,
