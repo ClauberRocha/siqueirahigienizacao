@@ -164,13 +164,36 @@ function AgendarPage() {
   const dateKey = date ? format(date, "yyyy-MM-dd") : "";
   const takenSlots = dateKey ? bookedMap.get(dateKey) ?? new Set() : new Set();
 
+  // Slots que já passaram no dia de hoje (manhã encerra 12h, tarde 18h).
+  const isToday = !!date && format(date, "yyyy-MM-dd") === format(new Date(), "yyyy-MM-dd");
+  const now = new Date();
+  const pastSlots = new Set<TimeSlot>();
+  if (isToday) {
+    if (now.getHours() >= 12) pastSlots.add("morning");
+    if (now.getHours() >= 18) pastSlots.add("afternoon");
+  }
+
   const mutation = useMutation({
     mutationFn: async () => {
-      if (!date) throw new Error("Escolha uma data.");
-      if (!slot) throw new Error("Escolha um horário.");
+      if (!date) throw new Error("Escolha uma data para o agendamento.");
+      const selectedKey = format(date, "yyyy-MM-dd");
+      const todayKey = format(new Date(), "yyyy-MM-dd");
+      if (selectedKey < todayKey) {
+        throw new Error("Não é possível agendar em datas passadas. Escolha uma data futura.");
+      }
+      if (!slot) throw new Error("Escolha um turno disponível (manhã ou tarde).");
+      if (selectedKey === todayKey) {
+        const h = new Date().getHours();
+        if (slot === "morning" && h >= 12) {
+          throw new Error("O turno da manhã já encerrou hoje. Escolha a tarde ou outra data.");
+        }
+        if (slot === "afternoon" && h >= 18) {
+          throw new Error("O turno da tarde já encerrou hoje. Escolha uma data futura.");
+        }
+      }
       return submitBooking({
         data: {
-          scheduled_date: format(date, "yyyy-MM-dd"),
+          scheduled_date: selectedKey,
           time_slot: slot,
           customer_name: name,
           customer_cpf: cpf,
@@ -225,8 +248,11 @@ function AgendarPage() {
     if (d.getDay() === 0) return true;
     const key = format(d, "yyyy-MM-dd");
     const s = bookedMap.get(key);
-    // Dia bloqueado apenas se os dois turnos estiverem ocupados.
-    return !!s && s.has("morning") && s.has("afternoon");
+    const morningBlocked = (s?.has("morning") ?? false) ||
+      (key === format(new Date(), "yyyy-MM-dd") && new Date().getHours() >= 12);
+    const afternoonBlocked = (s?.has("afternoon") ?? false) ||
+      (key === format(new Date(), "yyyy-MM-dd") && new Date().getHours() >= 18);
+    return morningBlocked && afternoonBlocked;
   };
 
   return (
@@ -267,6 +293,7 @@ function AgendarPage() {
             slot={slot}
             setSlot={setSlot}
             takenSlots={takenSlots as Set<TimeSlot>}
+            pastSlots={pastSlots}
             name={name}
             setName={setName}
             cpf={cpf}
@@ -298,6 +325,7 @@ function BookingForm(props: {
   slot: TimeSlot | "";
   setSlot: (s: TimeSlot) => void;
   takenSlots: Set<TimeSlot>;
+  pastSlots: Set<TimeSlot>;
   name: string;
   setName: (v: string) => void;
   cpf: string;
@@ -315,7 +343,7 @@ function BookingForm(props: {
 }) {
   const {
     isLoading, date, setDate, isDayDisabled, today, maxDate,
-    slot, setSlot, takenSlots,
+    slot, setSlot, takenSlots, pastSlots,
     name, setName, cpf, setCpf, phone, setPhone,
     address, setAddress, service, setService,
     notes, setNotes,
@@ -378,25 +406,28 @@ function BookingForm(props: {
               <div className="grid grid-cols-2 gap-2">
                 {(["morning", "afternoon"] as TimeSlot[]).map((s) => {
                   const taken = takenSlots.has(s);
+                  const past = pastSlots.has(s);
+                  const disabled = !date || taken || past;
                   const active = slot === s;
                   return (
                     <button
                       key={s}
                       type="button"
-                      disabled={!date || taken}
+                      disabled={disabled}
                       onClick={() => setSlot(s)}
                       className={
                         "rounded-md border px-3 py-2 text-sm transition " +
                         (active
                           ? "border-primary bg-primary text-primary-foreground"
                           : "border-input bg-background hover:bg-muted") +
-                        (!date || taken
+                        (disabled
                           ? " cursor-not-allowed opacity-50 hover:bg-background"
                           : "")
                       }
                     >
                       {SLOT_LABELS[s]}
                       {taken && <span className="ml-1 text-xs">(ocupado)</span>}
+                      {!taken && past && <span className="ml-1 text-xs">(encerrado)</span>}
                     </button>
                   );
                 })}
