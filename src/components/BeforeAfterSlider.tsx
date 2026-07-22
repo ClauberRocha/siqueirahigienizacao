@@ -7,9 +7,22 @@ type Props = {
   initial?: number;
   /** Same object-position applied to BOTH images so the pair aligns perfectly. */
   objectPosition?: string;
+  /** Overlay grid + centerlines to inspect crop alignment. */
+  showGrid?: boolean;
+  /** Fixed aspect-ratio (default 4/3). Applied identically on mobile/tablet/desktop. */
+  aspectRatio?: string;
 };
 
-export function BeforeAfterSlider({ before, after, label, initial = 50, objectPosition = "center center" }: Props) {
+export function BeforeAfterSlider({
+  before,
+  after,
+  label,
+  initial = 50,
+  objectPosition = "center center",
+  showGrid = false,
+  aspectRatio = "4 / 3",
+}: Props) {
+
   const [pos, setPos] = useState(initial);
   const [dragging, setDragging] = useState(false);
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -56,7 +69,7 @@ export function BeforeAfterSlider({ before, after, label, initial = 50, objectPo
         userSelect: "none",
         touchAction: "none",
         position: "relative",
-        aspectRatio: "4 / 3",
+        aspectRatio,
         overflow: "hidden",
         width: "100%",
       }}
@@ -77,9 +90,32 @@ export function BeforeAfterSlider({ before, after, label, initial = 50, objectPo
       />
 
 
+      {showGrid && (
+        <div
+          aria-hidden
+          style={{
+            position: "absolute",
+            inset: 0,
+            pointerEvents: "none",
+            backgroundImage:
+              "linear-gradient(to right, rgba(255,0,128,.35) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,0,128,.35) 1px, transparent 1px)",
+            backgroundSize: "calc(100%/12) calc(100%/9)",
+            mixBlendMode: "difference",
+          }}
+        >
+          <div style={{ position: "absolute", left: "50%", top: 0, bottom: 0, width: 1, background: "rgba(0,255,200,.8)" }} />
+          <div style={{ position: "absolute", top: "50%", left: 0, right: 0, height: 1, background: "rgba(0,255,200,.8)" }} />
+          <div style={{ position: "absolute", left: "33.333%", top: 0, bottom: 0, width: 1, background: "rgba(255,255,0,.5)" }} />
+          <div style={{ position: "absolute", left: "66.666%", top: 0, bottom: 0, width: 1, background: "rgba(255,255,0,.5)" }} />
+          <div style={{ position: "absolute", top: "33.333%", left: 0, right: 0, height: 1, background: "rgba(255,255,0,.5)" }} />
+          <div style={{ position: "absolute", top: "66.666%", left: 0, right: 0, height: 1, background: "rgba(255,255,0,.5)" }} />
+        </div>
+      )}
+
       <span className="tag tl">ANTES</span>
       <span className="tag tr">DEPOIS</span>
       {label && <span className="label">{label}</span>}
+
 
       <div
         role="slider"

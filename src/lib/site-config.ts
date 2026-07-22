@@ -220,23 +220,28 @@ export const siteConfig = {
       before: baSofaAntes,
       after: baSofaDepois,
       label: "Sofá 3 lugares",
+      objectPosition: "center center",
     },
     {
       before: baColchaoAntes,
       after: baColchaoDepois,
       label: "Colchão queen",
+      objectPosition: "center center",
     },
     {
       before: baBancoAntes,
       after: baBancoDepois,
       label: "Bancos automotivos",
+      objectPosition: "center center",
     },
     {
       before: baTapeteAntes,
       after: baTapeteDepois,
       label: "Tapete de sala",
+      objectPosition: "center center",
     },
   ],
+
 
   // FAQ
   faq: [

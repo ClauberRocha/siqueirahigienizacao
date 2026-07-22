@@ -46,6 +46,8 @@ import logoAsset from "@/assets/logo-siqueira.png";
 import { siteConfig, whatsappLink } from "@/lib/site-config";
 import { track } from "@/lib/analytics";
 import { BeforeAfterSlider } from "@/components/BeforeAfterSlider";
+import { BeforeAfterZoomModal } from "@/components/BeforeAfterZoomModal";
+
 import { blogPosts } from "@/lib/blog-data";
 
 const SITE_URL = "https://siqueirahigienizacao.lovable.app";
@@ -814,17 +816,73 @@ function categoryOf(label: string): string {
   return "Outros";
 }
 
+type GalleryItem = { before: string; after: string; label: string; objectPosition?: string };
+const OP_STORAGE_KEY = "ba-object-positions-v1";
+
+function parseOP(op: string): { x: number; y: number } {
+  const parts = op.trim().split(/\s+/);
+  const toPct = (v: string) => {
+    if (v === "left" || v === "top") return 0;
+    if (v === "right" || v === "bottom") return 100;
+    if (v === "center") return 50;
+    const m = v.match(/^(-?\d+(?:\.\d+)?)%$/);
+    return m ? Math.max(0, Math.min(100, parseFloat(m[1]))) : 50;
+  };
+  return { x: toPct(parts[0] ?? "50%"), y: toPct(parts[1] ?? "50%") };
+}
+
 function BeforeAfter() {
   const anim = useAnim();
   const cats = ["Todos", "Sofás", "Colchões", "Tapetes", "Automóveis"];
   const [filter, setFilter] = useState("Todos");
-  const [lightbox, setLightbox] = useState<{ before: string; after: string; label: string } | null>(null);
+  const [zoom, setZoom] = useState<GalleryItem | null>(null);
+  const [inspect, setInspect] = useState(false);
+  const [tuning, setTuning] = useState<string | null>(null);
+  const [overrides, setOverrides] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    try {
+      const raw = typeof window !== "undefined" ? window.localStorage.getItem(OP_STORAGE_KEY) : null;
+      if (raw) setOverrides(JSON.parse(raw));
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+  const saveOverride = (label: string, op: string) => {
+    setOverrides((prev) => {
+      const next = { ...prev, [label]: op };
+      try {
+        window.localStorage.setItem(OP_STORAGE_KEY, JSON.stringify(next));
+      } catch {
+        /* ignore */
+      }
+      return next;
+    });
+  };
+
+  const resetOverride = (label: string) => {
+    setOverrides((prev) => {
+      const next = { ...prev };
+      delete next[label];
+      try {
+        window.localStorage.setItem(OP_STORAGE_KEY, JSON.stringify(next));
+      } catch {
+        /* ignore */
+      }
+      return next;
+    });
+  };
 
   const items = useMemo(
     () =>
-      siteConfig.gallery.filter((g) => filter === "Todos" || categoryOf(g.label) === filter),
+      (siteConfig.gallery as GalleryItem[]).filter(
+        (g) => filter === "Todos" || categoryOf(g.label) === filter,
+      ),
     [filter],
   );
+
+  const opFor = (g: GalleryItem) => overrides[g.label] ?? g.objectPosition ?? "center center";
 
   return (
     <section id="antes-depois" className="py-24 md:py-32 bg-[#F0F5FB]/50">
@@ -841,7 +899,7 @@ function BeforeAfter() {
           </p>
         </motion.div>
 
-        <motion.div {...anim.fadeUp} className="mt-8 flex flex-wrap gap-2">
+        <motion.div {...anim.fadeUp} className="mt-8 flex flex-wrap items-center gap-2">
           {cats.map((c) => (
             <button
               key={c}
@@ -855,62 +913,118 @@ function BeforeAfter() {
               {c}
             </button>
           ))}
+          <div className="ml-auto flex items-center gap-2">
+            <button
+              onClick={() => setInspect((v) => !v)}
+              className={`px-3 h-10 rounded-full text-xs font-semibold border transition-all inline-flex items-center gap-2 ${
+                inspect
+                  ? "bg-[#0B2E59] text-white border-[#0B2E59]"
+                  : "bg-white text-slate-700 border-slate-200 hover:border-[#1D74D6]"
+              }`}
+              title="Modo inspeção: mostra grade sobre cada par"
+            >
+              <span className="w-3 h-3 rounded-sm border-2 border-current" />
+              Modo inspeção
+            </button>
+          </div>
         </motion.div>
 
-        <div className="mt-10 grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {items.map((g, i) => (
-            <motion.div
-              key={g.label + i}
-              {...anim.stagger(i)}
-              whileHover={{ y: -4 }}
-              className="rounded-3xl overflow-hidden bg-white border border-slate-100 shadow-[0_10px_40px_rgba(11,46,89,.08)]"
-            >
-              <BeforeAfterSlider before={g.before} after={g.after} label={g.label} />
-              <div className="p-4 flex items-center justify-between">
-                <span className="text-sm font-semibold text-[#0B2E59]">{g.label}</span>
-                <button
-                  onClick={() => setLightbox(g)}
-                  className="text-xs font-semibold text-[#1D74D6] hover:underline"
-                >
-                  Ver ampliado →
-                </button>
-              </div>
-            </motion.div>
-          ))}
+        <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {items.map((g, i) => {
+            const op = opFor(g);
+            const { x, y } = parseOP(op);
+            const isTuning = tuning === g.label;
+            return (
+              <motion.div
+                key={g.label + i}
+                {...anim.stagger(i)}
+                whileHover={{ y: -4 }}
+                className="rounded-3xl overflow-hidden bg-white border border-slate-100 shadow-[0_10px_40px_rgba(11,46,89,.08)]"
+              >
+                <div onClick={() => !isTuning && setZoom(g)} className="cursor-zoom-in">
+                  <BeforeAfterSlider
+                    before={g.before}
+                    after={g.after}
+                    label={g.label}
+                    objectPosition={op}
+                    showGrid={inspect || isTuning}
+                  />
+                </div>
+                <div className="p-4 flex items-center justify-between gap-2">
+                  <span className="text-sm font-semibold text-[#0B2E59] truncate">{g.label}</span>
+                  <div className="flex items-center gap-3 shrink-0">
+                    <button
+                      onClick={() => setTuning((t) => (t === g.label ? null : g.label))}
+                      className={`text-xs font-semibold ${isTuning ? "text-[#0B2E59]" : "text-slate-500 hover:text-[#0B2E59]"}`}
+                    >
+                      {isTuning ? "Fechar ajuste" : "Ajustar"}
+                    </button>
+                    <button
+                      onClick={() => setZoom(g)}
+                      className="text-xs font-semibold text-[#1D74D6] hover:underline"
+                    >
+                      Ampliar →
+                    </button>
+                  </div>
+                </div>
+                {isTuning && (
+                  <div className="px-4 pb-4 border-t border-slate-100 pt-3 space-y-2 bg-[#F0F5FB]/40">
+                    <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+                      Recorte aplicado a AMBAS as imagens
+                    </div>
+                    <label className="block text-xs text-slate-600">
+                      Horizontal: <span className="font-mono tabular-nums">{x.toFixed(0)}%</span>
+                      <input
+                        type="range"
+                        min={0}
+                        max={100}
+                        step={1}
+                        value={x}
+                        onChange={(e) => saveOverride(g.label, `${e.target.value}% ${y}%`)}
+                        className="w-full accent-[#1D74D6]"
+                      />
+                    </label>
+                    <label className="block text-xs text-slate-600">
+                      Vertical: <span className="font-mono tabular-nums">{y.toFixed(0)}%</span>
+                      <input
+                        type="range"
+                        min={0}
+                        max={100}
+                        step={1}
+                        value={y}
+                        onChange={(e) => saveOverride(g.label, `${x}% ${e.target.value}%`)}
+                        className="w-full accent-[#1D74D6]"
+                      />
+                    </label>
+                    <div className="flex items-center justify-between pt-1">
+                      <span className="text-[11px] text-slate-500 font-mono">{op}</span>
+                      <button
+                        onClick={() => resetOverride(g.label)}
+                        className="text-[11px] font-semibold text-slate-500 hover:text-[#0B2E59]"
+                      >
+                        Restaurar padrão
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </motion.div>
+            );
+          })}
         </div>
       </div>
 
-      <AnimatePresence>
-        {lightbox && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[80] bg-slate-900/85 backdrop-blur-sm flex items-center justify-center p-4"
-            onClick={() => setLightbox(null)}
-          >
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              className="relative bg-white rounded-3xl overflow-hidden max-w-4xl w-full"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <button
-                onClick={() => setLightbox(null)}
-                className="absolute top-3 right-3 z-10 w-10 h-10 rounded-full bg-white/90 grid place-items-center shadow-lg"
-              >
-                <X className="w-5 h-5" />
-              </button>
-              <BeforeAfterSlider before={lightbox.before} after={lightbox.after} label={lightbox.label} />
-              <div className="p-4 text-center font-semibold text-[#0B2E59]">{lightbox.label}</div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <BeforeAfterZoomModal
+        open={!!zoom}
+        onClose={() => setZoom(null)}
+        before={zoom?.before ?? ""}
+        after={zoom?.after ?? ""}
+        label={zoom?.label ?? ""}
+        objectPosition={zoom ? opFor(zoom) : undefined}
+      />
     </section>
   );
 }
+
 
 /* --------------------------------- PROCESS --------------------------------- */
 function Process() {
