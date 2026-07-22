@@ -46,6 +46,16 @@ const SLOT_LABELS: Record<TimeSlot, string> = {
   afternoon: "Tarde (13h – 18h)",
 };
 
+const SLOT_PERIOD: Record<TimeSlot, string> = {
+  morning: "Manhã",
+  afternoon: "Tarde",
+};
+
+const SLOT_WINDOW: Record<TimeSlot, string> = {
+  morning: "08h às 12h",
+  afternoon: "13h às 18h",
+};
+
 function maskCPF(v: string) {
   const d = v.replace(/\D/g, "").slice(0, 11);
   return d
@@ -80,20 +90,33 @@ type Confirmation = {
   phone: string;
   address: string;
   service: string;
+  notes: string;
   ownerWhatsapp: string;
 };
 
 function buildWhatsappMessage(c: Confirmation) {
-  return (
-    `*Novo agendamento — ${siteConfig.brandName}*\n\n` +
-    `📅 Data: ${c.dateLabel}\n` +
-    `⏰ Horário: ${SLOT_LABELS[c.slot]}\n` +
-    `👤 Nome: ${c.name}\n` +
-    `🪪 CPF: ${c.cpf}\n` +
-    `📱 Telefone: ${c.phone}\n` +
-    `📍 Endereço: ${c.address}\n` +
-    `🧼 Serviço: ${c.service}`
-  );
+  const lines = [
+    `*Novo agendamento — ${siteConfig.brandName}*`,
+    `Protocolo: ${c.id.slice(0, 8).toUpperCase()}`,
+    ``,
+    `👤 *Cliente*`,
+    `Nome: ${c.name}`,
+    `CPF: ${c.cpf}`,
+    `Telefone: ${c.phone}`,
+    `Endereço: ${c.address}`,
+    ``,
+    `📅 *Agendamento*`,
+    `Data: ${c.dateLabel}`,
+    `Turno: ${SLOT_PERIOD[c.slot]}`,
+    `Horário: ${SLOT_WINDOW[c.slot]}`,
+    ``,
+    `🧼 *Serviço*`,
+    c.service,
+  ];
+  if (c.notes.trim()) {
+    lines.push(``, `📝 *Observações*`, c.notes.trim());
+  }
+  return lines.join("\n");
 }
 
 function AgendarPage() {
@@ -135,6 +158,7 @@ function AgendarPage() {
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [service, setService] = useState("");
+  const [notes, setNotes] = useState("");
   const [confirmation, setConfirmation] = useState<Confirmation | null>(null);
 
   const dateKey = date ? format(date, "yyyy-MM-dd") : "";
@@ -171,6 +195,7 @@ function AgendarPage() {
         phone,
         address,
         service,
+        notes,
         ownerWhatsapp:
           publicSettings?.owner_whatsapp || siteConfig.whatsappNumber,
       };
@@ -184,6 +209,7 @@ function AgendarPage() {
       setPhone("");
       setAddress("");
       setService("");
+      setNotes("");
       setDate(undefined);
       setSlot("");
       router.invalidate();
@@ -251,6 +277,8 @@ function AgendarPage() {
             setAddress={setAddress}
             service={service}
             setService={setService}
+            notes={notes}
+            setNotes={setNotes}
             onSubmit={() => mutation.mutate()}
             submitting={mutation.isPending}
           />
@@ -280,6 +308,8 @@ function BookingForm(props: {
   setAddress: (v: string) => void;
   service: string;
   setService: (v: string) => void;
+  notes: string;
+  setNotes: (v: string) => void;
   onSubmit: () => void;
   submitting: boolean;
 }) {
@@ -288,6 +318,7 @@ function BookingForm(props: {
     slot, setSlot, takenSlots,
     name, setName, cpf, setCpf, phone, setPhone,
     address, setAddress, service, setService,
+    notes, setNotes,
     onSubmit, submitting,
   } = props;
   return (
@@ -419,6 +450,13 @@ function BookingForm(props: {
                   Quanto mais detalhes, melhor preparamos o atendimento.
                 </p>
               </div>
+              <div className="sm:col-span-2">
+                <Label htmlFor="notes">Observações (opcional)</Label>
+                <Textarea id="notes" maxLength={500}
+                  value={notes} onChange={(e) => setNotes(e.target.value)}
+                  placeholder="Ex.: portão azul, ligar antes de chegar, animal de estimação em casa."
+                  rows={3} className="resize-y" />
+              </div>
             </div>
 
             <Button
@@ -486,6 +524,9 @@ function ConfirmationPanel({
           <Row label="Telefone">{confirmation.phone}</Row>
           <Row label="Endereço">{confirmation.address}</Row>
           <Row label="Serviço">{confirmation.service}</Row>
+          {confirmation.notes.trim() && (
+            <Row label="Observações">{confirmation.notes}</Row>
+          )}
         </dl>
 
         <pre className="mt-5 max-h-64 overflow-auto rounded-md border bg-muted/40 p-3 text-xs whitespace-pre-wrap">
