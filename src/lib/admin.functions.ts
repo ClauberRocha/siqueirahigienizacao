@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { validateSlotLeadTime } from "./booking-time";
 
 /** Retorna se o usuário logado é administrador. */
 export const getIsAdmin = createServerFn({ method: "GET" })
