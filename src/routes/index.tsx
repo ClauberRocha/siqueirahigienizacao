@@ -39,6 +39,9 @@ import {
   ChevronRight,
 } from "lucide-react";
 import heroImage from "@/assets/hero-tecnico-premium.jpg";
+import heroCarousel2 from "@/assets/hero-carousel-2.jpg";
+import heroCarousel3 from "@/assets/hero-carousel-3.jpg";
+import heroCarousel4 from "@/assets/hero-carousel-4.jpg";
 import logoAsset from "@/assets/logo-siqueira.png";
 import { siteConfig, whatsappLink } from "@/lib/site-config";
 import { track } from "@/lib/analytics";
